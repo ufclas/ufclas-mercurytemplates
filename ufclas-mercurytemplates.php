@@ -45,15 +45,19 @@ function my_template_select($template)
 
 	return $template;
 }
-add_filter('template_include','my_template_select', 99);
 
-function use_custom_template($tpl){
-	if ( is_post_type_archive ('any') ) {
-	  $tpl = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
-	}
-	return $tpl;
-  }
-  
-  add_filter( 'archive_template', 'use_custom_template' ) ;
-  
+
+// Hook to register the custom archive template
+add_filter( 'archive_template', 'my_custom_archive_template' );
+
+function my_custom_archive_template( $archive_template ) {
+    // Check if it's an archive page
+    if ( is_post_type_archive() || is_category() || is_tag() || is_tax() ) {
+        // Path to your custom template file
+        $archive_template = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
+    }
+    return $archive_template;
+}
+?>
+
   ?>
