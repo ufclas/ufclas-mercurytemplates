@@ -97,7 +97,7 @@ function misha_loadmore_ajax_handler_custom(){
 		// run the loop
 		while( have_posts() ): the_post();
  
-			    get_template_part( '../template-parts/content-post');
+			    get_template_part( 'template-parts/content-post');
 
 		endwhile;
 	endif;
@@ -175,7 +175,7 @@ function misha_filter_function_custom(){
  
 		while( have_posts() ): the_post();
  
-			  get_template_part( '../template-parts/content-post');
+			  get_template_part( 'template-parts/content-post');
  
 		endwhile;
  
