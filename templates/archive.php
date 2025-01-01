@@ -11,82 +11,115 @@
 get_header();
 ?>
 
-<div id="content" class="site-content container py-5 mt-5">
-  <div id="primary" class="content-area">
+<div id="content" class="site-content news">
+  <div id="primary" class="news-landing-body content-area">
+    <?php the_content(); ?>
 
-    <!-- Hook to add something nice -->
-    <?php bs_after_primary(); ?>
+    <div class="container">
+      <div class="row">
+        <div class="title-wrapper">
+          <h2 class="font-heading"><?php the_archive_title(); ?></h2>
+          <hr/>
+        </div>
 
-    <div class="row">
-      <div class="col">
+        <form id="misha_filters" action="#">
+          <div class="filter-wrapper">
+            <div class="select-wrapper">
+              <div class="dropdown">
+                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Categories</button>
+                <ul class="dropdown-menu button-group">
+                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
+                  <?php
+                  $categories = get_categories([
+                    "orderby" => "name",
+                    "order" => "ASC",
+                    "hide_empty" => true,
+                  ]);
 
-        <main id="main" class="site-main">
-
-          <!-- Title & Description -->
-          <header class="page-header mb-4">
-            <h1><?php the_archive_title(); ?> Hello world</h1>
-            <?php the_archive_description('<div class="archive-description">', '</div>'); ?>
-          </header>
-
-          <!-- Grid Layout -->
-          <?php if (have_posts()) : ?>
-            <?php while (have_posts()) : the_post(); ?>
-              <div class="card horizontal mb-4">
-                <div class="row">
-                  <!-- Featured Image-->
-                  <?php if (has_post_thumbnail())
-                    echo '<div class="card-img-left-md col-lg-5">' . get_the_post_thumbnail(null, 'medium') . '</div>';
+                  foreach ($categories as $category) {
+                    echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
+                      $category->term_id .
+                      '">' .
+                      $category->name .
+                      "</button></li>";
+                  }
                   ?>
-                  <div class="col">
-                    <div class="card-body">
-
-                      <?php bootscore_category_badge(); ?>
-
-                      <!-- Title -->
-                      <h2 class="blog-post-title">
-                        <a href="<?php the_permalink(); ?>">
-                          <?php the_title(); ?>
-                        </a>
-                      </h2>
-                      <!-- Meta -->
-                      <?php if ('post' === get_post_type()) : ?>
-                        <small class="text-muted mb-2">
-                          <?php
-$publish_date = get_the_date('F j, Y');
-    echo $publish_date;
-                          bootscore_comments();
-                          bootscore_edit();
-                          ?>
-                        </small>
-                      <?php endif; ?>
-                      <!-- Excerpt & Read more -->
-                      <div class="card-text mt-auto">
-                        <?php the_excerpt(); ?>
-                      </div>
-                      <!-- Tags -->
-                      <?php bootscore_tags(); ?>
-                    </div>
-                  </div>
-                </div>
+                </ul>
+                <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
               </div>
-            <?php endwhile; ?>
-          <?php endif; ?>
+            </div>
+          </div> <!-- End Filter Wrapper -->
 
-          <!-- Pagination -->
-          <div class="pagination">
-            <?php //bootscore_pagination(); 
-			pixelnet_bootstrap_pagination();?>
-          </div>
+          <!-- required hidden field for admin-ajax.php -->
+          <input type="hidden" name="action" value="mishafilter">
+          <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-        </main><!-- #main -->
+  <div class="container">
+    <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
+      <?php
+      $params = [
+        "posts_per_page" => 15,
+      ];
 
-      </div><!-- col -->
+      query_posts($params);
 
-      <?php //get_sidebar(); ?>
-    </div><!-- row -->
+      global $wp_query;
 
-  </div><!-- #primary -->
-</div><!-- #content -->
+      if (have_posts()) :
+        while (have_posts()) :
+          the_post();
+
+          get_template_part("template-parts/content-post");
+        endwhile;
+      else :
+        $posts_html = "<p>Nothing found for your criteria.</p>";
+      endif;
+      ?>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex flex-wrap justify-content-center button-wrapper my-4">
+    <?php
+    if ($wp_query->max_num_pages > 1) {
+      echo '<div class="button animated-border-button button-border-orange button-text-dark" id="misha_loadmore">More posts</div>'; // you can use <a> as well
+    }
+    ?>
+  </div>
+
+  <script>
+    // Attach click event handlers to the filter buttons
+    document.querySelectorAll('.filter-button').forEach(function(button) {
+      button.addEventListener('click', selectFilter);
+    });
+
+    // Function to select a filter option
+    function selectFilter() {
+      var name = this.getAttribute('data-name');
+      var value = this.getAttribute('data-value');
+      var input = document.getElementById(name);
+      input.value = value;
+      document.querySelectorAll('[data-name="' + name + '"]').forEach(function(button) {
+        button.classList.remove('selected');
+      });
+      if (value) {
+        this.classList.add('selected');
+        //this.parentNode.parentNode.querySelector('button[data-name="' + name + '"][data-value=""]').innerHTML = this.innerHTML;
+      } else {
+        //this.parentNode.parentNode.querySelector('button[data-name="' + name + '"][data-value=""]').innerHTML = 'Select ' + name.substring(0, name.length - 6) + '...';
+      }
+    }
+  </script>
+  
+  
+  
+  
+  
+  
 
 <?php
 get_footer();
