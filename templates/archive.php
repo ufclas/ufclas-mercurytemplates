@@ -74,7 +74,7 @@ get_header();
         while (have_posts()) :
           the_post();
 
-          include("template-parts/content-post");
+          include("../template-parts/content-post");
         endwhile;
       else :
         $posts_html = "<p>Nothing found for your criteria.</p>";
