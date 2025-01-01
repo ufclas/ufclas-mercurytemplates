@@ -74,7 +74,7 @@ get_header();
         while (have_posts()) :
           the_post();
 
-          include("../template-parts/content-post");
+          include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
         endwhile;
       else :
         $posts_html = "<p>Nothing found for your criteria.</p>";
