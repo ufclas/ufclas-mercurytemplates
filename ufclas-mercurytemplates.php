@@ -58,6 +58,6 @@ function my_custom_archive_template( $archive_template ) {
     }
     return $archive_template;
 }
-?>
+
 
   ?>
