@@ -97,7 +97,7 @@ function misha_loadmore_ajax_handler_custom(){
 		// run the loop
 		while( have_posts() ): the_post();
  
-		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php")
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
 
 		endwhile;
 	endif;
@@ -175,7 +175,7 @@ function misha_filter_function_custom(){
  
 		while( have_posts() ): the_post();
  
-		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php")
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
  
 		endwhile;
  
