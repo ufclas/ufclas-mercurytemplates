@@ -14,6 +14,7 @@ $categories = get_the_category();
             <?php } ?>
             <div class="card-body">
                 <h3 class="card-title"><?php the_title(); ?></h3>			
+				<p class="card-date"><?php echo $post_date; ?> Hello world</p>
                 <p class="card-text"><?php the_excerpt(); ?></p>
             </div>
         </a>

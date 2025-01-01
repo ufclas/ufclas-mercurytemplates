@@ -54,7 +54,7 @@ function my_custom_archive_template( $archive_template ) {
     // Check if it's an archive page
     if ( is_post_type_archive() || is_category() || is_tag() || is_tax() ) {
         // Path to your custom template file
-        $archive_template = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
+        $archive_template = plugin_dir_path( __FILE__ ) . '../templates/archive.php';
     }
     return $archive_template;
 }
