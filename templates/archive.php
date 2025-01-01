@@ -13,20 +13,21 @@ get_header();
 
 <div id="content" class="site-content news">
   <div id="primary" class="news-landing-body content-area">
-    <?php the_content(); ?>
 
     <div class="container">
       <div class="row">
         <div class="title-wrapper">
           <h2 class="font-heading"><?php the_archive_title(); ?></h2>
           <hr/>
+          <?php the_archive_description('<div class="archive-description">', '</div>'); ?>
+
         </div>
 
         <form id="misha_filters" action="#">
           <div class="filter-wrapper">
             <div class="select-wrapper">
               <div class="dropdown">
-                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Categories</button>
+                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
                 <ul class="dropdown-menu button-group">
                   <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
