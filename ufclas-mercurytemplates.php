@@ -48,7 +48,7 @@ function my_template_select($template)
 add_filter('template_include','my_template_select', 99);
 
 function use_custom_template($tpl){
-	if ( is_post_type_archive ( 'post' ) ) {
+	if ( is_post_type_archive ( 'posts' ) ) {
 	  $tpl = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
 	}
 	return $tpl;
