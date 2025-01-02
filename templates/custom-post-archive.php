@@ -20,7 +20,7 @@ $postid = get_option('page_for_posts');
               <div class="dropdown">
                 <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filter</button>
                 <ul class="dropdown-menu button-group">
-                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">Uncategorized</button></li>
+                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
 
                   // Get the ID of the parent category "Uncategorized"

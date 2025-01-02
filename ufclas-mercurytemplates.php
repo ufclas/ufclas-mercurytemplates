@@ -201,4 +201,100 @@ function prefix_category_title( $title ) {
 	return $title;
 	}
 	add_filter( 'get_the_archive_title', 'prefix_category_title' );
+
+
+
+
+// register meta boxes for custom post archive
+// register meta boxes for Custom Post archive
+function custom_post_archive_add_meta_box()
+{
+    $page_template = 'custom-post-archive.php';
+    $current_page_template = get_page_template_slug(get_the_ID());
+
+    if ($current_page_template === $page_template) {
+        add_meta_box(
+            'custom_archive_meta_box',         // Unique ID of meta box
+            'Custom Archive Category Name',      // Title of meta box
+            'custom_archive_display_meta_box', // Callback function
+            'page'                          // Post type
+        );
+    }
+}
+
+add_action('add_meta_boxes', 'custom_post_archive_add_meta_box');
+
+
+// display meta box
+function custom_archive_display_meta_box($post)
+{
+
+	$value = get_post_meta($post->ID, 'custom_archive_meta_key', true);
+
+	wp_nonce_field(basename(__FILE__), 'custom_archive_meta_box_nonce');
+
+
+
+
+	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap;'>";
+
+	$selected_category = get_post_meta($post->ID, 'selected-category', true);
+	echo '<div style="margin: 20px 10px; width: 45%;">';
+	echo '<label for="selected-category">Category</label>';
+	echo '<input name="selected-category" value="' . esc_textarea($selected_category)  . '" class="widefat" rows="4" cols="10" />';
+	echo '</div>';
+
+
+	echo "</div>";
+
+}
+
+
+
+// save meta box
+function myplugin_save_meta_box($post_id)
+{
+
+	$is_autosave = wp_is_post_autosave($post_id);
+	$is_revision = wp_is_post_revision($post_id);
+
+	$is_valid_nonce = false;
+
+	if (isset($_POST['custom_archive_meta_box_nonce'])) {
+
+		if (wp_verify_nonce($_POST['custom_archive_meta_box_nonce'], basename(__FILE__))) {
+
+			$is_valid_nonce = true;
+		}
+	}
+
+	if ($is_autosave || $is_revision || !$is_valid_nonce) return;
+
+	$member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
+
+	if (is_array($member_meta)) {
+		foreach ($member_meta as $key => $value) :
+			// Don't store custom data twice
+			if ('revision' === $post->post_type) {
+				return;
+			}
+			if (get_post_meta($post_id, $key, false)) {
+				// If the custom field already has a value, update it.
+				update_post_meta($post_id, $key, $value);
+			} else {
+				// If the custom field doesn't have a value, add it.
+				add_post_meta($post_id, $key, $value);
+			}
+			if (!$value) {
+				// Delete the meta key if there's no value
+				delete_post_meta($post_id, $key);
+			}
+		endforeach;
+	}
+}
+add_action('save_post', 'myplugin_save_meta_box');
+
+
+
+
   ?>
