@@ -18,10 +18,10 @@ $postid = get_option('page_for_posts');
           if ($custom_category) {
               echo '<h2 class="font-heading">' . esc_html($custom_category) . '</h2>';
           } else {
-              echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
+              echo '<h2 class="font-heading">Uncategorized</h2>';
           }
           ?>
-          
+
           </h2>
           <hr/>
         </div>
