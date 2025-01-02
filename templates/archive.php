@@ -10,6 +10,31 @@
 
 get_header();
 ?>
+<style>
+  nav.breadcrumb-wrapper #breadcrumbs span {
+    font-size: 16px;
+    line-height: 24px;
+    color: #fa4616;
+    font-family: 'gentonamedium';
+}
+
+nav.breadcrumb-wrapper #breadcrumbs span a {
+    color: #000;
+    text-decoration: none;
+    font-family: "gentonalight";
+}
+
+nav.breadcrumb-wrapper #breadcrumbs span strong {
+    font-family: 'gentonamedium';
+    font-weight: normal;
+    color: #000;
+}
+
+nav.breadcrumb-wrapper #breadcrumbs {
+    padding: 10px 0;
+}
+</style>
+
 <nav aria-label="breadcrumb" class="breadcrumb-wrapper"><?php
 if ( function_exists('yoast_breadcrumb') ) {
   yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
