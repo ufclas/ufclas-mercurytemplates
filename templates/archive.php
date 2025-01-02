@@ -10,7 +10,11 @@
 
 get_header();
 ?>
-
+<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><?php
+if ( function_exists('yoast_breadcrumb') ) {
+  yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
+}
+?></nav>
 <div id="content" class="site-content news">
   <div id="primary" class="news-landing-body content-area">
 

@@ -3,7 +3,8 @@
  * Plugin Name:       UFCLAS Additional Mercury Templates
  * Description:       Additional custom UFCLAS templates for use with base Mercury theme.
  * Version:           1.0.0
- * Text Domain:       clas.ufl.edu
+ * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates
+ * Author:            Suzie Israel
  */
 
 function my_template_array () 
