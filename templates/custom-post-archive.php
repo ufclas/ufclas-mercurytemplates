@@ -13,15 +13,15 @@ $postid = get_option('page_for_posts');
           <h2 class="font-heading">
             
           <?php
-          $custom_category = get_post_meta(get_the_ID(), 'custom-category', true);
+          $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
 
-          if ($custom_category) {
-              echo '<h2 class="font-heading">' . esc_html($custom_category) . '</h2>';
+          if ($selected_category) {
+              echo '<h2 class="font-heading">' . esc_html($selected_category) . '</h2>';
           } else {
-              echo '<h2 class="font-heading">' . 'get_the_title()' . '</h2>';
+              echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
           }
           ?>
-
+          
           </h2>
           <hr/>
         </div>
