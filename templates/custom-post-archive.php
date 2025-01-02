@@ -18,9 +18,9 @@ $postid = get_option('page_for_posts');
           <div class="filter-wrapper">
             <div class="select-wrapper">
               <div class="dropdown">
-                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Categories</button>
+                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filter</button>
                 <ul class="dropdown-menu button-group">
-                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
+                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">Uncategorized</button></li>
                   <?php
 
                   // Get the ID of the parent category "Uncategorized"
@@ -32,7 +32,6 @@ $postid = get_option('page_for_posts');
                       "order" => "ASC",
                       "hide_empty" => true,
                       "parent" => $parent_category_id, // Add parent category ID
-                      "slug" => "uncategorized",
                     ]);
 
                   foreach ($categories as $category) {
@@ -48,30 +47,7 @@ $postid = get_option('page_for_posts');
               </div>
             </div>
 
-            <div class="select-wrapper">
-              <div class="dropdown">
-                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="tagfilter" data-value="">Tags</button>
-                <ul class="dropdown-menu button-group">
-                  <li><button type="button" class="filter-button" data-name="tagfilter" data-value="">All</button></li>
-                  <?php
-                  $tags = get_tags([
-                    "orderby" => "name",
-                    "order" => "ASC",
-                    "hide_empty" => true,
-                  ]);
 
-                  foreach ($tags as $tag) {
-                    echo '<li><button type="button" class="filter-button" data-name="tagfilter" data-value="' .
-                      $tag->term_id .
-                      '">' .
-                      $tag->name .
-                      "</button></li>";
-                  }
-                  ?>
-                </ul>
-                <input type="hidden" name="tagfilter" id="tagfilter" value="">
-              </div>
-            </div>
 
           </div> <!-- End Filter Wrapper -->
 
