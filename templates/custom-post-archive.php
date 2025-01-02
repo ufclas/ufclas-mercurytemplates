@@ -13,13 +13,18 @@ $postid = get_option('page_for_posts');
           <h2 class="font-heading">
             
           <?php
-          $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+            $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-          if ($selected_category) {
-              echo '<h2 class="font-heading">' . esc_html($selected_category) . '</h2>';
-          } else {
-              echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
-          }
+            if ($selected_category_slug) {
+                $category = get_category_by_slug($selected_category_slug);
+                if ($category) {
+                    echo '<h2 class="font-heading">' . esc_html($category->name) . '</h2>';
+                } else {
+                    echo '<h2 class="font-heading">Uncategorized</h2>';
+                }
+            } else {
+                echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
+            }
           ?>
           
           </h2>
