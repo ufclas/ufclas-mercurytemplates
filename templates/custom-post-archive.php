@@ -25,10 +25,10 @@ $postid = get_option('page_for_posts');
 
 
                   //Stores category data in variable
-				          $customCategory = get_post_meta($post->ID, 'selected_category', true);
+				          $selectedCategory = get_post_meta($post->ID, 'selected_category', true);
 
-                  // Get the ID of the parent category, aka the selected category
-                  $parent_category_id = get_cat_ID($customCategory);
+                  // Get the ID of the parent category, or the Selected category
+                  $parent_category_id = get_cat_ID('$selectedCategory');
 
                   // Get categories that have the parent category for the selected category
                   $categories = get_categories([
@@ -66,9 +66,12 @@ $postid = get_option('page_for_posts');
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
+      //Stores category data in variable
+			$selectedCategory = get_post_meta($post->ID, 'selected_category', true);
+
       $params = [
         "posts_per_page" => 15,
-        "category_name" => $customCategory,
+        "category_name" => "$selectedCategory",
       ];
 
       query_posts($params);
