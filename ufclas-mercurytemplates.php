@@ -96,29 +96,7 @@ function misha_loadmore_ajax_handler_custom(){
 		// run the loop
 		while( have_posts() ): the_post();
  
-			$featured_img_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-			$post_date = get_the_date('l F j, Y');
-			$filter_date = get_the_date('Y');
-			$categories = get_the_category();
-			
-			echo '<div class="col-sm-6 col-lg-4 mb-4 news-col ';
-			if (!empty($categories)) {
-				echo 'year-' . $filter_date;
-			}
-			echo '">';
-			echo '<div class="card news-card">';
-			echo '<a href="' . get_permalink() . '" class="news-card-link" alt="..">';
-			if ($featured_img_url) {
-				echo '<img src="' . esc_url($featured_img_url) . '" class="card-img-top" alt="...">';
-			}
-			echo '<div class="card-body">';
-			echo '<h3 class="card-title">' . get_the_title() . '</h3>';            
-			echo '<p class="card-date">' . $post_date . ' Hello world</p>';
-			echo '<p class="card-text">' . get_the_excerpt() . '</p>';
-			echo '</div>';  // .card-body
-			echo '</a>';
-			echo '</div>';  // .card news-card
-			echo '</div>';  // .col
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
 
 		endwhile;
 	endif;
@@ -195,31 +173,9 @@ function misha_filter_function_custom(){
  		ob_start(); // start buffering because we do not need to print the posts now
  
 		while( have_posts() ): the_post();
-		
-			$featured_img_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-			$post_date = get_the_date('l F j, Y');
-			$filter_date = get_the_date('Y');
-			$categories = get_the_category();
-			
-			echo '<div class="col-sm-6 col-lg-4 mb-4 news-col ';
-			if (!empty($categories)) {
-				echo 'year-' . $filter_date;
-			}
-			echo '">';
-			echo '<div class="card news-card">';
-			echo '<a href="' . get_permalink() . '" class="news-card-link" alt="..">';
-			if ($featured_img_url) {
-				echo '<img src="' . esc_url($featured_img_url) . '" class="card-img-top" alt="...">';
-			}
-			echo '<div class="card-body">';
-			echo '<h3 class="card-title">' . get_the_title() . '</h3>';            
-			echo '<p class="card-date">' . $post_date . ' Hello world</p>';
-			echo '<p class="card-text">' . get_the_excerpt() . '</p>';
-			echo '</div>';  // .card-body
-			echo '</a>';
-			echo '</div>';  // .card news-card
-			echo '</div>';  // .col
-	
+ 
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
+ 
 		endwhile;
  
  		$posts_html = ob_get_contents(); // we pass the posts to variable
