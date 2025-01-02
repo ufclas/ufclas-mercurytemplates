@@ -32,8 +32,8 @@ $postid = get_option('page_for_posts');
                       "order" => "ASC",
                       "hide_empty" => true,
                       "parent" => $parent_category_id, // Add parent category ID
-                      "category_name" => "Uncategorized",
-                  ]);
+                      "slug" => "uncategorized",
+                    ]);
 
                   foreach ($categories as $category) {
                     echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
