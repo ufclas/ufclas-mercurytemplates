@@ -236,15 +236,26 @@ function custom_archive_display_meta_box($post)
 
 
 
+
 	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap;'>";
 
 	$selected_category = get_post_meta($post->ID, 'selected-category', true);
+	$categories = get_categories([
+		'orderby' => 'name',
+		'order' => 'ASC',
+		'hide_empty' => false,
+		'parent' => 0, // Only include top-level categories
+	]);
+	
 	echo '<div style="margin: 20px 10px; width: 45%;">';
 	echo '<label for="selected-category">Category</label>';
-	echo '<input name="selected-category" value="' . esc_textarea($selected_category)  . '" class="widefat" rows="4" cols="10" />';
+	echo '<select name="selected-category">';
+	foreach ($categories as $category) {
+		echo '<option value="' . esc_attr($category->slug) . '"' . selected($selected_category, $category->slug, false) . '>' . esc_html($category->name) . '</option>';
+	}
+	echo '</select>';
 	echo '</div>';
-
-
+	
 	echo "</div>";
 
 }
