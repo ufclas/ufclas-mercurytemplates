@@ -91,7 +91,7 @@ $postid = get_option('page_for_posts');
         while (have_posts()) :
           the_post();
 
-          get_template_part("template-parts/content-post");
+          include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
         endwhile;
       else :
         $posts_html = "<p>Nothing found for your criteria.</p>";
