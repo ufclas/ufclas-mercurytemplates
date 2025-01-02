@@ -22,10 +22,16 @@ $postid = get_option('page_for_posts');
                 <ul class="dropdown-menu button-group">
                   <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
+
+                  // Get the ID of the parent category "Uncategorized"
+                  $parent_category_id = get_cat_ID('Uncategorized');
+
+                  // Get categories that have the parent category "Uncategorized"
                   $categories = get_categories([
-                    "orderby" => "name",
-                    "order" => "ASC",
-                    "hide_empty" => true,
+                      "orderby" => "name",
+                      "order" => "ASC",
+                      "hide_empty" => true,
+                      "parent" => $parent_category_id, // Add parent category ID
                   ]);
 
                   foreach ($categories as $category) {
@@ -81,6 +87,7 @@ $postid = get_option('page_for_posts');
       <?php
       $params = [
         "posts_per_page" => 15,
+        "category_name" => "Uncategorized",
       ];
 
       query_posts($params);
