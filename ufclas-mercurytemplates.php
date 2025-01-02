@@ -205,7 +205,6 @@ function prefix_category_title( $title ) {
 
 
 
-// register meta boxes for custom post archive
 // register meta boxes for Custom Post archive
 function custom_post_archive_add_meta_box()
 {

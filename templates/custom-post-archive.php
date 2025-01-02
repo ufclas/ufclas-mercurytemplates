@@ -10,7 +10,19 @@ $postid = get_option('page_for_posts');
     <div class="container">
       <div class="row">
         <div class="title-wrapper">
-          <h2 class="font-heading"><?php the_title(); ?></h2>
+          <h2 class="font-heading">
+            
+          <?php
+          $custom_category = get_post_meta(get_the_ID(), 'custom_category', true);
+
+          if ($custom_category) {
+              echo '<h2 class="font-heading">' . esc_html($custom_category) . '</h2>';
+          } else {
+              echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
+          }
+          ?>
+          
+          </h2>
           <hr/>
         </div>
 
@@ -23,14 +35,10 @@ $postid = get_option('page_for_posts');
                   <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
 
+                  // Get the ID of the parent category "Uncategorized"
+                  $parent_category_id = get_cat_ID('Uncategorized');
 
-                  //Stores category data in variable
-				          $selectedCategory = get_post_meta($post->ID, 'selected_category', true);
-
-                  // Get the ID of the parent category, or the Selected category
-                  $parent_category_id = get_cat_ID('$selectedCategory');
-
-                  // Get categories that have the parent category for the selected category
+                  // Get categories that have the parent category for Uncategorized
                   $categories = get_categories([
                       "orderby" => "name",
                       "order" => "ASC",
@@ -66,12 +74,9 @@ $postid = get_option('page_for_posts');
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
-      //Stores category data in variable
-			$selectedCategory = get_post_meta($post->ID, 'selected_category', true);
-
       $params = [
         "posts_per_page" => 15,
-        "category_name" => "$selectedCategory",
+        "category_name" => "Uncategorized",
       ];
 
       query_posts($params);
