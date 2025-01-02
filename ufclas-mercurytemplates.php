@@ -7,32 +7,44 @@
  * Author:            Suzie Israel
  */
 
-function my_template_array () {
-	$temps = [];
-	$temps['custom-post-archive'] = 'Custom Post Archive';
-	return $temps;
-}
+  
+ // Register custom page templates
+ function my_template_array() {
+	 $temps = [];
+	 $temps['custom-post-archive.php'] = 'Custom Post Archive';
+	 return $temps;
+ }
+ 
+ function my_template_register($page_templates, $theme, $post) {
+	 $templates = my_template_array();
+	 foreach($templates as $tk => $tv) {
+		 $page_templates[$tk] = $tv;
+	 }
+	 return $page_templates;
+ }
+ add_filter('theme_page_templates', 'my_template_register', 10, 3);
+ 
+ // Load custom template
+ function my_template_select($template) {
+	 global $post;
+	 $page_temp_slug = get_page_template_slug($post->ID);
+	 $templates = my_template_array();
+ 
+	 if (isset($templates[$page_temp_slug])) {
+		 $template = plugin_dir_path(__FILE__) . 'templates/' . $page_temp_slug;
+	 }
+	 return $template;
+ }
+ add_filter('template_include', 'my_template_select');
+ 
+ // Add template to page attributes dropdown
+ function add_custom_template_to_pages($templates) {
+	 $templates = array_merge($templates, my_template_array());
+	 return $templates;
+ }
+ add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
-function my_template_register($page_templates,$theme,$post) {
-	$templates = my_template_array();
-	foreach($templates as $tk=>$tv) {
-		$page_templates[$tk] = $tv;
-	}
-	return $page_templates;
-}
-add_filter('theme_page_templates','my_template_register',10,3);
-
-function my_template_select($template) {
-	global $post,$wp_query,$wpdb;
-	$page_temp_slug = get_page_template_slug( $post->ID );
-	$templates = my_template_array();
-
-	if(isset($templates[$page_temp_slug])) {
-			$template = plugin_dir_path(__FILE__).'templates/'.$page_temp_slug;
-	}
-	return $template;
-}
-
+ 
 
 // Hook to register the custom archive template
 add_filter( 'archive_template', 'my_custom_archive_template' );
