@@ -77,41 +77,55 @@ $postid = get_option('page_for_posts');
   </div>
 
   <div class="container">
-    <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
+      <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
+        <?php
+
+        // Retrieve the selected category slug from the meta value
+        $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+
+        // Initialize query parameters
+        $params = [
+            "posts_per_page" => 15,
+        ];
+
+        // If a selected category slug is found, add it to the query parameters
+        if ($selected_category_slug) {
+            $category = get_category_by_slug($selected_category_slug);
+            if ($category) {
+                $params['cat'] = $category->term_id;
+            }
+        }
+
+        // Execute the query
+        query_posts($params);
+
+        global $wp_query;
+
+        if (have_posts()) :
+          while (have_posts()) :
+            the_post();
+
+            include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
+            
+          endwhile;
+        else :
+          echo "<p>Nothing found for your criteria.</p>";
+        endif;
+
+        // Reset the query
+        wp_reset_query();
+        ?>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex flex-wrap justify-content-center button-wrapper my-4">
       <?php
-
-
-      $params = [
-        "posts_per_page" => 15,
-        "cat" => $parent_category_id,
-      ];
-
-      query_posts($params);
-
-      global $wp_query;
-
-      if (have_posts()) :
-        while (have_posts()) :
-          the_post();
-
-          include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
-          
-        endwhile;
-      else :
-        $posts_html = "<p>Nothing found for your criteria.</p>";
-      endif;
+      if ($wp_query->max_num_pages > 1) {
+        echo '<div class="button animated-border-button button-border-orange button-text-dark" id="misha_loadmore">More posts</div>'; // you can use <a> as well
+      }
       ?>
     </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="d-flex flex-wrap justify-content-center button-wrapper my-4">
-    <?php
-    if ($wp_query->max_num_pages > 1) {
-      echo '<div class="button animated-border-button button-border-orange button-text-dark" id="misha_loadmore">More posts</div>'; // you can use <a> as well
-    }
-    ?>
-  </div>
 
   <script>
     // Attach click event handlers to the filter buttons
