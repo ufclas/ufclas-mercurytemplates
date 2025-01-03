@@ -58,7 +58,7 @@ function my_custom_archive_template( $archive_template ) {
     return $archive_template;
 }
 
-// Single News Filtering from Mercury functions.php, updated to handle tags and custom post cards
+// Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
 
 add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
@@ -214,7 +214,7 @@ function custom_post_archive_add_meta_box()
     if ($current_page_template === $page_template) {
         add_meta_box(
             'custom_archive_meta_box',         // Unique ID of meta box
-            'Custom Archive Category Name',      // Title of meta box
+            'Select the post category to display on this page',      // Title of meta box
             'custom_archive_display_meta_box', // Callback function
             'page'                          // Post type
         );
@@ -236,7 +236,7 @@ function custom_archive_display_meta_box($post)
 
 
 
-	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap;'>";
+	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap; border: 1px #ccc solid;border-radius: 6px; padding: 12px;'>";
 
 	$selected_category = get_post_meta($post->ID, 'selected-category', true);
 	$categories = get_categories([
