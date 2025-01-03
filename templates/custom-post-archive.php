@@ -80,22 +80,11 @@ $postid = get_option('page_for_posts');
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
 
-      $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
-
-      if ($selected_category_slug) {
-          $category = get_category_by_slug($selected_category_slug);
-          if ($category) {
-              $selected_category_id = $category->term_id;
-          } else {
-              $selected_category_id = 0;
-          }
-      } else {
-          $selected_category_id = 0;
-      }
+      $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
 
       $params = [
-          "posts_per_page" => 15,
-          "cat" => $selected_category_id,
+        "posts_per_page" => 15,
+        "category_name" => "$selected_category",
       ];
 
       query_posts($params);
@@ -110,10 +99,8 @@ $postid = get_option('page_for_posts');
           
         endwhile;
       else :
-        echo "<p>Nothing found for your criteria.</p>";
+        $posts_html = "<p>Nothing found for your criteria.</p>";
       endif;
-
-      wp_reset_query();
       ?>
     </div>
   </div>
@@ -151,4 +138,4 @@ $postid = get_option('page_for_posts');
     }
   </script>
 
-  <?php get_footer(); ?>
+  <?php get_footer();
