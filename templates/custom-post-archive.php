@@ -41,15 +41,27 @@ $postid = get_option('page_for_posts');
                   <?php
 
                   // Get the ID of the parent category "Uncategorized"
-                  $parent_category_id = get_post_meta(get_the_ID(), 'selected-category', true);
+                  $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
+                  if ($selected_category_slug) {
+                      $category = get_category_by_slug($selected_category_slug);
+                      if ($category) {
+                          $parent_category_id = $category->term_id;
+                      } else {
+                          $parent_category_id = 0; // Default to 0 if category is not found
+                      }
+                  } else {
+                      $parent_category_id = 0; // Default to 0 if no category is selected
+                  }
+                  
                   // Get categories that have the parent category for Uncategorized
                   $categories = get_categories([
                       "orderby" => "name",
                       "order" => "ASC",
                       "hide_empty" => true,
                       "parent" => $parent_category_id, // Add parent category ID
-                    ]);
+                  ]);
+
 
                   foreach ($categories as $category) {
                     echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
@@ -83,8 +95,8 @@ $postid = get_option('page_for_posts');
       $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
 
       $params = [
-        "posts_per_page" => 15,
-        "category_name" => "$selected_category",
+          "posts_per_page" => 15,
+          "category__in" => [$selected_category],
       ];
 
       query_posts($params);
