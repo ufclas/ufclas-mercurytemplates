@@ -83,7 +83,7 @@ $postid = get_option('page_for_posts');
 
       $params = [
         "posts_per_page" => 15,
-        "category_name" => $selected_category_slug,
+        "cat" => $parent_category_id,
       ];
 
       query_posts($params);
