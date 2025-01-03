@@ -40,32 +40,41 @@ $postid = get_option('page_for_posts');
                   <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
 
-                  // Get the ID of the parent category "Uncategorized"
-                  $parent_category_id = get_post_meta(get_the_ID(), 'selected-category', true);
+                  // Get the slug of the selected category
+                  $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-                  // Get categories that have the parent category for Uncategorized
+                  // Convert the slug to a category ID
+                  if ($selected_category_slug) {
+                      $category = get_category_by_slug($selected_category_slug);
+                      if ($category) {
+                          $parent_category_id = $category->term_id;
+                      } else {
+                          $parent_category_id = 0;
+                      }
+                  } else {
+                      $parent_category_id = 0;
+                  }
+
+                  // Get categories that have the selected category as parent
                   $categories = get_categories([
                       "orderby" => "name",
                       "order" => "ASC",
                       "hide_empty" => true,
                       "parent" => $parent_category_id, // Add parent category ID
-                    ]);
+                  ]);
 
                   foreach ($categories as $category) {
-                    echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
-                      $category->term_id .
-                      '">' .
-                      $category->name .
-                      "</button></li>";
+                      echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
+                          $category->term_id .
+                          '">' .
+                          $category->name .
+                          "</button></li>";
                   }
                   ?>
                 </ul>
                 <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
               </div>
             </div>
-
-
-
           </div> <!-- End Filter Wrapper -->
 
           <!-- required hidden field for admin-ajax.php -->
@@ -80,11 +89,22 @@ $postid = get_option('page_for_posts');
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
 
-      $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+      $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+
+      if ($selected_category_slug) {
+          $category = get_category_by_slug($selected_category_slug);
+          if ($category) {
+              $selected_category_id = $category->term_id;
+          } else {
+              $selected_category_id = 0;
+          }
+      } else {
+          $selected_category_id = 0;
+      }
 
       $params = [
-        "posts_per_page" => 15,
-        "category_name" => "$selected_category",
+          "posts_per_page" => 15,
+          "cat" => $selected_category_id,
       ];
 
       query_posts($params);
@@ -99,8 +119,10 @@ $postid = get_option('page_for_posts');
           
         endwhile;
       else :
-        $posts_html = "<p>Nothing found for your criteria.</p>";
+        echo "<p>Nothing found for your criteria.</p>";
       endif;
+
+      wp_reset_query();
       ?>
     </div>
   </div>
@@ -138,23 +160,4 @@ $postid = get_option('page_for_posts');
     }
   </script>
 
-
-<?php
-// Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Example PHP code that might generate an error
-$selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
-
-// Check for errors and pass them to JavaScript
-ob_start();
-$selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
-$error = ob_get_clean();
-
-if ($error) {
-    echo "<script>console.error(" . json_encode($error) . ");</script>";
-}
-?>
-  <?php get_footer();
+  <?php get_footer(); ?>
