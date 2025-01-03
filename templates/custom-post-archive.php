@@ -62,7 +62,7 @@ $postid = get_option('page_for_posts');
                       "parent" => $parent_category_id, // Add parent category ID
                   ]);
 
-
+                  
                   foreach ($categories as $category) {
                     echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
                       $category->term_id .
@@ -92,11 +92,10 @@ $postid = get_option('page_for_posts');
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
 
-      $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
 
       $params = [
-          "posts_per_page" => 15,
-          "category__in" => [$selected_category],
+        "posts_per_page" => 15,
+        "category_name" => "$parent_category_id",
       ];
 
       query_posts($params);
