@@ -41,28 +41,16 @@ $postid = get_option('page_for_posts');
                   <?php
 
                   // Get the ID of the parent category "Uncategorized"
-                  $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+                  $parent_category_id = get_post_meta(get_the_ID(), 'selected-category', true);
 
-                  if ($selected_category_slug) {
-                      $category = get_category_by_slug($selected_category_slug);
-                      if ($category) {
-                          $parent_category_id = $category->term_id;
-                      } else {
-                          $parent_category_id = 0; // Default to 0 if category is not found
-                      }
-                  } else {
-                      $parent_category_id = 0; // Default to 0 if no category is selected
-                  }
-                  
                   // Get categories that have the parent category for Uncategorized
                   $categories = get_categories([
                       "orderby" => "name",
                       "order" => "ASC",
                       "hide_empty" => true,
                       "parent" => $parent_category_id, // Add parent category ID
-                  ]);
+                    ]);
 
-                  
                   foreach ($categories as $category) {
                     echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
                       $category->term_id .
@@ -91,14 +79,19 @@ $postid = get_option('page_for_posts');
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
-      wp_reset_query();
 
       $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-      $params = [
-        "posts_per_page" => 15,
-        "category_name" => "$selected_category_slug",
-      ];
+      if ($selected_category_slug) {
+          $params = [
+              "posts_per_page" => 15,
+              "category_name" => $selected_category_slug,
+          ];
+      } else {
+          $params = [
+              "posts_per_page" => 15,
+          ];
+      }
 
       query_posts($params);
 
@@ -112,10 +105,10 @@ $postid = get_option('page_for_posts');
           
         endwhile;
       else :
-        $posts_html = "<p>Nothing found for your criteria.</p>";
+        echo "<p>Nothing found for your criteria.</p>";
       endif;
-      wp_reset_query();
 
+      wp_reset_query();
       ?>
     </div>
   </div>
@@ -153,4 +146,4 @@ $postid = get_option('page_for_posts');
     }
   </script>
 
-  <?php get_footer();
+  <?php get_footer(); ?>
