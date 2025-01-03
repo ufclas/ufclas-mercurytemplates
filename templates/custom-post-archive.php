@@ -80,8 +80,8 @@ $postid = get_option('page_for_posts');
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
 
-$selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
-error_log('Selected Category: ' . $selected_category); // Check the debug log for this output
+      $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+
       $params = [
         "posts_per_page" => 15,
         "category_name" => "$selected_category",
@@ -138,4 +138,23 @@ error_log('Selected Category: ' . $selected_category); // Check the debug log fo
     }
   </script>
 
+
+<?php
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Example PHP code that might generate an error
+$selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+
+// Check for errors and pass them to JavaScript
+ob_start();
+$selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+$error = ob_get_clean();
+
+if ($error) {
+    echo "<script>console.error(" . json_encode($error) . ");</script>";
+}
+?>
   <?php get_footer();
