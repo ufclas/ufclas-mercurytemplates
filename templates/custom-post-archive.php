@@ -91,14 +91,13 @@ $postid = get_option('page_for_posts');
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
-
       wp_reset_query();
 
       $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
       $params = [
-          "posts_per_page" => 15,
-          "category_name" => $selected_category_slug,
+        "posts_per_page" => 15,
+        "category_name" => "$selected_category_slug",
       ];
 
       query_posts($params);
@@ -115,6 +114,8 @@ $postid = get_option('page_for_posts');
       else :
         $posts_html = "<p>Nothing found for your criteria.</p>";
       endif;
+      wp_reset_query();
+
       ?>
     </div>
   </div>
