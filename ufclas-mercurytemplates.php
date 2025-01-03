@@ -236,7 +236,7 @@ function custom_archive_display_meta_box($post)
 
 
 
-	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap; border: 1px #ccc solid;border-radius: 6px; padding: 12px;'>";
+	echo "<div class='custom_archive_meta_box' style='display: flex; flex-wrap: wrap; border: 1px #ccc solid;border-radius: 6px;'>";
 
 	$selected_category = get_post_meta($post->ID, 'selected-category', true);
 	$categories = get_categories([
@@ -247,7 +247,7 @@ function custom_archive_display_meta_box($post)
 	]);
 	
 	echo '<div style="margin: 20px 10px; width: 45%;">';
-	echo '<label for="selected-category">Category</label>';
+	echo '<label for="selected-category">Category&nbsp;&nbsp;</label>';
 	echo '<select name="selected-category">';
 	foreach ($categories as $category) {
 		echo '<option value="' . esc_attr($category->slug) . '"' . selected($selected_category, $category->slug, false) . '>' . esc_html($category->name) . '</option>';
