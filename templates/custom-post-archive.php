@@ -41,7 +41,7 @@ $postid = get_option('page_for_posts');
                   <?php
 
                   // Get the ID of the parent category "Uncategorized"
-                  $parent_category_id = get_cat_ID('Uncategorized');
+                  $parent_category_id = get_post_meta(get_the_ID(), 'selected-category', true);
 
                   // Get categories that have the parent category for Uncategorized
                   $categories = get_categories([
@@ -79,9 +79,12 @@ $postid = get_option('page_for_posts');
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
+
+      $selected_category = get_post_meta(get_the_ID(), 'selected-category', true);
+
       $params = [
         "posts_per_page" => 15,
-        "category_name" => "Uncategorized",
+        "category_name" => "$selected_category",
       ];
 
       query_posts($params);
