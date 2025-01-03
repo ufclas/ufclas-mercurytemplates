@@ -95,7 +95,7 @@ $postid = get_option('page_for_posts');
 
       $params = [
         "posts_per_page" => 15,
-        "category_name" => "category-2",
+        "category_name" => "Category 2",
       ];
 
       query_posts($params);
