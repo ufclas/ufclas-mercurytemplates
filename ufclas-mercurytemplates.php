@@ -220,6 +220,43 @@ if (!function_exists('the_breadcrumb')) :
 	endif;
 // Breadcrumb END
 
+//Copilot suggestion for helping save the unclick
+add_action('save_post', 'ufl_save_metaBox_menu');
+function ufl_save_metaBox_menu($post_id) {
+    // Check if our nonce is set.
+    if (!isset($_POST['ufl_nav_menu_show_nonce'])) {
+        return $post_id;
+    }
+    $nonce = $_POST['ufl_nav_menu_show_nonce'];
+
+    // Verify that the nonce is valid.
+    if (!wp_verify_nonce($nonce, 'ufl_nav_menu_show_nonce')) {
+        return $post_id;
+    }
+
+    // If this is an autosave, our form has not been submitted, so we don't want to do anything.
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return $post_id;
+    }
+
+    // Check the user's permissions.
+    if ('page' == $_POST['post_type']) {
+        if (!current_user_can('edit_page', $post_id)) {
+            return $post_id;
+        }
+    } else {
+        if (!current_user_can('edit_post', $post_id)) {
+            return $post_id;
+        }
+    }
+
+    // Sanitize user input.
+    $ufl_nav_menu_show = isset($_POST['ufl_nav_menu_show']) ? 1 : 0;
+
+    // Update the meta field in the database.
+    update_post_meta($post_id, 'ufl_nav_menu_show', $ufl_nav_menu_show);
+}
+
 
 //remove "Category" from before the category name in archives
 
