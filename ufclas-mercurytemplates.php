@@ -60,7 +60,6 @@ function my_custom_archive_template( $archive_template ) {
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
-
 add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
 
 function misha_script_and_styles_custom() {
@@ -193,6 +192,36 @@ function misha_filter_function_custom(){
  
 	die();
 }
+// Breadcrumb function duplicated from Mercury theme
+if (!function_exists('the_breadcrumb')) :
+	function the_breadcrumb($post, $displayCurrent) {
+	
+		$count = 1;
+		$postAncestors = get_post_ancestors($post);
+		$sortedAncestorArray = array();
+		foreach ($postAncestors as $ancestor){
+			$sortedAncestorArray[] = $ancestor;
+		}
+		krsort($sortedAncestorArray); // Sort an array by key in reverse order
+	  echo '<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><ol class="breadcrumb">';
+	  echo '<li class="breadcrumb-item"><a href="' . home_url() . '">' . 'Home' . '</a></li>';
+		foreach ($sortedAncestorArray as $ancestor){
+			echo "<li class='breadcrumb-item'><a class='breadcrumb-link-". $count ."' href='". esc_url(get_permalink($ancestor)) ."' title='". get_the_title($ancestor) ."'>". get_the_title($ancestor) ."</a></li>";
+			$count++;
+		}
+		if($displayCurrent){ //If TRUE - output the current page title
+			echo "<li class='breadcrumb-item active' aria-current='page'>". get_the_title($post) ."</li>";
+		}
+	
+	  echo '</ol></nav>';
+	
+	}
+	add_filter('breadcrumbs', 'breadcrumbs');
+	endif;
+// Breadcrumb END
+
+
+//remove "Category" from before the category name in archives
 
 function prefix_category_title( $title ) {
 	if ( is_category() ) {

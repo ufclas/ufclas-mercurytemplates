@@ -1,6 +1,13 @@
 <?php
 get_header();
 $postid = get_option('page_for_posts');
+
+
+$ufl_nav_menu_show = get_post_meta($post->ID, 'ufl_nav_menu_show', true);
+
+if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
+  the_breadcrumb($post, true);
+}
 ?>
 
 <div id="content" class="site-content news">
