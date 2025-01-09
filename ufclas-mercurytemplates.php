@@ -192,70 +192,7 @@ function misha_filter_function_custom(){
  
 	die();
 }
-// Breadcrumb function duplicated from Mercury theme
-if (!function_exists('the_breadcrumb')) :
-	function the_breadcrumb($post, $displayCurrent) {
-	
-		$count = 1;
-		$postAncestors = get_post_ancestors($post);
-		$sortedAncestorArray = array();
-		foreach ($postAncestors as $ancestor){
-			$sortedAncestorArray[] = $ancestor;
-		}
-		krsort($sortedAncestorArray); // Sort an array by key in reverse order
-	  echo '<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><ol class="breadcrumb">';
-	  echo '<li class="breadcrumb-item"><a href="' . home_url() . '">' . 'Home' . '</a></li>';
-		foreach ($sortedAncestorArray as $ancestor){
-			echo "<li class='breadcrumb-item'><a class='breadcrumb-link-". $count ."' href='". esc_url(get_permalink($ancestor)) ."' title='". get_the_title($ancestor) ."'>". get_the_title($ancestor) ."</a></li>";
-			$count++;
-		}
-		if($displayCurrent){ //If TRUE - output the current page title
-			echo "<li class='breadcrumb-item active' aria-current='page'>". get_the_title($post) ."</li>";
-		}
-	
-	  echo '</ol></nav>';
-	
-	}
-	add_filter('breadcrumbs', 'breadcrumbs');
-	endif;
-// Breadcrumb END
 
-//Copilot suggestion for helping save the unclick
-add_action('save_post', 'ufl_save_metaBox_menu');
-function ufl_save_metaBox_menu($post_id) {
-    // Check if our nonce is set.
-    if (!isset($_POST['ufl_nav_menu_show_nonce'])) {
-        return $post_id;
-    }
-    $nonce = $_POST['ufl_nav_menu_show_nonce'];
-
-    // Verify that the nonce is valid.
-    if (!wp_verify_nonce($nonce, 'ufl_nav_menu_show_nonce')) {
-        return $post_id;
-    }
-
-    // If this is an autosave, our form has not been submitted, so we don't want to do anything.
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return $post_id;
-    }
-
-    // Check the user's permissions.
-    if ('page' == $_POST['post_type']) {
-        if (!current_user_can('edit_page', $post_id)) {
-            return $post_id;
-        }
-    } else {
-        if (!current_user_can('edit_post', $post_id)) {
-            return $post_id;
-        }
-    }
-
-    // Sanitize user input.
-    $ufl_nav_menu_show = isset($_POST['ufl_nav_menu_show']) ? 1 : 0;
-
-    // Update the meta field in the database.
-    update_post_meta($post_id, 'ufl_nav_menu_show', $ufl_nav_menu_show);
-}
 
 
 //remove "Category" from before the category name in archives
