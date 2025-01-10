@@ -265,41 +265,47 @@ function custom_archive_display_meta_box($post)
 
 
 // save meta box
-if (!function_exists('myplugin_save_meta_box')) {
-    function myplugin_save_meta_box($post_id)
-    {
-        $is_autosave = wp_is_post_autosave($post_id);
-        $is_revision = wp_is_post_revision($post_id);
-        $is_valid_nonce = false;
+function thisplugin_save_meta_box($post_id)
+{
 
-        if (isset($_POST['custom_archive_meta_box_nonce'])) {
-            if (wp_verify_nonce($_POST['custom_archive_meta_box_nonce'], basename(__FILE__))) {
-                $is_valid_nonce = true;
-            }
-        }
+	$is_autosave = wp_is_post_autosave($post_id);
+	$is_revision = wp_is_post_revision($post_id);
 
-        if ($is_autosave || $is_revision || !$is_valid_nonce) return;
+	$is_valid_nonce = false;
 
-        $member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
+	if (isset($_POST['custom_archive_meta_box_nonce'])) {
 
-        if (is_array($member_meta)) {
-            foreach ($member_meta as $key => $value) :
-                if ('revision' === $post->post_type) {
-                    return;
-                }
-                if (get_post_meta($post_id, $key, false)) {
-                    update_post_meta($post_id, $key, $value);
-                } else {
-                    add_post_meta($post_id, $key, $value);
-                }
-                if (!$value) {
-                    delete_post_meta($post_id, $key);
-                }
-            endforeach;
-        }
-    }
+		if (wp_verify_nonce($_POST['custom_archive_meta_box_nonce'], basename(__FILE__))) {
+
+			$is_valid_nonce = true;
+		}
+	}
+
+	if ($is_autosave || $is_revision || !$is_valid_nonce) return;
+
+	$member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
+
+	if (is_array($member_meta)) {
+		foreach ($member_meta as $key => $value) :
+			// Don't store custom data twice
+			if ('revision' === $post->post_type) {
+				return;
+			}
+			if (get_post_meta($post_id, $key, false)) {
+				// If the custom field already has a value, update it.
+				update_post_meta($post_id, $key, $value);
+			} else {
+				// If the custom field doesn't have a value, add it.
+				add_post_meta($post_id, $key, $value);
+			}
+			if (!$value) {
+				// Delete the meta key if there's no value
+				delete_post_meta($post_id, $key);
+			}
+		endforeach;
+	}
 }
-add_action('save_post', 'myplugin_save_meta_box');
+add_action('save_post', 'thisplugin_save_meta_box');
 
 
 
