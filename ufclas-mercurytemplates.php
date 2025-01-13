@@ -44,17 +44,41 @@
  }
  add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
-// Hook into the breadcrumb function to apply Yoast breadcrumb if post type is "post"
+// Hook into the breadcrumb function
 function custom_breadcrumb_fallback($post, $displayCurrent) {
     if ($post->post_type == 'post' && function_exists('yoast_breadcrumb')) {
         yoast_breadcrumb('<p id="breadcrumbs">', '</p>');
     } else {
         // Call the original breadcrumb function from the theme
-        if (function_exists('the_breadcrumb')) {
-            the_breadcrumb($post, $displayCurrent);
-        }
+		// Breadcrumb
+		if (!function_exists('the_breadcrumb')) :
+			function the_breadcrumb($post, $displayCurrent) {
+			
+				$count = 1;
+				$postAncestors = get_post_ancestors($post);
+				$sortedAncestorArray = array();
+				foreach ($postAncestors as $ancestor){
+					$sortedAncestorArray[] = $ancestor;
+				}
+				krsort($sortedAncestorArray); // Sort an array by key in reverse order
+			echo '<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><ol class="breadcrumb">';
+			echo '<li class="breadcrumb-item"><a href="' . home_url() . '">' . 'Home' . '</a></li>';
+				foreach ($sortedAncestorArray as $ancestor){
+					echo "<li class='breadcrumb-item'><a class='breadcrumb-link-". $count ."' href='". esc_url(get_permalink($ancestor)) ."' title='". get_the_title($ancestor) ."'>". get_the_title($ancestor) ."</a></li>";
+					$count++;
+				}
+				if($displayCurrent){ //If TRUE - output the current page title
+					echo "<li class='breadcrumb-item active' aria-current='page'>". get_the_title($post) ."</li>";
+				}
+			
+			echo '</ol></nav>';
+			
+			}
+			endif;
+			// Breadcrumb END
+	    }
     }
-}
+
 
 // Remove the theme's breadcrumb filter and add our custom one
 remove_filter('breadcrumbs', 'breadcrumbs');
