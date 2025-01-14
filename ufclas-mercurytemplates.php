@@ -45,26 +45,7 @@
  add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
-//Add the filter hook for custom post template
 
-function my_custom_post_template($template) {
-
-	if ( is_single() ) { // Check if viewing a single post
-
-		$custom_template = plugin_dir_path(__FILE__) . 'templates/custom-post-contained.php'; // Path to your custom template
-
-		if ( file_exists($custom_template) ) {
-
-			return $custom_template;
-
-		}
-
-	}
-
-	return $template; // Return the default template if not applicable
-
-}
-add_filter('template_include', 'my_custom_post_template');
 
  
 
