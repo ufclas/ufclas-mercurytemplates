@@ -45,45 +45,27 @@
  add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
-// Register custom post templates
-function my_post_template_array() {
-    $post_temps = [];
-    $post_temps['custom-post-contained.php'] = 'No Sidebar inc. Breadcrumb';
-    $post_temps['custom-post-fullwidth.php'] = 'Default inc. Breadcrumb';
+//Add the filter hook for custom post template
 
-    return $post_temps;
+function my_custom_post_template($template) {
+
+	if ( is_single() ) { // Check if viewing a single post
+
+		$custom_template = plugin_dir_path(__FILE__) . 'templates/custom-post-contained.php'; // Path to your custom template
+
+		if ( file_exists($custom_template) ) {
+
+			return $custom_template;
+
+		}
+
+	}
+
+	return $template; // Return the default template if not applicable
+
 }
+add_filter('template_include', 'my_custom_post_template');
 
-function my_post_template_register($post_templates) {
-    $post_templates_array = my_post_template_array();
-    foreach($post_templates_array as $ptk => $ptv) {
-        $post_templates[$ptk] = $ptv;
-    }
-    return $post_templates;
-}
-add_filter('theme_post_templates', 'my_post_template_register');
-
-// Load custom template
-function my_post_template_select($template) {
-    global $post;
-    if ($post) {
-        $post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
-        $post_templates_array = my_post_template_array();
-
-        if (isset($post_templates_array[$post_temp_slug])) {
-            $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
-        }
-    }
-    return $template;
-}
-add_filter('template_include', 'my_post_template_select');
-
-// Add template to post attributes dropdown
-function add_custom_template_to_posts_dropdown($post_templates) {
-    $post_templates = array_merge($post_templates, my_post_template_array());
-    return $post_templates;
-}
-add_filter('theme_post_templates', 'add_custom_template_to_posts_dropdown');
  
 
 // Hook to register the custom archive template
