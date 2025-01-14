@@ -2,7 +2,15 @@
 
 get_header();  
 ?>
-<style>
+
+<div id="content" class="site-content container py-5 mt-4">
+  <div id="primary" class="content-area">
+
+    <!-- Hook to add something nice -->
+    <?php bs_after_primary(); ?>
+
+    
+    <style>
   nav.breadcrumb-wrapper #breadcrumbs span {
     font-size: 16px;
     line-height: 24px;
@@ -32,13 +40,6 @@ if ( function_exists('yoast_breadcrumb') ) {
   yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
 }
 ?></nav>
-<div id="content" class="site-content container py-5 mt-4">
-  <div id="primary" class="content-area">
-
-    <!-- Hook to add something nice -->
-    <?php bs_after_primary(); ?>
-
-    <?php the_breadcrumb(); ?>
 
     <main id="main" class="site-main">
 

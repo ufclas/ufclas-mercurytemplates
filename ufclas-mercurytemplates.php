@@ -48,8 +48,8 @@
 // Register custom post templates
 function my_post_template_array() {
     $post_temps = [];
-    $post_temps['custom-post-contained.php'] = 'Contained Width with Breadcrumb';
-	$post_temps['custom-post-fullwidth.php'] = 'Full Width with Breadcrumb';
+    $post_temps['custom-post-contained.php'] = 'No Sidebar inc. Breadcrumb';
+	$post_temps['custom-post-fullwidth.php'] = 'Default inc. Breadcrumb';
 
     return $post_temps;
 }
