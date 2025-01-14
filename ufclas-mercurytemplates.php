@@ -8,42 +8,63 @@
  */
 
   
- // Register custom page templates
- function my_template_array() {
-	 $temps = [];
-	 $temps['custom-post-archive.php'] = 'Custom Post Archive';
-	 return $temps;
- }
- 
- function my_template_register($page_templates, $theme, $post) {
-	 $templates = my_template_array();
-	 foreach($templates as $tk => $tv) {
-		 $page_templates[$tk] = $tv;
-	 }
-	 return $page_templates;
- }
- add_filter('theme_page_templates', 'my_template_register', 10, 3);
- 
- // Load custom template
- function my_template_select($template) {
-	 global $post;
-	 $page_temp_slug = get_page_template_slug($post->ID);
-	 $templates = my_template_array();
- 
-	 if (isset($templates[$page_temp_slug])) {
-		 $template = plugin_dir_path(__FILE__) . 'templates/' . $page_temp_slug;
-	 }
-	 return $template;
- }
- add_filter('template_include', 'my_template_select');
- 
- // Add template to page attributes dropdown
- function add_custom_template_to_pages($templates) {
-	 $templates = array_merge($templates, my_template_array());
-	 return $templates;
- }
- add_filter('theme_page_templates', 'add_custom_template_to_pages');
+ // Register custom templates for pages and posts
+function my_template_array() {
+    $temps = [];
+    $temps['custom-post-archive.php'] = 'Custom Post Archive';
+    $temps['custom-post-contained.php'] = 'No Sidebar inc. Breadcrumb';
+    return $temps;
+}
 
+// Register custom templates for pages
+function my_page_template_register($page_templates, $theme, $post) {
+    $templates = my_template_array();
+    foreach($templates as $tk => $tv) {
+        $page_templates[$tk] = $tv;
+    }
+    return $page_templates;
+}
+add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
+
+// Register custom templates for posts
+function my_post_template_register($post_templates) {
+    $templates = my_template_array();
+    foreach($templates as $tk => $tv) {
+        $post_templates[$tk] = $tv;
+    }
+    return $post_templates;
+}
+add_filter('theme_post_templates', 'my_post_template_register');
+
+// Load custom template for pages and posts
+function my_template_select($template) {
+    global $post;
+    $page_temp_slug = get_page_template_slug($post->ID);
+    $post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
+    $templates = my_template_array();
+
+    if (isset($templates[$page_temp_slug])) {
+        $template = plugin_dir_path(__FILE__) . 'templates/' . $page_temp_slug;
+    } elseif (isset($templates[$post_temp_slug])) {
+        $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+    }
+    return $template;
+}
+add_filter('template_include', 'my_template_select');
+
+// Add custom templates to page attributes dropdown
+function add_custom_template_to_pages($templates) {
+    $templates = array_merge($templates, my_template_array());
+    return $templates;
+}
+add_filter('theme_page_templates', 'add_custom_template_to_pages');
+
+// Add custom templates to post attributes dropdown
+function add_custom_template_to_posts($templates) {
+    $templates = array_merge($templates, my_template_array());
+    return $templates;
+}
+add_filter('theme_post_templates', 'add_custom_template_to_posts');
 
 
 
