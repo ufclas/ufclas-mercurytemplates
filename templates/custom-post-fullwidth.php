@@ -1,7 +1,4 @@
 <?php
-/**
- * Template Post Type: post
- */
 
 get_header();  
 ?>
