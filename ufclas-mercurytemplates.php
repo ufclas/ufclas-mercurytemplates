@@ -44,45 +44,46 @@
  }
  add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
-// Hook into the breadcrumb function
-function custom_breadcrumb_fallback($post, $displayCurrent) {
-    if ($post->post_type == 'post' && function_exists('yoast_breadcrumb')) {
-        yoast_breadcrumb('<p id="breadcrumbs">', '</p>');
-    } else {
-        // Call the original breadcrumb function from the theme
-		// Breadcrumb
-		if (!function_exists('the_breadcrumb')) :
-			function the_breadcrumb($post, $displayCurrent) {
-			
-				$count = 1;
-				$postAncestors = get_post_ancestors($post);
-				$sortedAncestorArray = array();
-				foreach ($postAncestors as $ancestor){
-					$sortedAncestorArray[] = $ancestor;
-				}
-				krsort($sortedAncestorArray); // Sort an array by key in reverse order
-			echo '<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><ol class="breadcrumb">';
-			echo '<li class="breadcrumb-item"><a href="' . home_url() . '">' . 'Home' . '</a></li>';
-				foreach ($sortedAncestorArray as $ancestor){
-					echo "<li class='breadcrumb-item'><a class='breadcrumb-link-". $count ."' href='". esc_url(get_permalink($ancestor)) ."' title='". get_the_title($ancestor) ."'>". get_the_title($ancestor) ."</a></li>";
-					$count++;
-				}
-				if($displayCurrent){ //If TRUE - output the current page title
-					echo "<li class='breadcrumb-item active' aria-current='page'>". get_the_title($post) ."</li>";
-				}
-			
-			echo '</ol></nav>';
-			
-			}
-			endif;
-			// Breadcrumb END
-	    }
+
+// Register custom post templates
+function my_post_template_array() {
+    $post_temps = [];
+    $post_temps['custom-post-contained.php'] = 'Contained Width with Breadcrumb';
+	$post_temps['custom-post-fullwidth.php'] = 'Full Width with Breadcrumb';
+
+    return $post_temps;
+}
+
+function my_post_template_register($post_templates) {
+    $post_templates_array = my_post_template_array();
+    foreach($post_templates_array as $ptk => $ptv) {
+        $post_templates[$ptk] = $ptv;
     }
+    return $post_templates;
+}
+add_filter('theme_post_templates', 'my_post_template_register');
 
+// Load custom template
+function my_post_template_select($template) {
+    global $post;
+    $post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
+    $post_templates_array = my_post_template_array();
 
-// Remove the theme's breadcrumb filter and add our custom one
-remove_filter('breadcrumbs', 'breadcrumbs');
-add_filter('breadcrumbs', 'custom_breadcrumb_fallback', 10, 2);
+    if (isset($post_templates_array[$post_temp_slug])) {
+        $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+    }
+    return $template;
+}
+add_filter('template_include', 'my_post_template_select');
+
+// Add template to post attributes dropdown
+function add_custom_template_to_posts_dropdown($post_templates) {
+    $post_templates = array_merge($post_templates, my_post_template_array());
+    return $post_templates;
+}
+add_filter('theme_post_templates', 'add_custom_template_to_posts_dropdown');
+
+ 
 
 // Hook to register the custom archive template
 add_filter( 'archive_template', 'my_custom_archive_template' );
@@ -98,142 +99,142 @@ function my_custom_archive_template( $archive_template ) {
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
-add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
+	add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
 
-function misha_script_and_styles_custom() {
-	// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
-	global $wp_query;
-	// when you use wp_localize_script(), do not enqueue the target script immediately
-	wp_register_script( 'misha_scripts', get_template_directory_uri() . '/js/ajax-script.js', array('jquery') );
-	// passing parameters here
-	// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
-	wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
-		'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php', // WordPress AJAX
-		'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
-		'current_page' => $wp_query->query_vars['paged'] ? $wp_query->query_vars['paged'] : 1,
-		'max_page' => $wp_query->max_num_pages
-	) );
- 	wp_enqueue_script( 'misha_scripts' );
-}
-
-add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
-add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
- 
-function misha_loadmore_ajax_handler_custom(){
-	// prepare our arguments for the query
-	$params = json_decode( stripslashes( $_POST['query'] ), true ); // query_posts() takes care of the necessary sanitization 
-	$params['paged'] = $_POST['page'] + 1; // we need next page to be loaded
-	$params['post_status'] = 'publish';
- 
-	// it is always better to use WP_Query but not here
-	query_posts( $params );
- 
-	if( have_posts() ) :
- 
-		// run the loop
-		while( have_posts() ): the_post();
- 
-		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
-
-		endwhile;
-	endif;
-	die; // here we exit the script and even no wp_reset_query()
-}
-add_action('wp_ajax_mishafilter', 'misha_filter_function_custom'); 
-add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function_custom');
- 
-function misha_filter_function_custom(){
-	if(isset($_POST['datefilter']) && $_POST['datefilter'] != '') {
-		$datefilter = $_POST['datefilter'];
-	}
-	if(isset($_POST['categoryfilter']) && $_POST['categoryfilter'] != '') {
-		$catfilter = $_POST['categoryfilter'];
+	function misha_script_and_styles_custom() {
+		// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
+		global $wp_query;
+		// when you use wp_localize_script(), do not enqueue the target script immediately
+		wp_register_script( 'misha_scripts', get_template_directory_uri() . '/js/ajax-script.js', array('jquery') );
+		// passing parameters here
+		// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
+		wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
+			'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php', // WordPress AJAX
+			'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
+			'current_page' => $wp_query->query_vars['paged'] ? $wp_query->query_vars['paged'] : 1,
+			'max_page' => $wp_query->max_num_pages
+		) );
+		wp_enqueue_script( 'misha_scripts' );
 	}
 
-	if( $datefilter && $catfilter ) {
-		// if categoryfilter is set and not empty
-		$params = array(
-			'posts_per_page' => 15,
-			'tax_query' => array(
-				array(
-					'taxonomy' => 'category',
-					'field' => 'id',
-					'terms' => $_POST['categoryfilter']
-				)
-			), 
-			'date_query' => array(
-				array(
-					'year' => $_POST['datefilter']
-				)
-			)
-		);
-	  } 
+	add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
+	add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
+	
+	function misha_loadmore_ajax_handler_custom(){
+		// prepare our arguments for the query
+		$params = json_decode( stripslashes( $_POST['query'] ), true ); // query_posts() takes care of the necessary sanitization 
+		$params['paged'] = $_POST['page'] + 1; // we need next page to be loaded
+		$params['post_status'] = 'publish';
+	
+		// it is always better to use WP_Query but not here
+		query_posts( $params );
+	
+		if( have_posts() ) :
+	
+			// run the loop
+			while( have_posts() ): the_post();
+	
+			include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
 
-	  if( $datefilter && !$catfilter ) {
-		// if categoryfilter is set and not empty
-		$params = array(
-			'posts_per_page' => 15,
-			'date_query' => array(
-				array(
-					'year' => $_POST['datefilter']
+			endwhile;
+		endif;
+		die; // here we exit the script and even no wp_reset_query()
+	}
+	add_action('wp_ajax_mishafilter', 'misha_filter_function_custom'); 
+	add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function_custom');
+	
+	function misha_filter_function_custom(){
+		if(isset($_POST['datefilter']) && $_POST['datefilter'] != '') {
+			$datefilter = $_POST['datefilter'];
+		}
+		if(isset($_POST['categoryfilter']) && $_POST['categoryfilter'] != '') {
+			$catfilter = $_POST['categoryfilter'];
+		}
+
+		if( $datefilter && $catfilter ) {
+			// if categoryfilter is set and not empty
+			$params = array(
+				'posts_per_page' => 15,
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'category',
+						'field' => 'id',
+						'terms' => $_POST['categoryfilter']
+					)
+				), 
+				'date_query' => array(
+					array(
+						'year' => $_POST['datefilter']
+					)
 				)
-			)
-		);
-	  } 
-	  
-	  if( !$datefilter && $catfilter ) {
-		// if categoryfilter is set and not empty
-		$params = array(
-			'posts_per_page' => 15,
-			'tax_query' => array(
-				array(
-					'taxonomy' => 'category',
-					'field' => 'id',
-					'terms' => $_POST['categoryfilter']
+			);
+		} 
+
+		if( $datefilter && !$catfilter ) {
+			// if categoryfilter is set and not empty
+			$params = array(
+				'posts_per_page' => 15,
+				'date_query' => array(
+					array(
+						'year' => $_POST['datefilter']
+					)
 				)
-			), 
-		);
-	  } 
-	  if( !$datefilter && !$catfilter ) {
-		// if categoryfilter is set and not empty
-		// if both are not set or empty
-		$params = array(
-			'posts_per_page' => 15,
-		);
-	  } 
-	query_posts( $params );
- 
-	global $wp_query;
- 
-	if( have_posts() ) :
- 
- 		ob_start(); // start buffering because we do not need to print the posts now
- 
-		while( have_posts() ): the_post();
- 
-		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
- 
-		endwhile;
- 
- 		$posts_html = ob_get_contents(); // we pass the posts to variable
-   		ob_end_clean(); // clear the buffer
-	else:
-		$posts_html = '<p>Nothing found for your criteria.</p>';
-	endif;
-	// no wp_reset_query() required
- 	echo json_encode( array(
-		'posts' => json_encode( $wp_query->query_vars ),
-		'max_page' => $wp_query->max_num_pages,
-		'found_posts' => $wp_query->found_posts,
-		'content' => $posts_html
-	) );
- 
-	die();
-}
+			);
+		} 
+		
+		if( !$datefilter && $catfilter ) {
+			// if categoryfilter is set and not empty
+			$params = array(
+				'posts_per_page' => 15,
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'category',
+						'field' => 'id',
+						'terms' => $_POST['categoryfilter']
+					)
+				), 
+			);
+		} 
+		if( !$datefilter && !$catfilter ) {
+			// if categoryfilter is set and not empty
+			// if both are not set or empty
+			$params = array(
+				'posts_per_page' => 15,
+			);
+		} 
+		query_posts( $params );
+	
+		global $wp_query;
+	
+		if( have_posts() ) :
+	
+			ob_start(); // start buffering because we do not need to print the posts now
+	
+			while( have_posts() ): the_post();
+	
+			include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
+	
+			endwhile;
+	
+			$posts_html = ob_get_contents(); // we pass the posts to variable
+			ob_end_clean(); // clear the buffer
+		else:
+			$posts_html = '<p>Nothing found for your criteria.</p>';
+		endif;
+		// no wp_reset_query() required
+		echo json_encode( array(
+			'posts' => json_encode( $wp_query->query_vars ),
+			'max_page' => $wp_query->max_num_pages,
+			'found_posts' => $wp_query->found_posts,
+			'content' => $posts_html
+		) );
+	
+		die();
+	}
 
 
 
-//remove "Category" from before the category name in archives
+//remove "Category" from before the category Title in archives
 
 function prefix_category_title( $title ) {
 	if ( is_category() ) {
@@ -246,7 +247,7 @@ function prefix_category_title( $title ) {
 
 
 
-// register meta boxes for Custom Post archive
+// register "Category" meta boxe for Custom Post archive
 function custom_post_archive_add_meta_box()
 {
     $page_template = 'custom-post-archive.php';
@@ -265,7 +266,7 @@ function custom_post_archive_add_meta_box()
 add_action('add_meta_boxes', 'custom_post_archive_add_meta_box');
 
 
-// display meta box
+// display meta box in admin
 function custom_archive_display_meta_box($post)
 {
 
