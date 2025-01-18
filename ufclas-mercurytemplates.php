@@ -52,47 +52,42 @@ add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
 
-// Register custom templates for posts
+// Register Custom Post Templates
 function my_post_template_array() {
-    return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
+    return ['custom-post-contained.php' => 'No Sidebar Inc. Breadcrumbs'];
 }
 
-// Register templates for posts
-function my_post_template_register($post_templates) {
+// Register Templates for Posts
+function my_post_template_register($post_templates, $theme, $post) {
     $templates = my_post_template_array();
     foreach($templates as $tk => $tv) {
         $post_templates[$tk] = $tv;
     }
     return $post_templates;
 }
-add_filter('theme_post_templates', 'my_post_template_register');
+add_filter('theme_post_templates', 'my_post_template_register', 10, 3);
 
-// Load custom template for posts
+// Load Custom Template for Posts
 function my_post_template_select($template) {
     global $post;
-    if (is_single()) {
-        $post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
+    if ($post && $post->post_type == 'post') {
+        $post_temp_slug = get_post_meta($post->ID, '_wp_page_template', true);
         $templates = my_post_template_array();
 
         if (isset($templates[$post_temp_slug])) {
-            $custom_template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
-            if (file_exists($custom_template)) {
-                return $custom_template;
-            }
+            $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
         }
     }
     return $template;
 }
 add_filter('template_include', 'my_post_template_select');
 
-// Add custom templates to post attributes dropdown
+// Add Custom Templates to Post Attributes Dropdown
 function add_custom_template_to_posts($templates) {
     $templates = array_merge($templates, my_post_template_array());
     return $templates;
 }
 add_filter('theme_post_templates', 'add_custom_template_to_posts');
-
-
  
 
 // Hook to register the custom archive template
