@@ -33,7 +33,7 @@ if ( function_exists('yoast_breadcrumb') ) {
 }
 ?></nav>
 
-<div id="content" class="single-news">
+<div id="content" class="single-news"> Hello World
     <!-- Hook to add something nice -->
     <?php bs_after_primary(); ?>
     <?php the_content(); ?>
