@@ -51,6 +51,7 @@ function add_custom_template_to_pages($templates) {
 add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
+
 // Register custom templates for posts
 function my_post_template_array() {
     return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
@@ -74,7 +75,10 @@ function my_post_template_select($template) {
         $templates = my_post_template_array();
 
         if (isset($templates[$post_temp_slug])) {
-            $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+            $custom_template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+            if (file_exists($custom_template)) {
+                return $custom_template;
+            }
         }
     }
     return $template;
@@ -87,7 +91,6 @@ function add_custom_template_to_posts($templates) {
     return $templates;
 }
 add_filter('theme_post_templates', 'add_custom_template_to_posts');
-
 
  
 
