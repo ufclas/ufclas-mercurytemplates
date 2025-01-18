@@ -70,18 +70,6 @@ add_filter('theme_post_templates', 'add_custom_template_to_posts');
 
  
 
-// Hook to register the custom archive template
-add_filter( 'archive_template', 'my_custom_archive_template' );
-
-function my_custom_archive_template( $archive_template ) {
-    // Check if it's an archive page
-    if ( is_post_type_archive() || is_category() || is_tag() || is_tax() ) {
-        // Path to your custom template file
-        $archive_template = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
-    }
-    return $archive_template;
-}
-
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
 	add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
