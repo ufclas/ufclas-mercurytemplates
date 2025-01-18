@@ -25,7 +25,7 @@ function my_page_template_register($page_templates, $theme, $post) {
 }
 add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
 
-//Load Custom Template for Pages:
+//Load Custom Template for Pages
 
 	function my_page_template_select($template) {
 		global $post;
@@ -42,7 +42,7 @@ add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
 	add_filter('template_include', 'my_page_template_select');
 
 	
-//Add Custom Templates to Page Attributes Dropdown:
+//Add Custom Templates to Page Attributes Dropdown
 
 function add_custom_template_to_pages($templates) {
     $templates = array_merge($templates, my_page_template_array());
@@ -56,7 +56,7 @@ add_filter('theme_page_templates', 'add_custom_template_to_pages');
 function my_post_template_array() {
     return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
 }
-//Register Templates for Posts:
+//Register Templates for Posts
 
 function my_post_template_register($post_templates) {
     $templates = my_post_template_array();
@@ -67,7 +67,7 @@ function my_post_template_register($post_templates) {
 }
 add_filter('theme_post_templates', 'my_post_template_register');
 
-//Load Custom Template for Posts:
+//Load Custom Template for Posts
 
 function my_post_template_select($template) {
     global $post;
@@ -84,7 +84,7 @@ function my_post_template_select($template) {
 add_filter('template_include', 'my_post_template_select');
 
 
-//Add Custom Templates to Post Attributes Dropdown:
+//Add Custom Templates to Post Attributes Dropdown
 
 function add_custom_template_to_posts($templates) {
     $templates = array_merge($templates, my_post_template_array());
@@ -107,6 +107,8 @@ function my_custom_archive_template( $archive_template ) {
     }
     return $archive_template;
 }
+
+
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
@@ -261,7 +263,7 @@ function prefix_category_title( $title ) {
 // register "Category" meta box for Custom Post archive
 function custom_post_archive_add_meta_box()
 {
-    $page_template = 'custom-post-archive.php';
+    $page_template = 'templates/custom-post-archive.php';
     $current_page_template = get_page_template_slug(get_the_ID());
 
     if ($current_page_template === $page_template) {
