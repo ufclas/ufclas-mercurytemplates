@@ -8,7 +8,65 @@
  */
 
   
+ //Register Custom Templates:
 
+ function my_page_template_array() {
+	 return ['custom-post-archive.php' => 'Custom Post Archive'];
+ }
+ 
+ function my_post_template_array() {
+	 return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
+ }
+
+ //Register Templates for Pages:
+
+	function my_page_template_register($page_templates, $theme, $post) {
+		$templates = my_page_template_array();
+		foreach($templates as $tk => $tv) {
+			$page_templates[$tk] = $tv;
+		}
+		return $page_templates;
+	}
+	add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
+
+//Register Templates for Posts:
+
+		function my_post_template_register($post_templates) {
+			$templates = my_post_template_array();
+			foreach($templates as $tk => $tv) {
+				$post_templates[$tk] = $tv;
+			}
+			return $post_templates;
+		}
+		add_filter('theme_post_templates', 'my_post_template_register');
+
+		//Load Custom Template for Pages:
+
+			function my_page_template_select($template) {
+				global $post;
+				$page_temp_slug = get_page_template_slug($post->ID);
+				$templates = my_page_template_array();
+			
+				if (isset($templates[$page_temp_slug])) {
+					$template = plugin_dir_path(__FILE__) . 'templates/' . $page_temp_slug;
+				}
+				return $template;
+			}
+			add_filter('template_include', 'my_page_template_select');
+
+			//Load Custom Template for Posts:
+
+				function my_post_template_select($template) {
+					global $post;
+					$post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
+					$templates = my_post_template_array();
+				
+					if (isset($templates[$post_temp_slug])) {
+						$template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+					}
+					return $template;
+				}
+				add_filter('template_include', 'my_post_template_select');
 
 // Hook to register the custom archive template
 add_filter( 'archive_template', 'my_custom_archive_template' );
