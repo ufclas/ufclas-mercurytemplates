@@ -54,7 +54,6 @@ add_filter('theme_page_templates', 'add_custom_template_to_pages');
 //Register Custom Post Templates
 
 function my_post_template_array() {
-    return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
     return ['custom-post-fullwidth.php' => 'Default inc. Breadcrumb'];
 }
 //Register Templates for Posts
