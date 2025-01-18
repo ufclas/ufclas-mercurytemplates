@@ -52,42 +52,40 @@ add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
 
-//Register Custom Post Templates
-
+// Register custom templates for posts
 function my_post_template_array() {
-    return ['custom-post-archive.php' => 'Custom Post Archive'];
+    return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
 }
 
-//Register Templates for Posts
-
-function my_post_template_register($post_templates, $theme, $post) {
+// Register templates for posts
+function my_post_template_register($post_templates) {
     $templates = my_post_template_array();
     foreach($templates as $tk => $tv) {
-        $page_templates[$tk] = $tv;
+        $post_templates[$tk] = $tv;
     }
     return $post_templates;
 }
-add_filter('theme_post_templates', 'my_post_template_register', 10, 3);
+add_filter('theme_post_templates', 'my_post_template_register');
 
-//Load Custom Template for Posts
+// Load custom template for posts
+function my_post_template_select($template) {
+    global $post;
+    if (is_single()) {
+        $post_temp_slug = get_post_meta($post->ID, '_wp_post_template', true);
+        $templates = my_post_template_array();
 
-	function my_post_template_select($template) {
-		global $post;
-		if (is_post()) {
-			$page_temp_slug = get_post_template_slug($post->ID);
-			$templates = my_post_template_array();
-	
-			if (isset($templates[$post_temp_slug])) {
-				$template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
-			}
-		}
-		return $template;
-	}
-	add_filter('template_include', 'my_post_template_select');
+        if (isset($templates[$post_temp_slug])) {
+            $custom_template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+            if (file_exists($custom_template)) {
+                return $custom_template;
+            }
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'my_post_template_select');
 
-	
-//Add Custom Templates to Post Attributes Dropdown
-
+// Add custom templates to post attributes dropdown
 function add_custom_template_to_posts($templates) {
     $templates = array_merge($templates, my_post_template_array());
     return $templates;
