@@ -51,13 +51,12 @@ function add_custom_template_to_pages($templates) {
 add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
-//Register Custom Post Templates
-
+// Register Custom Post Templates
 function my_post_template_array() {
-    return ['custom-post-fullwidth.php' => 'Default inc. Breadcrumb'];
+    return ['custom-post-contained.php' => 'No Sidebar inc. Breadcrumb'];
 }
-//Register Templates for Posts
 
+// Register Templates for Posts
 function my_post_template_register($post_templates) {
     $templates = my_post_template_array();
     foreach($templates as $tk => $tv) {
@@ -67,8 +66,7 @@ function my_post_template_register($post_templates) {
 }
 add_filter('theme_post_templates', 'my_post_template_register');
 
-//Load Custom Template for Posts
-
+// Load Custom Template for Posts
 function my_post_template_select($template) {
     global $post;
     if (is_single()) {
@@ -76,23 +74,29 @@ function my_post_template_select($template) {
         $templates = my_post_template_array();
 
         if (isset($templates[$post_temp_slug])) {
-            $template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+            $custom_template = plugin_dir_path(__FILE__) . 'templates/' . $post_temp_slug;
+            if (file_exists($custom_template)) {
+                error_log('Custom template found: ' . $custom_template);
+                $template = $custom_template;
+            } else {
+                error_log('Custom template file not found: ' . $custom_template);
+            }
+        } else {
+            error_log('Template slug not found in post meta: ' . $post_temp_slug);
         }
+    } else {
+        error_log('Not a single post: ' . $post->ID);
     }
     return $template;
 }
 add_filter('template_include', 'my_post_template_select');
 
-
-//Add Custom Templates to Post Attributes Dropdown
-
+// Add Custom Templates to Post Attributes Dropdown
 function add_custom_template_to_posts($templates) {
     $templates = array_merge($templates, my_post_template_array());
     return $templates;
 }
 add_filter('theme_post_templates', 'add_custom_template_to_posts');
-
-
 
  
 
