@@ -232,7 +232,7 @@ function prefix_category_title( $title ) {
 
 
 
-// register "Category" meta boxe for Custom Post archive
+// register "Category" meta box for Custom Post archive
 function custom_post_archive_add_meta_box()
 {
     $page_template = 'custom-post-archive.php';
@@ -243,7 +243,8 @@ function custom_post_archive_add_meta_box()
             'custom_archive_meta_box',         // Unique ID of meta box
             'Select the post category to display on this page',      // Title of meta box
             'custom_archive_display_meta_box', // Callback function
-            'page'                          // Post type
+            ['page', 'post'],                          // Post type
+			'side', 'low'					//position on page
         );
     }
 }

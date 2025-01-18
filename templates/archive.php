@@ -10,146 +10,83 @@
 
 get_header();
 ?>
-<style>
-  nav.breadcrumb-wrapper #breadcrumbs span {
-    font-size: 16px;
-    line-height: 24px;
-    color: #fa4616;
-    font-family: 'gentonamedium';
-}
 
-nav.breadcrumb-wrapper #breadcrumbs span a {
-    color: #000;
-    text-decoration: none;
-    font-family: "gentonalight";
-}
+<div id="content" class="site-content container py-5 mt-5">
+  <div id="primary" class="content-area">
 
-nav.breadcrumb-wrapper #breadcrumbs span strong {
-    font-family: 'gentonamedium';
-    font-weight: normal;
-    color: #000;
-}
+    <!-- Hook to add something nice -->
+    <?php bs_after_primary(); ?>
 
-nav.breadcrumb-wrapper #breadcrumbs {
-    padding: 10px 0;
-}
-</style>
+    <div class="row">
+      <div class="col">
 
-<nav aria-label="breadcrumb" class="breadcrumb-wrapper"><?php
-if ( function_exists('yoast_breadcrumb') ) {
-  yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
-}
-?></nav>
-<div id="content" class="site-content news">
-  <div id="primary" class="news-landing-body content-area">
+        <main id="main" class="site-main">
 
-    <div class="container">
-      <div class="row">
-        <div class="title-wrapper">
-          <h2 class="font-heading"><?php the_archive_title(); ?></h2>
-          <hr/>
-          <?php the_archive_description('<div class="archive-description">', '</div>'); ?>
+          <!-- Title & Description -->
+          <header class="page-header mb-4">
+            <h1><?php the_archive_title(); ?></h1>
+            <?php the_archive_description('<div class="archive-description">', 'hello gainesville', '</div>'); ?>
+          </header>
 
-        </div>
-
-        <form id="misha_filters" action="#">
-          <div class="filter-wrapper">
-            <div class="select-wrapper">
-              <div class="dropdown">
-                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
-                <ul class="dropdown-menu button-group">
-                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
-                  <?php
-                  $categories = get_categories([
-                    "orderby" => "name",
-                    "order" => "ASC",
-                    "hide_empty" => true,
-                  ]);
-
-                  foreach ($categories as $category) {
-                    echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
-                      $category->term_id .
-                      '">' .
-                      $category->name .
-                      "</button></li>";
-                  }
+          <!-- Grid Layout -->
+          <?php if (have_posts()) : ?>
+            <?php while (have_posts()) : the_post(); ?>
+              <div class="card horizontal mb-4">
+                <div class="row">
+                  <!-- Featured Image-->
+                  <?php if (has_post_thumbnail())
+                    echo '<div class="card-img-left-md col-lg-5">' . get_the_post_thumbnail(null, 'medium') . '</div>';
                   ?>
-                </ul>
-                <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
+                  <div class="col">
+                    <div class="card-body">
+
+                      <?php bootscore_category_badge(); ?>
+
+                      <!-- Title -->
+                      <h2 class="blog-post-title">
+                        <a href="<?php the_permalink(); ?>">
+                          <?php the_title(); ?>
+                        </a>
+                      </h2>
+                      <!-- Meta -->
+                      <?php if ('post' === get_post_type()) : ?>
+                        <small class="text-muted mb-2">
+                          <?php
+$publish_date = get_the_date('F j, Y');
+    echo $publish_date;
+                          bootscore_comments();
+                          bootscore_edit();
+                          ?>
+                        </small>
+                      <?php endif; ?>
+                      <!-- Excerpt & Read more -->
+                      <div class="card-text mt-auto">
+                        <?php the_excerpt(); ?>
+                      </div>
+                      <!-- Tags -->
+                      <?php bootscore_tags(); ?>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div> <!-- End Filter Wrapper -->
+            <?php endwhile; ?>
+          <?php endif; ?>
 
-          <!-- required hidden field for admin-ajax.php -->
-          <input type="hidden" name="action" value="mishafilter">
-          <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
-        </form>
-      </div>
-    </div>
-  </div>
+          <!-- Pagination -->
+          <div class="pagination">
+            <?php //bootscore_pagination(); 
+			pixelnet_bootstrap_pagination();?>
+          </div>
 
-  <div class="container">
-    <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
-      <?php
-      $params = [
-        "posts_per_page" => 15,
-      ];
+        </main><!-- #main -->
 
-      query_posts($params);
+      </div><!-- col -->
 
-      global $wp_query;
+      <?php //get_sidebar(); ?>
+    </div><!-- row -->
 
-      if (have_posts()) :
-        while (have_posts()) :
-          the_post();
-
-          include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
-        endwhile;
-      else :
-        $posts_html = "<p>Nothing found for your criteria.</p>";
-      endif;
-      ?>
-    </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="d-flex flex-wrap justify-content-center button-wrapper my-4">
-    <?php
-    if ($wp_query->max_num_pages > 1) {
-      echo '<div class="button animated-border-button button-border-orange button-text-dark" id="misha_loadmore">More posts</div>'; // you can use <a> as well
-    }
-    ?>
-  </div>
-
-  <script>
-    // Attach click event handlers to the filter buttons
-    document.querySelectorAll('.filter-button').forEach(function(button) {
-      button.addEventListener('click', selectFilter);
-    });
-
-    // Function to select a filter option
-    function selectFilter() {
-      var name = this.getAttribute('data-name');
-      var value = this.getAttribute('data-value');
-      var input = document.getElementById(name);
-      input.value = value;
-      document.querySelectorAll('[data-name="' + name + '"]').forEach(function(button) {
-        button.classList.remove('selected');
-      });
-      if (value) {
-        this.classList.add('selected');
-        //this.parentNode.parentNode.querySelector('button[data-name="' + name + '"][data-value=""]').innerHTML = this.innerHTML;
-      } else {
-        //this.parentNode.parentNode.querySelector('button[data-name="' + name + '"][data-value=""]').innerHTML = 'Select ' + name.substring(0, name.length - 6) + '...';
-      }
-    }
-  </script>
-  
-  
-  
-  
-  
-  
+  </div><!-- #primary -->
+</div><!-- #content -->
 
 <?php
 get_footer();
