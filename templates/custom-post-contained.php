@@ -34,16 +34,16 @@ if ( function_exists('yoast_breadcrumb') ) {
 }
 ?></nav>
 <!-- wp:create-block/single-post-intro -->
-<div class="wp-block-create-block-single-post-intro"><section class="single-news-intro"><div class="date-share-wrapper"><div class="single-news-date">
+<div class="wp-block-create-block-single-post-intro"><section class="single-news-intro single-news"><div class="date-share-wrapper"><div class="single-news-date">
 <?php the_date(); ?></div>
    <div class="single-social-share"><div class="col-12 social-column social-column-grey"><span>Share</span><div class="sharethis-inline-share-buttons"></div></div></div></div></section></div>
 <!-- /wp:create-block/single-post-intro -->
 
-<div id="content" class="site-content container py-5 mt-4">
+<div id="content" class="fullwidth-text-block">
 
 
 
-  <div id="primary" class="content-area">
+  <div id="primary" class="container px-0">
 
     <!-- Hook to add something nice -->
     <?php bs_after_primary(); ?>
@@ -56,17 +56,7 @@ if ( function_exists('yoast_breadcrumb') ) {
 
       <header class="entry-header">
       <?php the_post(); ?>
-      <?php bootscore_category_badge(); ?>
         <h1><?php the_title(); ?></h1>
-        <p class="entry-meta">
-          <small class="text-muted">
-            <?php
-              bootscore_date();
-              bootscore_author();
-              bootscore_comment_count();
-            ?>
-          </small>
-        </p>
         <?php bootscore_post_thumbnail(); ?>
       </header>
 
@@ -74,22 +64,7 @@ if ( function_exists('yoast_breadcrumb') ) {
         <?php the_content(); ?>
       </div>
 
-      <footer class="entry-footer clear-both">
-        <div class="mb-4">
-          <?php bootscore_tags(); ?>
-        </div>
-        <nav aria-label="bS page navigation">
-          <ul class="pagination justify-content-center">
-            <li class="page-item">
-              <?php previous_post_link('%link'); ?>
-            </li>
-            <li class="page-item">
-              <?php next_post_link('%link'); ?>
-            </li>
-          </ul>
-        </nav>
-        <?php comments_template(); ?>
-      </footer>
+
       
     </main>
 
