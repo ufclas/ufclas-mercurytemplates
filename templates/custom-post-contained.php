@@ -33,10 +33,9 @@ if ( function_exists('yoast_breadcrumb') ) {
   yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
 }
 ?></nav>
-<?php the_post(); ?>
 <!-- wp:create-block/single-post-intro -->
 <div class="wp-block-create-block-single-post-intro"><section class="single-news-intro"><div class="date-share-wrapper"><div class="single-news-date">
-<?php date(); ?></div>
+<?php the_date(); ?></div>
    <div class="single-social-share"><div class="col-12 social-column social-column-grey"><span>Share</span><div class="sharethis-inline-share-buttons"></div></div></div></div></section></div>
 <!-- /wp:create-block/single-post-intro -->
 
@@ -54,8 +53,10 @@ if ( function_exists('yoast_breadcrumb') ) {
 
     <main id="main" class="site-main">
 
+
       <header class="entry-header">
-        <?php bootscore_category_badge(); ?>
+      <?php the_post(); ?>
+      <?php bootscore_category_badge(); ?>
         <h1><?php the_title(); ?></h1>
         <p class="entry-meta">
           <small class="text-muted">
