@@ -33,6 +33,12 @@ if ( function_exists('yoast_breadcrumb') ) {
 }
 ?></nav>
 <div id="content" class="site-content container py-5 mt-4">
+
+<!-- wp:create-block/single-post-intro -->
+<div class="wp-block-create-block-single-post-intro"><section class="single-news-intro"><div class="date-share-wrapper"><div class="single-news-date"><!-- wp:post-date {"lock":{"move":false,"remove":false}} /--></div><div class="single-social-share"><div class="col-12 social-column social-column-grey"><span>Share</span><div class="sharethis-inline-share-buttons"></div></div></div></div></section></div>
+<!-- /wp:create-block/single-post-intro -->
+
+
   <div id="primary" class="content-area">
 
     <!-- Hook to add something nice -->
