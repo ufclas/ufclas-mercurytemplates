@@ -2,6 +2,7 @@
 
 get_header();  
 ?>
+
     <style>
   nav.breadcrumb-wrapper #breadcrumbs span {
     font-size: 16px;
@@ -32,11 +33,13 @@ if ( function_exists('yoast_breadcrumb') ) {
   yoast_breadcrumb( '<p id="breadcrumbs">','</p>' );
 }
 ?></nav>
-<div id="content" class="site-content container py-5 mt-4">
-
+<?php the_post(); ?>
 <!-- wp:create-block/single-post-intro -->
 <div class="wp-block-create-block-single-post-intro"><section class="single-news-intro"><div class="date-share-wrapper"><div class="single-news-date"><!-- wp:post-date {"lock":{"move":false,"remove":false}} /--></div><div class="single-social-share"><div class="col-12 social-column social-column-grey"><span>Share</span><div class="sharethis-inline-share-buttons"></div></div></div></div></section></div>
 <!-- /wp:create-block/single-post-intro -->
+
+<div id="content" class="site-content container py-5 mt-4">
+
 
 
   <div id="primary" class="content-area">
@@ -50,7 +53,6 @@ if ( function_exists('yoast_breadcrumb') ) {
     <main id="main" class="site-main">
 
       <header class="entry-header">
-        <?php the_post(); ?>
         <?php bootscore_category_badge(); ?>
         <h1><?php the_title(); ?></h1>
         <p class="entry-meta">
