@@ -9,20 +9,6 @@
 
 
 
- // Hook to register the custom archive template
-add_filter('archive_template', 'my_custom_archive_template');
-
-function my_custom_archive_template($archive_template) {
-    // Check if it's a category archive page
-    if (is_category()) {
-        // Path to your custom template file
-        $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
-    }
-    return $archive_template;
-}
-
-
-
 
 //Register Custom Page Templates
 
@@ -88,7 +74,7 @@ add_filter('theme_post_templates', 'my_post_template_register', 10, 3);
 // Load Custom Template for Posts
 function my_post_template_select($template) {
     global $post;
-    if ($post && $post->post_type == 'post') {
+    if (is_single() && $post->post_type == 'post') {
         $post_temp_slug = get_post_meta($post->ID, '_wp_page_template', true);
         $templates = my_post_template_array();
 
@@ -107,7 +93,17 @@ function add_custom_template_to_posts($templates) {
 }
 add_filter('theme_post_templates', 'add_custom_template_to_posts');
 
+// Hook to register the custom archive template
+add_filter('archive_template', 'my_custom_archive_template');
 
+function my_custom_archive_template($archive_template) {
+    // Check if it's a category archive page
+    if (is_category()) {
+        // Path to your custom template file
+        $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
+    }
+    return $archive_template;
+}
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
