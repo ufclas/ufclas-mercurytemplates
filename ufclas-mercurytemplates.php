@@ -7,7 +7,23 @@
  * Author:            Suzie Israel
  */
 
-  
+
+
+ // Hook to register the custom archive template
+add_filter('archive_template', 'my_custom_archive_template');
+
+function my_custom_archive_template($archive_template) {
+    // Check if it's a category archive page
+    if (is_category()) {
+        // Path to your custom template file
+        $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
+    }
+    return $archive_template;
+}
+
+
+
+
 //Register Custom Page Templates
 
 function my_page_template_array() {
@@ -51,10 +67,12 @@ function add_custom_template_to_pages($templates) {
 add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
-
 // Register Custom Post Templates
 function my_post_template_array() {
-    return ['custom-post-contained.php' => 'No Sidebar Inc. Breadcrumbs'];
+    return [
+        'custom-post-contained.php' => 'No Sidebar Inc. Breadcrumbs',
+        'custom-post-fullwidth.php' => 'Default Inc. Breadcrumbs'
+    ];
 }
 
 // Register Templates for Posts
@@ -88,19 +106,6 @@ function add_custom_template_to_posts($templates) {
     return $templates;
 }
 add_filter('theme_post_templates', 'add_custom_template_to_posts');
- 
-
-// Hook to register the custom archive template
-add_filter( 'archive_template', 'my_custom_archive_template' );
-
-function my_custom_archive_template( $archive_template ) {
-    // Check if it's an archive page
-    if ( is_post_type_archive() || is_category() || is_tag() || is_tax() ) {
-        // Path to your custom template file
-        $archive_template = plugin_dir_path( __FILE__ ) . 'templates/archive.php';
-    }
-    return $archive_template;
-}
 
 
 
