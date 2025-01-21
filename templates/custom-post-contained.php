@@ -60,7 +60,7 @@ if ($hide_date !== "1" && $hide_socials !== "1" && $hide_socials !== "1") {
           the_date();
         }
         if ($hide_author !== "1") {
-          ?> / <?php $authorFirstName ?> <?php $authorLastName
+          ?> / <?php $authorFirstName; ?> <?php $authorLastName;
         }
         ?>
       </div>
