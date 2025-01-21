@@ -16,8 +16,8 @@ nav.breadcrumb-wrapper #breadcrumbs span a {
     font-family: "gentonalight";
 }
 
-nav.breadcrumb-wrapper #breadcrumbs span strong {
-    font-family: 'gentonamedium';
+nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last strong {
+  font-family: 'gentonamedium';
     font-weight: normal;
     color: #000;
 }
@@ -34,7 +34,9 @@ if ( function_exists('yoast_breadcrumb') ) {
 ?></nav>
 <div id="content" class="site-content news">
   <div id="primary" class="news-landing-body content-area">
-
+  <?php if (have_posts()) : ?>
+    <?php while (have_posts()) : the_post(); ?>
+    
     <div class="container">
       <div class="row">
         <div class="title-wrapper">
@@ -77,6 +79,8 @@ if ( function_exists('yoast_breadcrumb') ) {
           <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
         </form>
       </div>
+      <?php endwhile; ?>
+      <?php endif; ?>
     </div>
   </div>
 

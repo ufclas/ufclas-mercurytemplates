@@ -16,7 +16,7 @@ nav.breadcrumb-wrapper #breadcrumbs span a {
     font-family: "gentonalight";
 }
 
-nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last {
+nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last strong {
   font-family: 'gentonamedium';
     font-weight: normal;
     color: #000;
