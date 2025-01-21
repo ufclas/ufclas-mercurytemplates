@@ -48,7 +48,7 @@ if ( function_exists('yoast_breadcrumb') ) {
 </nav>
 
 <?php 
-if ($hide_date !== "0" && $hide_socials !== "0" && $hide_socials !== "0") {
+if ($hide_date == "1" && $hide_socials == "1" && $hide_socials == "1") {
 ?>
 <!-- wp:create-block/single-post-intro -->
 <div class="wp-block-create-block-single-post-intro">
