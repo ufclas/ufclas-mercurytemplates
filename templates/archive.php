@@ -34,8 +34,6 @@ if ( function_exists('yoast_breadcrumb') ) {
 ?></nav>
 <div id="content" class="site-content news">
   <div id="primary" class="news-landing-body content-area">
-  <?php if (have_posts()) : ?>
-    <?php while (have_posts()) : the_post(); ?>
     
     <div class="container">
       <div class="row">
@@ -79,8 +77,6 @@ if ( function_exists('yoast_breadcrumb') ) {
           <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
         </form>
       </div>
-      <?php endwhile; ?>
-      <?php endif; ?>
     </div>
   </div>
 
