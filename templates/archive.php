@@ -83,8 +83,10 @@ if ( function_exists('yoast_breadcrumb') ) {
   <div class="container">
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
+      $category = get_queried_object();
       $params = [
         "posts_per_page" => 15,
+        "cat" => $category->term_id,
       ];
 
       query_posts($params);
@@ -103,6 +105,7 @@ if ( function_exists('yoast_breadcrumb') ) {
       ?>
     </div>
   </div>
+
 
   <!-- Pagination -->
   <div class="d-flex flex-wrap justify-content-center button-wrapper my-4">
