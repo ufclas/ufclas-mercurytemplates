@@ -3,6 +3,8 @@ $hide_date = get_post_meta($post->ID, 'hide_date', true);
 $hide_socials = get_post_meta($post->ID, 'hide_socials', true);
 $hide_featured_image = get_post_meta($post->ID, 'hide_featured_image', true);
 $hide_author = get_post_meta($post->ID, 'hide_author', true);
+$authorFirstName = get_the_author_meta('first_name');
+$authorLastName  = get_the_author_meta('last_name');
 
 get_header();  
 ?>
@@ -21,7 +23,7 @@ nav.breadcrumb-wrapper #breadcrumbs span a {
     font-family: "gentonalight";
 }
 
-nav.breadcrumb-wrapper #breadcrumbs span strong {
+nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last {
     font-family: 'gentonamedium';
     font-weight: normal;
     color: #000;
@@ -58,7 +60,7 @@ if ($hide_date !== "1" && $hide_socials !== "1" && $hide_socials !== "1") {
           the_date();
         }
         if ($hide_author !== "1") {
-          ?> / <?php get_the_author_meta('first_name'); ?> <?php get_the_author_meta('last_name');
+          ?> / <?php $authorFirstName ?> <?php $authorLastName
         }
         ?>
       </div>
