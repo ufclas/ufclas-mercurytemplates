@@ -48,7 +48,7 @@ if ( function_exists('yoast_breadcrumb') ) {
 </nav>
 
 <?php 
-if ($hide_date !== "1" && $hide_socials !== "1" && $hide_socials !== "1") {
+if ($hide_date !== "0" && $hide_socials !== "0" && $hide_socials !== "0") {
 ?>
 <!-- wp:create-block/single-post-intro -->
 <div class="wp-block-create-block-single-post-intro">
@@ -60,7 +60,7 @@ if ($hide_date !== "1" && $hide_socials !== "1" && $hide_socials !== "1") {
           the_date();
         }
         if ($hide_author !== "1") {
-          ?> / <?php $authorFirstName; ?> <?php $authorLastName;
+          ?> / <?php echo $authorFirstName; ?> <?php echo $authorLastName;
         }
         ?>
       </div>
