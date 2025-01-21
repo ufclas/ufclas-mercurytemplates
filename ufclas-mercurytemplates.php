@@ -355,4 +355,42 @@ add_action('save_post', 'thisplugin_save_meta_box');
 
 
 
+
+//========> Custom Meta Box for hiding date
+add_action( 'add_meta_boxes', 'date_metaBox' );
+function date_metaBox($post){
+    // Check if the post uses the 'custom-post-contained.php' template
+    if (get_page_template_slug($post->ID) == 'custom-post-contained.php') {
+        add_meta_box('date_id', 'Hide the date', 'crt_metaBox_date', 'post', 'side' , 'low');
+    }
+}
+
+function crt_metaBox_date($post){
+    $hide_date = get_post_meta($post->ID, 'hide_date', true);
+?>
+    <p class="ufl_checkbox">
+        <span>Hide the date</span>
+        <input type="checkbox" name="hide_date" id="hide_date" value="1" <?php echo ($hide_date == 1) ? 'checked="checked"' : ''; ?> />
+    </p>
+<?php
+}
+
+add_action('save_post', 'save_date_metaBox');
+function save_date_metaBox($post_id){
+    // Verify if this is an auto save routine. 
+    // If it is our form has not been submitted, so we don't want to do anything.
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) 
+        return $post_id;
+
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id))
+        return $post_id;
+
+    // Sanitize user input.
+    $hide_date = isset($_POST['hide_date']) ? 1 : 0;
+
+    // Update the meta field in the database.
+    update_post_meta($post_id, 'hide_date', $hide_date);
+}
+
   ?>

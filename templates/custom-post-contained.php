@@ -26,6 +26,11 @@ nav.breadcrumb-wrapper #breadcrumbs span strong {
 nav.breadcrumb-wrapper #breadcrumbs {
     padding: 10px 0;
 }
+
+.post-thumbnail img {
+    max-width: 100%;
+    height: auto;
+}
 </style>
 
 <nav aria-label="breadcrumb" class="breadcrumb-wrapper"><?php
@@ -34,8 +39,20 @@ if ( function_exists('yoast_breadcrumb') ) {
 }
 ?></nav>
 <!-- wp:create-block/single-post-intro -->
-<div class="wp-block-create-block-single-post-intro"><section class="single-news-intro single-news"><div class="date-share-wrapper"><div class="single-news-date">
-<?php the_date(); ?></div>
+<div class="wp-block-create-block-single-post-intro"><section class="single-news-intro single-news"><div class="date-share-wrapper" style="padding-bottom: 0"><div class="single-news-date">
+
+
+
+<?php 
+$hide_date = get_post_meta($post->ID, 'hide_date', true);
+
+if ($hide_date === "0" || $hide_date === "") {
+  the_date();
+}
+ ?>
+
+
+</div>
    <div class="single-social-share"><div class="col-12 social-column social-column-grey"><span>Share</span><div class="sharethis-inline-share-buttons"></div></div></div></div></section></div>
 <!-- /wp:create-block/single-post-intro -->
 
