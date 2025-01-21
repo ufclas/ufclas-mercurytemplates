@@ -356,27 +356,42 @@ add_action('save_post', 'thisplugin_save_meta_box');
 
 
 
-//========> Custom Meta Box for hiding date
-add_action( 'add_meta_boxes', 'date_metaBox' );
-function date_metaBox($post){
+//========> Custom Meta Box for hiding date and other elements
+add_action( 'add_meta_boxes', 'elements_metaBox' );
+function elements_metaBox($post){
     // Check if the post uses the 'custom-post-contained.php' template
     if (get_page_template_slug($post->ID) == 'custom-post-contained.php') {
-        add_meta_box('date_id', 'Hide the date', 'crt_metaBox_date', 'post', 'side' , 'low');
+        add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side' , 'low');
     }
 }
 
-function crt_metaBox_date($post){
+function crt_metaBox_elements($post){
     $hide_date = get_post_meta($post->ID, 'hide_date', true);
+    $hide_socials = get_post_meta($post->ID, 'hide_socials', true);
+    $hide_author = get_post_meta($post->ID, 'hide_author', true);
+    $hide_featured_image = get_post_meta($post->ID, 'hide_featured_image', true);
 ?>
     <p class="ufl_checkbox">
         <span>Hide the date</span>
         <input type="checkbox" name="hide_date" id="hide_date" value="1" <?php echo ($hide_date == 1) ? 'checked="checked"' : ''; ?> />
     </p>
+    <p class="ufl_checkbox">
+        <span>Hide socials</span>
+        <input type="checkbox" name="hide_socials" id="hide_socials" value="1" <?php echo ($hide_socials == 1) ? 'checked="checked"' : ''; ?> />
+    </p>
+    <p class="ufl_checkbox">
+        <span>Hide author</span>
+        <input type="checkbox" name="hide_author" id="hide_author" value="1" <?php echo ($hide_author == 1) ? 'checked="checked"' : ''; ?> />
+    </p>
+    <p class="ufl_checkbox">
+        <span>Hide featured image</span>
+        <input type="checkbox" name="hide_featured_image" id="hide_featured_image" value="1" <?php echo ($hide_featured_image == 1) ? 'checked="checked"' : ''; ?> />
+    </p>
 <?php
 }
 
-add_action('save_post', 'save_date_metaBox');
-function save_date_metaBox($post_id){
+add_action('save_post', 'save_elements_metaBox');
+function save_elements_metaBox($post_id){
     // Verify if this is an auto save routine. 
     // If it is our form has not been submitted, so we don't want to do anything.
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) 
@@ -388,9 +403,15 @@ function save_date_metaBox($post_id){
 
     // Sanitize user input.
     $hide_date = isset($_POST['hide_date']) ? 1 : 0;
+    $hide_socials = isset($_POST['hide_socials']) ? 1 : 0;
+    $hide_author = isset($_POST['hide_author']) ? 1 : 0;
+    $hide_featured_image = isset($_POST['hide_featured_image']) ? 1 : 0;
 
-    // Update the meta field in the database.
+    // Update the meta fields in the database.
     update_post_meta($post_id, 'hide_date', $hide_date);
+    update_post_meta($post_id, 'hide_socials', $hide_socials);
+    update_post_meta($post_id, 'hide_author', $hide_author);
+    update_post_meta($post_id, 'hide_featured_image', $hide_featured_image);
 }
 
   ?>
