@@ -3,8 +3,9 @@ $hide_date = get_post_meta($post->ID, 'hide_date', true);
 $hide_socials = get_post_meta($post->ID, 'hide_socials', true);
 $hide_featured_image = get_post_meta($post->ID, 'hide_featured_image', true);
 $hide_author = get_post_meta($post->ID, 'hide_author', true);
-$authorFirstName = get_the_author_meta('first_name');
-$authorLastName  = get_the_author_meta('last_name');
+$author_id = get_post_field('post_author', $post->ID);
+$authorFirstName = get_the_author_meta('first_name', $author_id);
+$authorLastName  = get_the_author_meta('last_name', $author_id);
 
 get_header();  
 ?>
