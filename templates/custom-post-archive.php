@@ -17,7 +17,7 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
 }
 </style>
 <div id="content" class="site-content news">
-  <div id="primary" class="site-content content-area">
+  <div id="primary" class="news-landing-body site-content content-area">
     <?php the_content(); ?>
 
     <div class="container">
