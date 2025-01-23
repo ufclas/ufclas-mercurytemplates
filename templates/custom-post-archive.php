@@ -9,9 +9,15 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
   the_breadcrumb($post, true);
 }
 ?>
-
+<style>
+@media (min-width: 1196px) {
+    .news-landing-body .fullwidth-text-block .container {
+        max-width: 1074px;
+    }
+}
+</style>
 <div id="content" class="site-content news">
-  <div id="primary" class="news-landing-body content-area">
+  <div id="primary" class="site-content content-area">
     <?php the_content(); ?>
 
     <div class="container">
@@ -23,19 +29,18 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
             $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
             if ($selected_category_slug) {
-                $category = get_category_by_slug($selected_category_slug);
-                if ($category) {
-                    echo '<h2 class="font-heading">' . esc_html($category->name) . '</h2>';
-                } else {
-                    echo '<h2 class="font-heading">Uncategorized</h2>';
-                }
-            } else {
-                echo '<h2 class="font-heading">' . get_the_title() . '</h2>';
-            }
-          ?>
+              $category = get_category_by_slug($selected_category_slug);
+              if ($category) {
+                  echo '<h2 class="font-heading">' . esc_html($category->name) . '</h2><hr/>';
+                  the_archive_description('<div class="archive-description">', '</div>'); 
+              } else {
+                  echo '<h2 class="font-heading">Uncategorized</h2>';
+              }
+          } else {
+              echo '<h2 class="font-heading">' . get_the_title() . '</h2><hr/>';
+          }
+         ?>
           
-          </h2>
-          <hr/>
         </div>
 
         <form id="misha_filters" action="#">
