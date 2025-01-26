@@ -17,9 +17,10 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
 }
 </style>
 <div id="content" class="site-content news">
-  <div id="primary" class="news-landing-body site-content content-area">
+  <div id="primary" class="site-content content-area">
     <?php the_content(); ?>
-
+  </div>
+  <div class="news-landing-body">
     <div class="container">
       <div class="row">
         <div class="title-wrapper">
@@ -49,7 +50,6 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
               <div class="dropdown">
                 <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filter</button>
                 <ul class="dropdown-menu button-group">
-                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                   <?php
 
                   // Get the slug of the selected category
