@@ -47,34 +47,36 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
         <form id="misha_filters" action="#">
           <div class="filter-wrapper">
             <div class="select-wrapper">
+              <?php
+              // Get the slug of the selected category
+              $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+
+              // Convert the slug to a category ID
+              if ($selected_category_slug) {
+                  $category = get_category_by_slug($selected_category_slug);
+                  if ($category) {
+                      $parent_category_id = $category->term_id;
+                  } else {
+                      $parent_category_id = 0;
+                  }
+              } else {
+                  $parent_category_id = 0;
+              }
+
+              // Get categories that have the selected category as parent
+              $categories = get_categories([
+                  "orderby" => "name",
+                  "order" => "ASC",
+                  "hide_empty" => true,
+                  "parent" => $parent_category_id, // Add parent category ID
+              ]);
+
+              if (!empty($categories)) {
+              ?>
               <div class="dropdown">
                 <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filter</button>
                 <ul class="dropdown-menu button-group">
                   <?php
-
-                  // Get the slug of the selected category
-                  $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
-
-                  // Convert the slug to a category ID
-                  if ($selected_category_slug) {
-                      $category = get_category_by_slug($selected_category_slug);
-                      if ($category) {
-                          $parent_category_id = $category->term_id;
-                      } else {
-                          $parent_category_id = 0;
-                      }
-                  } else {
-                      $parent_category_id = 0;
-                  }
-
-                  // Get categories that have the selected category as parent
-                  $categories = get_categories([
-                      "orderby" => "name",
-                      "order" => "ASC",
-                      "hide_empty" => true,
-                      "parent" => $parent_category_id, // Add parent category ID
-                  ]);
-
                   foreach ($categories as $category) {
                       echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
                           $category->term_id .
@@ -86,6 +88,9 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
                 </ul>
                 <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
               </div>
+              <?php
+              }
+              ?>
             </div>
           </div> <!-- End Filter Wrapper -->
 
