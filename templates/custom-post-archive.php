@@ -27,21 +27,20 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
           <h2 class="font-heading">
             
           <?php
-            $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+          $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-            if ($selected_category_slug) {
+          if ($selected_category_slug) {
               $category = get_category_by_slug($selected_category_slug);
               if ($category) {
                   echo '<h2 class="font-heading">' . esc_html($category->name) . '</h2><hr/>';
-                  the_archive_description('<div class="archive-description">', '</div>'); 
+                  echo '<div class="archive-description">' . category_description($category->term_id) . '</div>';
               } else {
                   echo '<h2 class="font-heading">Uncategorized</h2>';
               }
           } else {
               echo '<h2 class="font-heading">' . get_the_title() . '</h2><hr/>';
           }
-         ?>
-          
+          ?>          
         </div>
 
         <form id="misha_filters" action="#">
