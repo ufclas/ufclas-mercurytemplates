@@ -115,20 +115,7 @@ function my_custom_archive_template($archive_template) {
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
-function get_posts_years_array() {
-	global $wpdb;
-	$result = array();
-	$years = $wpdb->get_results(
-	  "SELECT YEAR(post_date) FROM {$wpdb->posts} WHERE post_status = 'publish' GROUP BY YEAR(post_date) DESC",
-	  ARRAY_N
-	);
-	if (is_array($years) && count($years) > 0) {
-	  foreach ($years as $year) {
-		$result[] = $year[0];
-	  }
-	}
-	return $result;
-  }
+
   
 
 add_action( 'wp_enqueue_scripts', 'misha_script_and_styles');
