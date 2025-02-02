@@ -118,9 +118,9 @@ function my_custom_archive_template($archive_template) {
 
   
 
-add_action( 'wp_enqueue_scripts', 'misha_script_and_styles');
+add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_2');
 
-function misha_script_and_styles() {
+function misha_script_and_styles_2() {
 	// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
 	global $wp_query;
 	// when you use wp_localize_script(), do not enqueue the target script immediately
@@ -136,10 +136,10 @@ function misha_script_and_styles() {
  	wp_enqueue_script( 'misha_scripts' );
 }
 
-add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler');
-add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler');
+add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler_2');
+add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler_2');
  
-function misha_loadmore_ajax_handler(){
+function misha_loadmore_ajax_handler_2(){
 	// prepare our arguments for the query
 	$params = json_decode( stripslashes( $_POST['query'] ), true ); // query_posts() takes care of the necessary sanitization 
 	$params['paged'] = $_POST['page'] + 1; // we need next page to be loaded
@@ -159,10 +159,10 @@ function misha_loadmore_ajax_handler(){
 	endif;
 	die; // here we exit the script and even no wp_reset_query()
 }
-add_action('wp_ajax_mishafilter', 'misha_filter_function'); 
-add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function');
+add_action('wp_ajax_mishafilter', 'misha_filter_function_2'); 
+add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function_2');
  
-function misha_filter_function(){
+function misha_filter_function_2(){
 	if(isset($_POST['datefilter']) && $_POST['datefilter'] != '') {
 		$datefilter = $_POST['datefilter'];
 	}
