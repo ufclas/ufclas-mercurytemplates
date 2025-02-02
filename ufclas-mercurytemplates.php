@@ -125,7 +125,7 @@ function my_custom_archive_template($archive_template) {
 		// passing parameters here
 		// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
 		wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
-			'ajaxurl' => site_url() . '/wp-admin/admin-ajax.php', // WordPress AJAX
+			'ajaxurl' => $_SERVER['DOCUMENT_ROOT'] . '/wp-admin/admin-ajax.php', // WordPress AJAX
 			'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
 			'current_page' => $wp_query->query_vars['paged'] ? $wp_query->query_vars['paged'] : 1,
 			'max_page' => $wp_query->max_num_pages
