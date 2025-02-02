@@ -119,7 +119,7 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
       }
 
       $params = [
-          "posts_per_page" => 15,
+          "posts_per_page" => 100,
           "cat" => $selected_category_id,
       ];
 

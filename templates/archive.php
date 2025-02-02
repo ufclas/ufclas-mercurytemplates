@@ -85,7 +85,7 @@ if ( function_exists('yoast_breadcrumb') ) {
       <?php
       $category = get_queried_object();
       $params = [
-        "posts_per_page" => 15,
+        "posts_per_page" => 100,
         "cat" => $category->term_id,
       ];
 
