@@ -115,138 +115,158 @@ function my_custom_archive_template($archive_template) {
 
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
-	add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_custom');
+function get_posts_years_array() {
+	global $wpdb;
+	$result = array();
+	$years = $wpdb->get_results(
+	  "SELECT YEAR(post_date) FROM {$wpdb->posts} WHERE post_status = 'publish' GROUP BY YEAR(post_date) DESC",
+	  ARRAY_N
+	);
+	if (is_array($years) && count($years) > 0) {
+	  foreach ($years as $year) {
+		$result[] = $year[0];
+	  }
+	}
+	return $result;
+  }
+  
 
-	function misha_script_and_styles_custom() {
-		// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
-		global $wp_query;
-		// when you use wp_localize_script(), do not enqueue the target script immediately
-		wp_register_script( 'misha_scripts', $_SERVER['DOCUMENT_ROOT'] . '/wp-content/plugins/ufclas-mercurytemplates/js/ajax-script.js', array('jquery') );;
-		// passing parameters here
-		// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
-		wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
-			'ajaxurl' => $_SERVER['DOCUMENT_ROOT'] . '/wp-admin/admin-ajax.php', // WordPress AJAX
-			'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
-			'current_page' => $wp_query->query_vars['paged'] ? $wp_query->query_vars['paged'] : 1,
-			'max_page' => $wp_query->max_num_pages
-		) );
-		wp_enqueue_script( 'misha_scripts' );
+add_action( 'wp_enqueue_scripts', 'misha_script_and_styles');
+
+function misha_script_and_styles() {
+	// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
+	global $wp_query;
+	// when you use wp_localize_script(), do not enqueue the target script immediately
+	wp_register_script( 'misha_scripts', $_SERVER['DOCUMENT_ROOT'] . '/wp-content/plugins/ufclas-mercurytemplates/js/ajax-script.js', array('jquery') );;
+	// passing parameters here
+	// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
+	wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
+		'ajaxurl' => include($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/admin-ajax.php', // WordPress AJAX
+		'posts' => json_encode( $wp_query->query_vars ), // everything about your loop is here
+		'current_page' => $wp_query->query_vars['paged'] ? $wp_query->query_vars['paged'] : 1,
+		'max_page' => $wp_query->max_num_pages
+	) );
+ 	wp_enqueue_script( 'misha_scripts' );
+}
+
+add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler');
+add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler');
+ 
+function misha_loadmore_ajax_handler(){
+	// prepare our arguments for the query
+	$params = json_decode( stripslashes( $_POST['query'] ), true ); // query_posts() takes care of the necessary sanitization 
+	$params['paged'] = $_POST['page'] + 1; // we need next page to be loaded
+	$params['post_status'] = 'publish';
+ 
+	// it is always better to use WP_Query but not here
+	query_posts( $params );
+ 
+	if( have_posts() ) :
+ 
+		// run the loop
+		while( have_posts() ): the_post();
+ 
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
+
+		endwhile;
+	endif;
+	die; // here we exit the script and even no wp_reset_query()
+}
+add_action('wp_ajax_mishafilter', 'misha_filter_function'); 
+add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function');
+ 
+function misha_filter_function(){
+	if(isset($_POST['datefilter']) && $_POST['datefilter'] != '') {
+		$datefilter = $_POST['datefilter'];
+	}
+	if(isset($_POST['categoryfilter']) && $_POST['categoryfilter'] != '') {
+		$catfilter = $_POST['categoryfilter'];
 	}
 
-	add_action('wp_ajax_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
-	add_action('wp_ajax_nopriv_loadmorebutton', 'misha_loadmore_ajax_handler_custom');
-	
-	function misha_loadmore_ajax_handler_custom(){
-		// prepare our arguments for the query
-		$params = json_decode( stripslashes( $_POST['query'] ), true ); // query_posts() takes care of the necessary sanitization 
-		$params['paged'] = $_POST['page'] + 1; // we need next page to be loaded
-		$params['post_status'] = 'publish';
-	
-		// it is always better to use WP_Query but not here
-		query_posts( $params );
-	
-		if( have_posts() ) :
-	
-			// run the loop
-			while( have_posts() ): the_post();
-	
-			include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
-
-			endwhile;
-		endif;
-		die; // here we exit the script and even no wp_reset_query()
-	}
-	add_action('wp_ajax_mishafilter', 'misha_filter_function_custom'); 
-	add_action('wp_ajax_nopriv_mishafilter', 'misha_filter_function_custom');
-	
-	function misha_filter_function_custom(){
-		if(isset($_POST['datefilter']) && $_POST['datefilter'] != '') {
-			$datefilter = $_POST['datefilter'];
-		}
-		if(isset($_POST['categoryfilter']) && $_POST['categoryfilter'] != '') {
-			$catfilter = $_POST['categoryfilter'];
-		}
-
-		if( $datefilter && $catfilter ) {
-			// if categoryfilter is set and not empty
-			$params = array(
-				'posts_per_page' => 15,
-				'tax_query' => array(
-					array(
-						'taxonomy' => 'category',
-						'field' => 'id',
-						'terms' => $_POST['categoryfilter']
-					)
-				), 
-				'date_query' => array(
-					array(
-						'year' => $_POST['datefilter']
-					)
+	if( $datefilter && $catfilter ) {
+		// if categoryfilter is set and not empty
+		$params = array(
+			'posts_per_page' => 15,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'category',
+					'field' => 'id',
+					'terms' => $_POST['categoryfilter']
 				)
-			);
-		} 
-
-		if( $datefilter && !$catfilter ) {
-			// if categoryfilter is set and not empty
-			$params = array(
-				'posts_per_page' => 15,
-				'date_query' => array(
-					array(
-						'year' => $_POST['datefilter']
-					)
+			), 
+			'date_query' => array(
+				array(
+					'year' => $_POST['datefilter']
 				)
-			);
-		} 
-		
-		if( !$datefilter && $catfilter ) {
-			// if categoryfilter is set and not empty
-			$params = array(
-				'posts_per_page' => 15,
-				'tax_query' => array(
-					array(
-						'taxonomy' => 'category',
-						'field' => 'id',
-						'terms' => $_POST['categoryfilter']
-					)
-				), 
-			);
-		} 
-		if( !$datefilter && !$catfilter ) {
-			// if categoryfilter is set and not empty
-			// if both are not set or empty
-			$params = array(
-				'posts_per_page' => 15,
-			);
-		} 
-		query_posts( $params );
-	
-		global $wp_query;
-	
-		if( have_posts() ) :
-	
-			ob_start(); // start buffering because we do not need to print the posts now
-	
-			while( have_posts() ): the_post();
-	
-			include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
-	
-			endwhile;
-	
-			$posts_html = ob_get_contents(); // we pass the posts to variable
-			ob_end_clean(); // clear the buffer
-		else:
-			$posts_html = '<p>Nothing found for your criteria.</p>';
-		endif;
-		// no wp_reset_query() required
-		echo json_encode( array(
-			'posts' => json_encode( $wp_query->query_vars ),
-			'max_page' => $wp_query->max_num_pages,
-			'found_posts' => $wp_query->found_posts,
-			'content' => $posts_html
-		) );
-	
-		die();
-	}
+			)
+		);
+	  } 
+
+	  if( $datefilter && !$catfilter ) {
+		// if categoryfilter is set and not empty
+		$params = array(
+			'posts_per_page' => 15,
+			'date_query' => array(
+				array(
+					'year' => $_POST['datefilter']
+				)
+			)
+		);
+	  } 
+	  
+	  if( !$datefilter && $catfilter ) {
+		// if categoryfilter is set and not empty
+		$params = array(
+			'posts_per_page' => 15,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'category',
+					'field' => 'id',
+					'terms' => $_POST['categoryfilter']
+				)
+			), 
+		);
+	  } 
+	  if( !$datefilter && !$catfilter ) {
+		// if categoryfilter is set and not empty
+		// if both are not set or empty
+		$params = array(
+			'posts_per_page' => 15,
+		);
+	  } 
+	query_posts( $params );
+ 
+	global $wp_query;
+ 
+	if( have_posts() ) :
+ 
+ 		ob_start(); // start buffering because we do not need to print the posts now
+ 
+		while( have_posts() ): the_post();
+ 
+		include($_SERVER['DOCUMENT_ROOT']."/wp-content/plugins/ufclas-mercurytemplates/template-parts/content-post.php");
+ 
+		endwhile;
+ 
+ 		$posts_html = ob_get_contents(); // we pass the posts to variable
+   		ob_end_clean(); // clear the buffer
+	else:
+		$posts_html = '<p>Nothing found for your criteria.</p>';
+	endif;
+	// no wp_reset_query() required
+ 	echo json_encode( array(
+		'posts' => json_encode( $wp_query->query_vars ),
+		'max_page' => $wp_query->max_num_pages,
+		'found_posts' => $wp_query->found_posts,
+		'content' => $posts_html
+	) );
+ 
+	die();
+}
+
+
+
+
 
 
 
