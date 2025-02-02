@@ -8,7 +8,15 @@
  */
 
 
+//Enqueue cleanup styles
 
+function cleanup_styles() {
+	$plugin_url = plugin_dir_url( __FILE__ );
+
+wp_enqueue_style( 'style',  $plugin_url . "/css/style.css");
+}
+
+add_action( 'admin_print_styles', 'cleanup_styles' );
 
 //Register Custom Page Templates
 
@@ -113,7 +121,7 @@ function my_custom_archive_template($archive_template) {
 		// absolutely need it, because we will get $wp_query->query_vars and $wp_query->max_num_pages from it.
 		global $wp_query;
 		// when you use wp_localize_script(), do not enqueue the target script immediately
-		wp_register_script( 'misha_scripts', get_template_directory_uri() . '/js/ajax-script.js', array('jquery') );
+		wp_register_script( 'misha_scripts', $_SERVER['DOCUMENT_ROOT'] . '/wp-content/plugins/ufclas-mercurytemplates/js/ajax-script.js', array('jquery') );;
 		// passing parameters here
 		// actually the <script> tag will be created and the object "misha_loadmore_params" will be inside it 
 		wp_localize_script( 'misha_scripts', 'misha_loadmore_params', array(
