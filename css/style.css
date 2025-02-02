@@ -1,0 +1,110 @@
+/***********
+The following styles are solely used to clean up standard Mercury options, will be communicated to UFIT
+***********/
+
+/* prevent long ig posts from corrupting social banner's layout in */
+span.social-text {
+    height: 400px;
+    overflow: hidden;
+}
+
+/* clean up button with underline style */
+.wp-block-button__link {
+    border-left: none;
+    border-right: none;
+}
+.fullwidth-text-block .wp-block-button__link:hover {
+	text-decoration: none !important;
+}
+
+/* remove weird paragraph from above the livewhale feed block */
+p.wp-block-create-block-livewhale-events-block {
+    display: none;
+}
+/***********
+The following styles are solely used to style items for CLAS additional Templates plugin and custom patterns
+***********/
+
+/* Make the WP standard details block visually pleasing */
+.wp-block-details[open] {
+    border: none;
+    padding-bottom: 30px;
+}   
+
+.wp-block-details summary {
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    list-style-position: outside;
+}
+
+.wp-block-details > * {
+    margin: 0;
+    margin-block-start: 1.5rem;
+}
+
+.wp-block-details summary strong, .wp-block-details summary  {
+	font-weight: 700;
+	font-family: gentonalight;
+position: relative;
+}
+
+.wp-block-details summary::marker {
+    content: '';
+}
+
+.wp-block-details summary::-webkit-details-marker {
+    color: transparent;
+    width: 0;
+}
+
+.wp-block-details summary::after {
+    content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMy40NTMgMy40NTMgMTYgMTYiPjxsaW5lIHkyPSIyMi45MDYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExLjQ1MykiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgwODA4MCIgc3Ryb2tlLXdpZHRoPSIxIi8+PGxpbmUgeTI9IjIyLjkwNiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjIuOTA2IDExLjQ1Mykgcm90YXRlKDkwKSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODA4MDgwIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=");
+    display: inline-block;
+	position: relative;
+	top: 3px;
+	left: 8px;
+	height:23px;
+	width: 23px;
+	padding: 2px
+}
+
+.wp-block-details[open] summary::marker {
+    content: '';
+}
+ 
+.wp-block-details[open] summary::after {
+    content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMy40NTMgMCAxNiAxIj48bGluZSB5Mj0iMjIuOTA2IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMi45MDYgMC41KSByb3RhdGUoOTApIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MDgwODAiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==");
+    display: inline-block;
+	position: relative;
+	top: 3px;
+	left: 8px;
+	height:23px;
+	width: 23px;
+	padding: 2px
+
+}
+
+/* style the custom pattern "Two highlighted posts" */
+
+.remove-bullets {
+    padding: 0 2rem !important;
+    column-gap: 6rem;
+}
+
+.remove-bullets li:before {
+    content: '' !important;
+}
+
+.remove-bullets li, ul.remove-bullets li > div {
+    padding: 0 !important;
+}
+.wp-block-query ul.max-width {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+/* hides email address on the custom pattern "Faculty Bio block sans email" */
+
+.remove-email .faculty-email {
+	display: none;
+}
