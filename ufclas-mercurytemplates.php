@@ -116,10 +116,6 @@ function my_custom_archive_template($archive_template) {
 // Single News Filtering from Mercury functions.php, updated to handle custom post cards
 
 
-  
-
-add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_2');
-
 add_action( 'wp_enqueue_scripts', 'misha_script_and_styles_2');
 
 function misha_script_and_styles_2() {
