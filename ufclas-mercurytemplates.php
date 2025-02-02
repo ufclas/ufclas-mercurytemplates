@@ -170,7 +170,7 @@ function my_custom_archive_template($archive_template) {
 		if( $datefilter && $catfilter ) {
 			// if categoryfilter is set and not empty
 			$params = array(
-				'posts_per_page' => 15,
+				'posts_per_page' => 100,
 				'tax_query' => array(
 					array(
 						'taxonomy' => 'category',
@@ -189,7 +189,7 @@ function my_custom_archive_template($archive_template) {
 		if( $datefilter && !$catfilter ) {
 			// if categoryfilter is set and not empty
 			$params = array(
-				'posts_per_page' => 15,
+				'posts_per_page' => 100,
 				'date_query' => array(
 					array(
 						'year' => $_POST['datefilter']
@@ -201,7 +201,7 @@ function my_custom_archive_template($archive_template) {
 		if( !$datefilter && $catfilter ) {
 			// if categoryfilter is set and not empty
 			$params = array(
-				'posts_per_page' => 15,
+				'posts_per_page' => 1005,
 				'tax_query' => array(
 					array(
 						'taxonomy' => 'category',
@@ -215,7 +215,7 @@ function my_custom_archive_template($archive_template) {
 			// if categoryfilter is set and not empty
 			// if both are not set or empty
 			$params = array(
-				'posts_per_page' => 15,
+				'posts_per_page' => 100,
 			);
 		} 
 		query_posts( $params );
