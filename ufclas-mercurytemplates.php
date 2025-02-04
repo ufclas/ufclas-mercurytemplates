@@ -11,8 +11,9 @@
 //Enqueue cleanup styles
 
 function cleanup_styles() {
+	$plugin_url = $_SERVER['DOCUMENT_ROOT'];
 
-wp_enqueue_style( 'style',  $_SERVER['DOCUMENT_ROOT'] . "/wp-content/plugins/ufclas-mercurytemplates/css/style.css");
+wp_enqueue_style( 'style',  $plugin_url . "css/style.css");
 }
 
 add_action( 'admin_print_styles', 'cleanup_styles' );
