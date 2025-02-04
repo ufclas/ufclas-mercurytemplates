@@ -10,13 +10,14 @@
 
 
 
-// Enqueue cleanup styles
-function cleanup_styles() {
-    $plugin_url = plugin_dir_path( __FILE__ );
-    wp_enqueue_style( 'style', $plugin_url . 'css/style.css' );
+// Enqueue plugin styles
+function enqueue_plugin_styles() {
+    $style_url = plugins_url( 'css/style.css', __FILE__ );
+    wp_enqueue_style( 'plugin-style', $style_url );
 }
 
-add_action( 'wp_enqueue_scripts', 'cleanup_styles' );
+add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
+
 
 //Register Custom Page Templates
 

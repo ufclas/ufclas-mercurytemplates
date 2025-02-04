@@ -103,6 +103,10 @@ position: relative;
     max-width: 1300px;
     margin: 0 auto;
 }
+.remove-bullets:has(li:only-child) {
+    max-width: 800px;grid-template-columns: revert;
+}
+
 /* hides email address on the custom pattern "Faculty Bio block sans email" */
 
 .remove-email .faculty-email {
