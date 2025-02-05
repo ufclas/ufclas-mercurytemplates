@@ -16,11 +16,16 @@ span.social-text {
 .fullwidth-text-block .wp-block-button__link:hover {
 	text-decoration: none !important;
 }
-
+.wp-block-button.is-style-animated-underline {
+    padding-right: 50px;
+}
 /* remove weird paragraph from above the livewhale feed block */
 p.wp-block-create-block-livewhale-events-block {
     display: none;
 }
+
+
+
 /***********
 The following styles are solely used to style items for CLAS additional Templates plugin and custom patterns
 ***********/
@@ -111,4 +116,9 @@ position: relative;
 
 .remove-email .faculty-email {
 	display: none;
+}
+
+/* left justify social links in footer contact column */
+.justify-content-left .justify-content-center {
+    justify-content: left !important;
 }
