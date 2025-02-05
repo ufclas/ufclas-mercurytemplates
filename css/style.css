@@ -9,7 +9,7 @@ span.social-text {
 }
 
 /* clean up button with underline style */
-.wp-block-button__link {
+.is-style-animated-underline .wp-block-button__link {
     border-left: none !important;
     border-right: none !important;
 }
