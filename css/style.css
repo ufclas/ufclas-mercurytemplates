@@ -10,8 +10,8 @@ span.social-text {
 
 /* clean up button with underline style */
 .wp-block-button__link {
-    border-left: none;
-    border-right: none;
+    border-left: none !important;
+    border-right: none !important;
 }
 .fullwidth-text-block .wp-block-button__link:hover {
 	text-decoration: none !important;
