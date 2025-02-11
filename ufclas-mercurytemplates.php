@@ -423,4 +423,11 @@ function save_elements_metaBox($post_id){
     update_post_meta($post_id, 'hide_featured_image', $hide_featured_image);
 }
 
+
+//shortcode to dynamically update year in the footer
+function year_shortcode () {
+	$year = date_i18n ('Y');
+	return $year;
+}
+add_shortcode ('year', 'year_shortcode');
   ?>
