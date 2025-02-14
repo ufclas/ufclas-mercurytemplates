@@ -27,11 +27,10 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
           <h2 class="font-heading">
             
           <?php
-              $current_category = get_the_category();
-              $current_category_slug = $current_category[0]->slug;
+          $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-          if ($current_category_slug) {
-              $category = get_category_by_slug($current_category_slug);
+          if ($selected_category_slug) {
+              $category = get_category_by_slug($selected_category_slug);
               if ($category) {
                   echo '<h2 class="font-heading">' . esc_html($category->name) . '</h2><hr/>';
                   echo '<div class="archive-description">' . category_description($category->term_id) . '</div>';
@@ -48,13 +47,12 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
           <div class="filter-wrapper">
             <div class="select-wrapper">
               <?php
-              // Get the slug of the current category
-              $current_category = get_the_category();
-              $current_category_slug = $current_category[0]->slug;
-              
+              // Get the slug of the selected category
+              $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
+
               // Convert the slug to a category ID
-              if ($current_category_slug) {
-                  $category = get_category_by_slug($curren_category_slug);
+              if ($selected_category_slug) {
+                  $category = get_category_by_slug($selected_category_slug);
                   if ($category) {
                       $parent_category_id = $category->term_id;
                   } else {
@@ -64,7 +62,7 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
                   $parent_category_id = 0;
               }
 
-              // Get categories that have the current category as parent
+              // Get categories that have the selected category as parent
               $categories = get_categories([
                   "orderby" => "name",
                   "order" => "ASC",
@@ -107,11 +105,10 @@ if ($ufl_nav_menu_show === "0" || $ufl_nav_menu_show === "") {
     <div id="misha_posts_wrap" class="row position-relative news-row" data-masonry="{&quot;percentPosition&quot;: true }">
       <?php
 
-      $current_category = get_the_category();
-      $current_category_slug = $current_category[0]->slug;
+      $selected_category_slug = get_post_meta(get_the_ID(), 'selected-category', true);
 
-      if ($current_category_slug) {
-          $category = get_category_by_slug($current_category_slug);
+      if ($selected_category_slug) {
+          $category = get_category_by_slug($selected_category_slug);
           if ($category) {
               $selected_category_id = $category->term_id;
           } else {
