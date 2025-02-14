@@ -366,11 +366,12 @@ add_action('save_post', 'thisplugin_save_meta_box');
 
 
 //========> Custom Meta Box for hiding date and other elements
-add_action( 'add_meta_boxes', 'elements_metaBox' );
-function elements_metaBox($post){
-    // Check if the post uses the 'custom-post-contained.php' template
-    if (get_page_template_slug($post->ID) == 'custom-post-contained.php') {
-        add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side' , 'low');
+add_action('add_meta_boxes', 'elements_metaBox');
+function elements_metaBox($post) {
+    // Check if the post uses the 'custom-post-contained.php' or 'custom-post-fullwidth.php' template
+    $template = get_page_template_slug($post->ID);
+    if ($template == 'custom-post-contained.php' || $template == 'custom-post-fullwidth.php') {
+        add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
     }
 }
 

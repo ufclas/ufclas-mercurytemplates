@@ -10,35 +10,7 @@ $authorLastName  = get_the_author_meta('last_name', $author_id);
 get_header();  
 ?>
 
-<style>
-  nav.breadcrumb-wrapper #breadcrumbs span {
-    font-size: 16px;
-    line-height: 24px;
-    color: #fa4616;
-    font-family: 'gentonamedium';
-}
 
-nav.breadcrumb-wrapper #breadcrumbs span a {
-    color: #000;
-    text-decoration: none;
-    font-family: "gentonalight";
-}
-
-nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last strong {
-    font-family: 'gentonamedium';
-    font-weight: normal;
-    color: #000;
-}
-
-nav.breadcrumb-wrapper #breadcrumbs {
-    padding: 10px 0;
-}
-
-.post-thumbnail img {
-    max-width: 100%;
-    height: auto;
-}
-</style>
 
 <nav aria-label="breadcrumb" class="breadcrumb-wrapper">
 <?php
