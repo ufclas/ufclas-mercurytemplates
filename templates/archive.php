@@ -50,15 +50,11 @@ if ( function_exists('yoast_breadcrumb') ) {
                   <div class="dropdown">
                       <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
                       <ul class="dropdown-menu button-group">
-                          <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                           <?php
                           // Get the current category on the archive page
                           $current_category = get_queried_object();
                           if ($current_category && !is_wp_error($current_category)) {
                               $current_category_id = $current_category->term_id;
-
-                              // Debugging: Print the current category ID
-                              echo '<pre>Current Category ID: ' . $current_category_id . '</pre>';
 
                               // Get subcategories of the current category
                               $subcategories = get_categories([
