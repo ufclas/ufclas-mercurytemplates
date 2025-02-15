@@ -47,42 +47,43 @@ if ( function_exists('yoast_breadcrumb') ) {
         <form id="misha_filters" action="#">
           <div class="filter-wrapper">
               <div class="select-wrapper">
-                  <div class="dropdown">
-                      <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
-                      <ul class="dropdown-menu button-group">
-                          <?php
-                          // Get the current category on the archive page
-                          $current_category = get_queried_object();
-                          if ($current_category && !is_wp_error($current_category)) {
-                              $current_category_id = $current_category->term_id;
+                  <?php
+                  // Get the current category on the archive page
+                  $current_category = get_queried_object();
+                  if ($current_category && !is_wp_error($current_category)) {
+                      $current_category_id = $current_category->term_id;
 
-                              // Get subcategories of the current category
-                              $subcategories = get_categories([
-                                  "orderby" => "name",
-                                  "order" => "ASC",
-                                  "hide_empty" => true,
-                                  "parent" => $current_category_id,
-                              ]);
+                      // Get subcategories of the current category
+                      $subcategories = get_categories([
+                          "orderby" => "name",
+                          "order" => "ASC",
+                          "hide_empty" => true,
+                          "parent" => $current_category_id,
+                      ]);
 
-                              // Debugging: Print the subcategories array
-                              echo '<pre>';
-                              print_r($subcategories);
-                              echo '</pre>';
-
-                              foreach ($subcategories as $subcategory) {
-                                  echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
-                                      $subcategory->term_id .
-                                      '">' .
-                                      $subcategory->name .
-                                      "</button></li>";
-                              }
-                          } else {
-                              echo '<pre>No current category found.</pre>';
-                          }
+                      // Only display the dropdown if subcategories exist
+                      if (!empty($subcategories)) {
                           ?>
-                      </ul>
-                      <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
-                  </div>
+                          <div class="dropdown">
+                              <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
+                              <ul class="dropdown-menu button-group">
+                                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
+                                  <?php
+                                  foreach ($subcategories as $subcategory) {
+                                      echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
+                                          $subcategory->term_id .
+                                          '">' .
+                                          $subcategory->name .
+                                          "</button></li>";
+                                  }
+                                  ?>
+                              </ul>
+                              <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
+                          </div>
+                          <?php
+                      }
+                  }
+                  ?>
               </div>
           </div> <!-- End Filter Wrapper -->
 
@@ -90,7 +91,6 @@ if ( function_exists('yoast_breadcrumb') ) {
           <input type="hidden" name="action" value="mishafilter">
           <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
       </form>
-
 
 
       </div>
