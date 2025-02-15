@@ -67,7 +67,6 @@ if ( function_exists('yoast_breadcrumb') ) {
                           <div class="dropdown">
                               <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
                               <ul class="dropdown-menu button-group">
-                                  <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                                   <?php
                                   foreach ($subcategories as $subcategory) {
                                       echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
