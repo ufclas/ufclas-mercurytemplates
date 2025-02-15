@@ -46,59 +46,48 @@ if ( function_exists('yoast_breadcrumb') ) {
 
         <form id="misha_filters" action="#">
           <div class="filter-wrapper">
-            <div class="select-wrapper">
-              <?php
-              // Get the slug of the current category
-              $current_category = get_the_category();
-              $current_category_slug = $current_category[0]->slug;
+              <div class="select-wrapper">
+                  <div class="dropdown">
+                      <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filters</button>
+                      <ul class="dropdown-menu button-group">
+                          <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
+                          <?php
+                          // Get the current category
+                          $current_category = get_the_category();
+                          if (!empty($current_category)) {
+                              $current_category_id = $current_category[0]->term_id;
 
-              // Convert the slug to a category ID
-              if ($current_category_slug) {
-                  $category = get_category_by_slug($current_category_slug);
-                  if ($category) {
-                      $parent_category_id = $category->term_id;
-                  } else {
-                      $parent_category_id = 0;
-                  }
-              } else {
-                  $parent_category_id = 0;
-              }
+                              // Get subcategories of the current category
+                              $subcategories = get_categories([
+                                  "orderby" => "name",
+                                  "order" => "ASC",
+                                  "hide_empty" => true,
+                                  "parent" => $current_category_id,
+                              ]);
 
-              // Get categories that have the selected category as parent
-              $categories = get_categories([
-                  "orderby" => "name",
-                  "order" => "ASC",
-                  "hide_empty" => true,
-                  "parent" => $parent_category_id, // Add parent category ID
-              ]);
-
-              if (!empty($categories)) {
-              ?>
-              <div class="dropdown">
-                <button type="button" class="filter-button btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-name="categoryfilter" data-value="">Filter</button>
-                <ul class="dropdown-menu button-group">
-                  <?php
-                  foreach ($categories as $category) {
-                      echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
-                          $category->term_id .
-                          '">' .
-                          $category->name .
-                          "</button></li>";
-                  }
-                  ?>
-                </ul>
-                <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
+                              foreach ($subcategories as $subcategory) {
+                                  echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
+                                      $subcategory->term_id .
+                                      '">' .
+                                      $subcategory->name .
+                                      "</button></li>";
+                              }
+                          }
+                          ?>
+                      </ul>
+                      <input type="hidden" name="categoryfilter" id="categoryfilter" value="">
+                  </div>
               </div>
-              <?php
-              }
-              ?>
-            </div>
           </div> <!-- End Filter Wrapper -->
 
           <!-- required hidden field for admin-ajax.php -->
           <input type="hidden" name="action" value="mishafilter">
           <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
-        </form>
+      </form>
+
+
+
+
       </div>
     </div>
   </div>
