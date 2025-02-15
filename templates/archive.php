@@ -52,10 +52,13 @@ if ( function_exists('yoast_breadcrumb') ) {
                       <ul class="dropdown-menu button-group">
                           <li><button type="button" class="filter-button" data-name="categoryfilter" data-value="">All</button></li>
                           <?php
-                          // Get the current category
-                          $current_category = get_the_category();
-                          if (!empty($current_category)) {
-                              $current_category_id = $current_category[0]->term_id;
+                          // Get the current category on the archive page
+                          $current_category = get_queried_object();
+                          if ($current_category && !is_wp_error($current_category)) {
+                              $current_category_id = $current_category->term_id;
+
+                              // Debugging: Print the current category ID
+                              echo '<pre>Current Category ID: ' . $current_category_id . '</pre>';
 
                               // Get subcategories of the current category
                               $subcategories = get_categories([
@@ -65,6 +68,11 @@ if ( function_exists('yoast_breadcrumb') ) {
                                   "parent" => $current_category_id,
                               ]);
 
+                              // Debugging: Print the subcategories array
+                              echo '<pre>';
+                              print_r($subcategories);
+                              echo '</pre>';
+
                               foreach ($subcategories as $subcategory) {
                                   echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
                                       $subcategory->term_id .
@@ -72,6 +80,8 @@ if ( function_exists('yoast_breadcrumb') ) {
                                       $subcategory->name .
                                       "</button></li>";
                               }
+                          } else {
+                              echo '<pre>No current category found.</pre>';
                           }
                           ?>
                       </ul>
@@ -84,7 +94,6 @@ if ( function_exists('yoast_breadcrumb') ) {
           <input type="hidden" name="action" value="mishafilter">
           <button id="submitFilter" style="display:none;" type="submit">Apply Filters</button>
       </form>
-
 
 
 
