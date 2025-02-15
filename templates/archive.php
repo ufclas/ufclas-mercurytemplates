@@ -64,11 +64,6 @@ if ( function_exists('yoast_breadcrumb') ) {
                                   "parent" => $current_category_id,
                               ]);
 
-                              // Debugging: Print the subcategories array
-                              echo '<pre>';
-                              print_r($subcategories);
-                              echo '</pre>';
-
                               foreach ($subcategories as $subcategory) {
                                   echo '<li><button type="button" class="filter-button" data-name="categoryfilter" data-value="' .
                                       $subcategory->term_id .
