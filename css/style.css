@@ -2,7 +2,7 @@
 The following styles are solely used to clean up standard Mercury options, will be communicated to UFIT
 ***********/
 
-/* prevent long ig posts from corrupting social banner's layout in */
+/* prevent long ig posts from corrupting social banner's layout in mobile */
 span.social-text {
     height: 400px;
     overflow: hidden;
@@ -111,16 +111,18 @@ position: relative;
 .remove-bullets:has(li:only-child) {
     max-width: 800px;grid-template-columns: revert;
 }
+.remove-bullets img.attachment-post-thumbnail {
+    aspect-ratio: 3 / 4;
+}
+.post-thumbnail img {
+    max-width: 100%;
+    height: auto;
+}
 
 /* hides email address on the custom pattern "Faculty Bio block sans email" */
 
 .remove-email .faculty-email {
 	display: none;
-}
-
-/* left justify social links in footer contact column */
-.justify-content-left .justify-content-center {
-    justify-content: left !important;
 }
 
 /* Yoast breadcrumbs for posts and categories */
@@ -147,7 +149,76 @@ nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper
 nav.breadcrumb-wrapper #breadcrumbs {
     padding: 10px 0;
 }
-.post-thumbnail img {
-    max-width: 100%;
-    height: auto;
+
+
+/* stack all table cells for tables with class of "responsive" added */
+@media (max-width: 768px) {
+    
+    figure.wp-block-table.is-style-regular.responsive td {
+        width: 100% !important;
+    }
+    
+    figure.wp-block-table.is-style-regular.responsive table tr {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+/* smaller thumbnails on galleries for galleries with a class of "five-across" added */
+@media (min-width: 1050px) {
+    .five-across .image-gallery .carousel .carousel-inner .col-image-gallery {
+        width: calc(20% - 26px);
+    }
+}
+
+/* special events styling for use with the custom widget developed within Livewhale */
+ul.homepage-events.thumb-right {
+    padding-left: 0 !important;
+}
+ul.homepage-events.thumb-right li {
+    padding-bottom: 2rem;
+}
+ul.homepage-events.infinite-upcoming.thumb-right li code {
+    font-size: small;
+}
+ul.homepage-events.thumb-right span.lw_item_thumb {
+    float: right;
+}
+
+/* special footer styling for social icons with class of "switch-to-blue" added, plus a couple extras */
+
+.switch-to-blue .ufl-social-column div a {
+    background-color: rgba(255, 255, 255, 0.2) !important;!i;!;
+}
+
+.switch-to-blue .ufl-social-column div a svg,
+.switch-to-blue .ufl-social-column div a img {
+    filter: brightness(0) invert(1);
+}
+
+.switch-to-blue .ufl-social-column div a:hover {
+    background-color: rgba(255, 255, 255, 0.8) !important;!i;!;
+}
+
+.switch-to-blue .ufl-social-column div a:hover svg,
+.switch-to-blue .ufl-social-column div a:hover img {
+    filter: none;
+}
+
+.widget_block > span { /* for the "Connect with" html text next to socials */
+    margin-top: 14px;
+    display: inline-block;
+    color: #f4f6f6;
+    text-decoration: none;
+    font-size: 21px;
+    font-family: "gentonalight";
+    padding-right: 10px;
+}
+
+.footer-col-social { /* moving the social column left */
+    justify-content: start !important;
+}
+
+.footer_widget p { /* spacing between links */
+    margin-bottom: 10px !important;
 }
