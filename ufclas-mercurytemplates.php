@@ -10,13 +10,31 @@
 
 
 
-// Enqueue plugin styles
+// Enqueue plugin styles and add scss compilation function
+
+require 'vendor/autoload.php';
+
+use ScssPhp\ScssPhp\Compiler;
+
+function compile_plugin_scss() {
+    $scss = new Compiler();
+    $scss->setImportPaths(plugin_dir_path(__FILE__) . 'scss/');
+
+    $scss_content = file_get_contents(plugin_dir_path(__FILE__) . 'scss/plugin-overrides.scss');
+    $compiled_css = $scss->compile($scss_content);
+
+    file_put_contents(plugin_dir_path(__FILE__) . 'css/plugin-overrides.css', $compiled_css);
+}
+
 function enqueue_plugin_styles() {
+    compile_plugin_scss();
+    wp_enqueue_style('plugin-overrides', plugin_dir_url(__FILE__) . 'css/plugin-overrides.css', array(), null, 'all');
     $style_url = plugins_url( 'css/style.css', __FILE__ );
     wp_enqueue_style( 'plugin-style', $style_url );
 }
+add_action('wp_enqueue_scripts', 'enqueue_plugin_styles', 20); // Higher priority
 
-add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
+
 
 
 //Register Custom Page Templates
@@ -263,7 +281,6 @@ function prefix_category_title( $title ) {
 
 
 
-
 // register "Category" meta box for Custom Post archive
 function custom_post_archive_add_meta_box()
 {
@@ -276,7 +293,7 @@ function custom_post_archive_add_meta_box()
             'Select the post category to display on this page',      // Title of meta box
             'custom_archive_display_meta_box', // Callback function
             'page',                          // Post type
-			'side', 'low'					//position on page
+            'side', 'low'                    //position on page
         );
     }
 }
@@ -287,83 +304,77 @@ add_action('add_meta_boxes', 'custom_post_archive_add_meta_box');
 // display meta box in admin
 function custom_archive_display_meta_box($post)
 {
+    $value = get_post_meta($post->ID, 'custom_archive_meta_key', true);
 
-	$value = get_post_meta($post->ID, 'custom_archive_meta_key', true);
+    wp_nonce_field(basename(__FILE__), 'custom_archive_meta_box_nonce');
 
-	wp_nonce_field(basename(__FILE__), 'custom_archive_meta_box_nonce');
+    echo "<div class='custom_archive_meta_box'>";
 
+    $selected_category = get_post_meta($post->ID, 'selected-category', true);
+    $categories = get_categories([
+        'orderby' => 'name',
+        'order' => 'ASC',
+        'hide_empty' => false,
+    ]);
 
+    echo '<select name="selected-category">';
+    foreach ($categories as $category) {
+        echo '<option value="' . esc_attr($category->slug) . '"' . selected($selected_category, $category->slug, false) . '>' . esc_html($category->name) . '</option>';
+        $subcategories = get_categories([
+            'orderby' => 'name',
+            'order' => 'ASC',
+            'hide_empty' => false,
+            'parent' => $category->term_id,
+        ]);
+        foreach ($subcategories as $subcategory) {
+            echo '<option value="' . esc_attr($subcategory->slug) . '"' . selected($selected_category, $subcategory->slug, false) . '>&nbsp;&nbsp;&nbsp;' . esc_html($subcategory->name) . '</option>';
+        }
+    }
+    echo '</select>';
 
-
-
-	echo "<div class='custom_archive_meta_box'>";
-
-	$selected_category = get_post_meta($post->ID, 'selected-category', true);
-	$categories = get_categories([
-		'orderby' => 'name',
-		'order' => 'ASC',
-		'hide_empty' => false,
-		'parent' => 0, // Only include top-level categories
-	]);
-	
-	echo '<select name="selected-category">';
-	foreach ($categories as $category) {
-		echo '<option value="' . esc_attr($category->slug) . '"' . selected($selected_category, $category->slug, false) . '>' . esc_html($category->name) . '</option>';
-	}
-	echo '</select>';
-	
-	echo "</div>";
-
+    echo "</div>";
 }
-
 
 
 // save meta box
 function thisplugin_save_meta_box($post_id)
 {
+    $is_autosave = wp_is_post_autosave($post_id);
+    $is_revision = wp_is_post_revision($post_id);
 
-	$is_autosave = wp_is_post_autosave($post_id);
-	$is_revision = wp_is_post_revision($post_id);
+    $is_valid_nonce = false;
 
-	$is_valid_nonce = false;
+    if (isset($_POST['custom_archive_meta_box_nonce'])) {
+        if (wp_verify_nonce($_POST['custom_archive_meta_box_nonce'], basename(__FILE__))) {
+            $is_valid_nonce = true;
+        }
+    }
 
-	if (isset($_POST['custom_archive_meta_box_nonce'])) {
+    if ($is_autosave || $is_revision || !$is_valid_nonce) return;
 
-		if (wp_verify_nonce($_POST['custom_archive_meta_box_nonce'], basename(__FILE__))) {
+    $member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
 
-			$is_valid_nonce = true;
-		}
-	}
-
-	if ($is_autosave || $is_revision || !$is_valid_nonce) return;
-
-	$member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
-
-	if (is_array($member_meta)) {
-		foreach ($member_meta as $key => $value) :
-			// Don't store custom data twice
-			if ('revision' === $post->post_type) {
-				return;
-			}
-			if (get_post_meta($post_id, $key, false)) {
-				// If the custom field already has a value, update it.
-				update_post_meta($post_id, $key, $value);
-			} else {
-				// If the custom field doesn't have a value, add it.
-				add_post_meta($post_id, $key, $value);
-			}
-			if (!$value) {
-				// Delete the meta key if there's no value
-				delete_post_meta($post_id, $key);
-			}
-		endforeach;
-	}
+    if (is_array($member_meta)) {
+        foreach ($member_meta as $key => $value) :
+            // Don't store custom data twice
+            if ('revision' === $post->post_type) {
+                return;
+            }
+            if (get_post_meta($post_id, $key, false)) {
+                // If the custom field already has a value, update it.
+                update_post_meta($post_id, $key, $value);
+            } else {
+                // If the custom field doesn't have a value, add it.
+                add_post_meta($post_id, $key, $value);
+            }
+            if (!$value) {
+                // Delete the meta key if there's no value
+                delete_post_meta($post_id, $key);
+            }
+        endforeach;
+    }
 }
 add_action('save_post', 'thisplugin_save_meta_box');
-
-
-
-
 
 //========> Custom Meta Box for hiding date and other elements
 add_action('add_meta_boxes', 'elements_metaBox');
@@ -431,4 +442,7 @@ function year_shortcode () {
 	return $year;
 }
 add_shortcode ('year', 'year_shortcode');
+
+
+
   ?>
