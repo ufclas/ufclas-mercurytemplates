@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:       UFCLAS Additional Mercury Templates
- * Description:       Additional custom UFCLAS templates for use with base Mercury theme.
+ * Plugin Name:       UFCLAS Additional Mercury Templates and Styles
+ * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
  * Version:           1.0.0
  * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates
  * Author:            Suzie Israel
@@ -427,6 +427,17 @@ function year_shortcode () {
 }
 add_shortcode ('year', 'year_shortcode');
 
+
+//Switch slider direction from rtl to ltr
+function override_theme_carousel_script() {
+    // Deregister the core theme script
+    wp_deregister_script('bootscore_child_enqueue_styles_uni');
+
+    // Register and enqueue your custom script
+    wp_register_script('plugin-carousel-script', plugin_dir_url(__FILE__) . 'js/plugin-carousel.js', array('jquery'), null, true);
+    wp_enqueue_script('plugin-carousel-script');
+}
+add_action('wp_enqueue_scripts', 'override_theme_carousel_script', 20); // Higher priority to ensure it runs after the theme script
 
 
   ?>
