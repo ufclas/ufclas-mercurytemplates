@@ -10,13 +10,31 @@
 
 
 
-// Enqueue plugin styles
+// Enqueue plugin styles and add scss compilation function
+
+require 'vendor/autoload.php';
+
+use ScssPhp\ScssPhp\Compiler;
+
+function compile_plugin_scss() {
+    $scss = new Compiler();
+    $scss->setImportPaths(plugin_dir_path(__FILE__) . 'scss/');
+
+    $scss_content = file_get_contents(plugin_dir_path(__FILE__) . 'scss/plugin-overrides.scss');
+    $compiled_css = $scss->compile($scss_content);
+
+    file_put_contents(plugin_dir_path(__FILE__) . 'css/plugin-overrides.css', $compiled_css);
+}
+
 function enqueue_plugin_styles() {
+    compile_plugin_scss();
+    wp_enqueue_style('plugin-overrides', plugin_dir_url(__FILE__) . 'css/plugin-overrides.css', array(), null, 'all');
     $style_url = plugins_url( 'css/style.css', __FILE__ );
     wp_enqueue_style( 'plugin-style', $style_url );
 }
+add_action('wp_enqueue_scripts', 'enqueue_plugin_styles', 20); // Higher priority
 
-add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
+
 
 
 //Register Custom Page Templates
@@ -345,7 +363,7 @@ function thisplugin_save_meta_box($post_id)
             if (get_post_meta($post_id, $key, false)) {
                 // If the custom field already has a value, update it.
                 update_post_meta($post_id, $key, $value);
-            {
+            } else {
                 // If the custom field doesn't have a value, add it.
                 add_post_meta($post_id, $key, $value);
             }
@@ -426,26 +444,5 @@ function year_shortcode () {
 add_shortcode ('year', 'year_shortcode');
 
 
-//add scss compilation function
-
-require 'vendor/autoload.php';
-
-use ScssPhp\ScssPhp\Compiler;
-
-function compile_plugin_scss() {
-    $scss = new Compiler();
-    $scss->setImportPaths(plugin_dir_path(__FILE__) . 'scss/');
-
-    $scss_content = file_get_contents(plugin_dir_path(__FILE__) . 'scss/plugin-overrides.scss');
-    $compiled_css = $scss->compile($scss_content);
-
-    file_put_contents(plugin_dir_path(__FILE__) . 'css/plugin-overrides.css', $compiled_css);
-}
-
-function enqueue_plugin_styles() {
-    compile_plugin_scss();
-    wp_enqueue_style('plugin-overrides', plugin_dir_url(__FILE__) . 'css/plugin-overrides.css', array(), null, 'all');
-}
-add_action('wp_enqueue_scripts', 'enqueue_plugin_styles', 20); // Higher priority
 
   ?>
