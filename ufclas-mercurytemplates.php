@@ -428,16 +428,10 @@ function year_shortcode () {
 add_shortcode ('year', 'year_shortcode');
 
 
-//Switch slider direction from rtl to ltr
-function override_theme_carousel_script() {
-    // Deregister the core theme script
-    wp_deregister_script('bootscore_child_enqueue_styles_uni');
+//Disable core blocks.
 
-    // Register and enqueue your custom script
-    wp_register_script('plugin-carousel-script', plugin_dir_url(__FILE__) . 'js/plugin-carousel.js', array('jquery'), null, true);
-    wp_enqueue_script('plugin-carousel-script');
-}
-add_action('wp_enqueue_scripts', 'override_theme_carousel_script', 20); // Higher priority to ensure it runs after the theme script
-
+add_action('init', function() {
+	remove_theme_support('core-block-patterns');
+});
 
   ?>

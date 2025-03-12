@@ -108,11 +108,17 @@ position: relative;
     max-width: 1300px;
     margin: 0 auto;
 }
-.remove-bullets:has(li:only-child) {
+.remove-bullets.vertical:has(li:only-child) {
     max-width: 800px;grid-template-columns: revert;
 }
-.remove-bullets img.attachment-post-thumbnail {
+.vertical img.attachment-post-thumbnail {
     aspect-ratio: 3 / 4;
+}
+.horizontal img.attachment-post-thumbnail {
+    aspect-ratio: 4 / 3;
+}
+.square img.attachment-post-thumbnail {
+    aspect-ratio: 1 / 1;
 }
 .post-thumbnail img {
     max-width: 100%;
@@ -154,11 +160,11 @@ nav.breadcrumb-wrapper #breadcrumbs {
 /* stack all table cells for tables with class of "responsive" added */
 @media (max-width: 768px) {
     
-    figure.wp-block-table.is-style-regular.responsive td {
+    figure.wp-block-table.responsive td {
         width: 100% !important;
     }
     
-    figure.wp-block-table.is-style-regular.responsive table tr {
+    figure.wp-block-table.responsive table tr {
         display: flex;
         flex-wrap: wrap;
     }
