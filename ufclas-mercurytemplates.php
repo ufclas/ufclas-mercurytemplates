@@ -434,4 +434,105 @@ add_action('init', function() {
 	remove_theme_support('core-block-patterns');
 });
 
+//Make it so regular Adminstrators don't wipe out iframes when editing pages
+
+function add_theme_caps() {
+    // gets the author role
+    $role = get_role( 'administrator' );
+
+    // This only works, because it accesses the class instance.
+    // would allow the author to edit others' posts for current theme only
+    $role->add_cap( 'unfiltered_html' ); 
+}
+add_action( 'admin_init', 'add_theme_caps');
+
+
+
+//Add Google Analytics and Google Tag Manager to the Customizer
+
+function ufclas_mercury_customizer_settings($wp_customize) {
+    // Add Custom Section
+    $wp_customize->add_section('analytics_settings_section', array(
+        'title'    => __('Analytics Settings', 'textdomain'),
+        'priority' => 30,
+    ));
+
+    // Google Analytics Setting
+    $wp_customize->add_setting('google_analytics', array(
+        'default'   => '',
+        'transport' => 'refresh',
+    ));
+
+    // Google Tag Manager Setting
+    $wp_customize->add_setting('google_tag_manager', array(
+        'default'   => '',
+        'transport' => 'refresh',
+    ));
+
+    // Google Analytics Control
+    $wp_customize->add_control('google_analytics_control', array(
+        'label'    => __('Google Analytics', 'textdomain'),
+        'section'  => 'analytics_settings_section',
+        'settings' => 'google_analytics',
+        'type'     => 'text',
+    ));
+
+    // Google Tag Manager Control
+    $wp_customize->add_control('google_tag_manager_control', array(
+        'label'    => __('Google Tag Manager', 'textdomain'),
+        'section'  => 'analytics_settings_section',
+        'settings' => 'google_tag_manager',
+        'type'     => 'text',
+    ));
+}
+add_action('customize_register', 'ufclas_mercury_customizer_settings');
+
+$google_analytics_code = get_theme_mod('google_analytics', '');
+$google_tag_manager_code = get_theme_mod('google_tag_manager', '');
+
+
+//and add the Google Analytics and Google Tag Manager code to the header
+function add_custom_analytics_code() {
+    // Google Analytics
+    if ( !empty(get_theme_mod('google_analytics')) ) {
+        $googleAnalytics = get_theme_mod('google_analytics');
+        $link = get_site_url();
+        if (!empty($link)) {
+            $url_prefix = preg_match('/^https/', $link) ? 'https://' : 'http://';
+        }
+        $link = str_replace(array('http://', 'https://'), '', $link);
+        ?>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $googleAnalytics; ?>"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '<?php echo $googleAnalytics; ?>', {'cookie_domain': '<?php echo $link; ?>'});
+        </script>
+        <?php
+    }
+
+    // Google Tag Manager
+    if ( !empty(get_theme_mod('google_tag_manager')) ) {
+        $googleTagManager = get_theme_mod('google_tag_manager');
+        $link = get_site_url();
+        if (!empty($link)) {
+            $url_prefix = preg_match('/^https/', $link) ? 'https://' : 'http://';
+        }
+        $link = str_replace(array('http://', 'https://'), '', $link);
+        ?>
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','<?php echo $googleTagManager; ?>');
+        </script>
+        <?php
+    }
+}
+add_action('wp_head', 'add_custom_analytics_code');
+
   ?>
