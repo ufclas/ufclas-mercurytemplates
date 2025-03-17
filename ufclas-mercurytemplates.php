@@ -437,15 +437,19 @@ add_action('init', function() {
 //Make it so regular Adminstrators don't wipe out iframes when editing pages
 
 function add_theme_caps() {
-    // gets the author role
-    $role = get_role( 'administrator' );
+    // gets the administrator role
+    $role = get_role('administrator');
 
-    // This only works, because it accesses the class instance.
-    // would allow the author to edit others' posts for current theme only
-    $role->add_cap( 'unfiltered_html' ); 
+    // Allows the administrator to use unfiltered HTML
+    $role->add_cap('unfiltered_html'); 
 }
-add_action( 'admin_init', 'add_theme_caps');
+add_action('admin_init', 'add_theme_caps');
 
+function allow_iframes_in_tinymce($initArray) {
+    $initArray['extended_valid_elements'] = 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]';
+    return $initArray;
+}
+add_filter('tiny_mce_before_init', 'allow_iframes_in_tinymce');
 
 
 //Add Google Analytics and Google Tag Manager to the Customizer
