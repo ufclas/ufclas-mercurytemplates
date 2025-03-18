@@ -436,21 +436,15 @@ add_action('init', function() {
 
 //Make it so regular Adminstrators don't wipe out iframes when editing pages
 
-function add_theme_caps() {
-    // gets the administrator role
-    $role = get_role('administrator');
+function km_add_unfiltered_html_capability_to_editors( $caps, $cap, $user_id ) {
 
-    // Allows the administrator to use unfiltered HTML
-    $role->add_cap('unfiltered_html'); 
+	if ( 'unfiltered_html' === $cap && user_can( $user_id, 'administrator' ) ) {
+		$caps = [ 'unfiltered_html' ];
+	}
+
+	return $caps;
 }
-add_action('admin_init', 'add_theme_caps');
-
-function allow_iframes_in_tinymce($initArray) {
-    $initArray['extended_valid_elements'] = 'iframe[src|frameborder|style|scrolling|class|width|height|name|align]';
-    return $initArray;
-}
-add_filter('tiny_mce_before_init', 'allow_iframes_in_tinymce');
-
+add_filter( 'map_meta_cap', 'km_add_unfiltered_html_capability_to_editors', 1, 3 );
 
 //Add Google Analytics and Google Tag Manager to the Customizer
 
