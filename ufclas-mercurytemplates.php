@@ -485,11 +485,6 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 }
 add_action('customize_register', 'ufclas_mercury_customizer_settings');
 
-$google_analytics_code = get_theme_mod('google_analytics', '');
-$google_tag_manager_code = get_theme_mod('google_tag_manager', '');
-
-
-//and add the Google Analytics and Google Tag Manager code to the header
 function add_custom_analytics_code() {
     // Google Analytics
     if ( !empty(get_theme_mod('google_analytics')) ) {
@@ -514,11 +509,6 @@ function add_custom_analytics_code() {
     // Google Tag Manager
     if ( !empty(get_theme_mod('google_tag_manager')) ) {
         $googleTagManager = get_theme_mod('google_tag_manager');
-        $link = get_site_url();
-        if (!empty($link)) {
-            $url_prefix = preg_match('/^https/', $link) ? 'https://' : 'http://';
-        }
-        $link = str_replace(array('http://', 'https://'), '', $link);
         ?>
         <!-- Google Tag Manager -->
         <script>
@@ -533,4 +523,23 @@ function add_custom_analytics_code() {
 }
 add_action('wp_head', 'add_custom_analytics_code');
 
+function add_google_tag_manager_body() {
+    if ( !empty(get_theme_mod('google_tag_manager')) ) {
+        $googleTagManager = get_theme_mod('google_tag_manager');
+        ?>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo $googleTagManager; ?>"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <?php
+    }
+}
+
+function insert_gtm_code() {
+    add_action('wp_body_open', 'add_google_tag_manager_body');
+}
+add_action('init', 'insert_gtm_code');
+
+       
+    
   ?>
