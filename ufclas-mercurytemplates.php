@@ -541,5 +541,13 @@ function insert_gtm_code() {
 add_action('init', 'insert_gtm_code');
 
        
-    
+// Add custom class to style the Gravity forms button
+add_filter( 'gform_submit_button', 'add_custom_submit_button_class', 10, 2 );
+
+function add_custom_submit_button_class( $submit_button, $form ) {
+  $submit_button = str_replace( '<input', '<input class="animated-border-button button-border-blue"', $submit_button );
+  return $submit_button;
+}
+
+
   ?>
