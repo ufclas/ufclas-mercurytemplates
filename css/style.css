@@ -19,6 +19,10 @@ span.social-text {
 .wp-block-button.is-style-animated-underline {
     padding-right: 50px;
 }
+.wp-block-button.is-style-animated-underline:only-child {
+    padding: 0;
+}
+
 /* remove weird paragraph from above the livewhale feed block */
 p.wp-block-create-block-livewhale-events-block {
     display: none;
@@ -50,7 +54,7 @@ The following styles are solely used to style items for CLAS additional Template
 
 .wp-block-details summary strong, .wp-block-details summary  {
 	font-weight: 700;
-	font-family: gentonalight;
+	font-family: var(--light-weight-sans);
 position: relative;
 }
 
@@ -124,7 +128,9 @@ position: relative;
     max-width: 100%;
     height: auto;
 }
-
+.remove-bullets .wp-block-post-featured-image>a {
+    pointer-events: unset;
+}
 /* hides email address on the custom pattern "Faculty Bio block sans email" */
 
 .remove-email .faculty-email {
@@ -137,17 +143,17 @@ nav.breadcrumb-wrapper #breadcrumbs span {
     font-size: 16px;
     line-height: 24px;
     color: #fa4616;
-    font-family: 'gentonamedium';
+    font-family: var(--medium-weight-sans);
 }
 
 nav.breadcrumb-wrapper #breadcrumbs span a {
     color: #000;
     text-decoration: none;
-    font-family: "gentonalight";
+    font-family: var(--light-weight-sans);
 }
 
 nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last strong {
-  font-family: 'gentonamedium';
+    font-family: var(--medium-weight-sans);
     font-weight: normal;
     color: #000;
 }
@@ -174,6 +180,12 @@ nav.breadcrumb-wrapper #breadcrumbs {
 @media (min-width: 1050px) {
     .five-across .image-gallery .carousel .carousel-inner .col-image-gallery {
         width: calc(20% - 26px);
+    }
+}
+/* class "top-align" for moving up cards */
+@media (min-width: 950px) {
+    .card-right-rail-section .top-align .card-rail-wrapper {
+        margin-top: 12%;
     }
 }
 
@@ -217,7 +229,7 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
     color: #f4f6f6;
     text-decoration: none;
     font-size: 21px;
-    font-family: "gentonalight";
+	font-family: var(--light-weight-sans);
     padding-right: 10px;
 }
 
@@ -228,4 +240,5 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
 .footer_widget p { /* spacing between links */
     margin-bottom: 10px !important;
 }
+
 
