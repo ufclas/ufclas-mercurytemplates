@@ -564,8 +564,6 @@ function my_custom_slider_script() {
             autoplay: true,
             autoplaySpeed: 3000,
             rtl: false, // Change to true if you want to keep right-to-left
-            arrows: true,
-            dots: true
         });
     });
     </script>
