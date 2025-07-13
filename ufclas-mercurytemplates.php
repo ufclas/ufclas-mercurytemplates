@@ -256,7 +256,7 @@ function my_custom_archive_template($archive_template) {
 //remove "Category" from before the category Title in archives
 
 function prefix_category_title( $title ) {
-	if ( is_category() ) {
+	if ( is_category() || is_tag() ) {
 	$title = single_cat_title( '', false );
 	}
 	return $title;
