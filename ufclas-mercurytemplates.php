@@ -363,24 +363,26 @@ add_action('save_post', 'thisplugin_save_meta_box');
 //========> Custom Meta Box for hiding date and other elements
 // Add meta box to post editor
 add_action('add_meta_boxes', function($post) {
-    add_meta_box(
-        'date_id',
-        'Hide Elements',
-        'crt_metaBox_elements',
-        'post',
-        'side',
-        'low'
-    );
+    add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
 });
 
-// Display meta box fields
+// Render the meta box
 function crt_metaBox_elements($post){
-    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
-    foreach ($fields as $field) {
+    $fields = [
+        'hide_date' => 1,
+        'hide_socials' => 0,
+        'hide_author' => 1,
+        'hide_featured_image' => 1
+    ];
+
+    foreach ($fields as $field => $default) {
         $value = get_post_meta($post->ID, $field, true);
+        if ($value === '' && $post->post_status === 'auto-draft') {
+            $value = $default;
+        }
         echo '<p class="ufl_checkbox">';
         echo '<span>' . ucwords(str_replace('_', ' ', $field)) . '</span>';
-        echo '<input type="checkbox" name="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
+        echo '<input type="checkbox" name="' . $field . '" id="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
         echo '</p>';
     }
 }
@@ -391,6 +393,7 @@ add_action('save_post', function($post_id){
     if (!current_user_can('edit_post', $post_id)) return;
 
     $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+
     foreach ($fields as $field) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, $field, 1);
@@ -400,7 +403,23 @@ add_action('save_post', function($post_id){
     }
 });
 
+// Add custom column to store data for JS (optional)
+add_filter('manage_post_posts_columns', function($columns) {
+    $columns['hide_elements'] = 'Hide Elements';
+    return $columns;
+});
 
+add_action('manage_post_custom_column', function($column_name, $post_id) {
+    if ($column_name == 'hide_elements') {
+        $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+        echo '<div class="hidden column-hide_elements"';
+        foreach ($fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            echo " data-{$field}='{$value}'";
+        }
+        echo '></div>';
+    }
+}, 10, 2);
 
 
 //shortcode to dynamically update year in the footer
