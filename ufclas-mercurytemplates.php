@@ -361,81 +361,88 @@ function thisplugin_save_meta_box($post_id)
 add_action('save_post', 'thisplugin_save_meta_box');
 
 //========> Custom Meta Box for hiding date and other elements
-add_action('add_meta_boxes', 'elements_metaBox');
-function elements_metaBox($post) {
-    add_meta_box(
-        'date_id',
-        'Hide Elements',
-        'crt_metaBox_elements',
-        'post',
-        'side',
-        'low'
-    );
-}
-
+// Add meta box to post editor
+add_action('add_meta_boxes', function($post) {
+    add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
+});
 
 function crt_metaBox_elements($post){
-    $hide_date = get_post_meta($post->ID, 'hide_date', true);
-    $hide_socials = get_post_meta($post->ID, 'hide_socials', true);
-    $hide_author = get_post_meta($post->ID, 'hide_author', true);
-    $hide_featured_image = get_post_meta($post->ID, 'hide_featured_image', true);
-?>
-    <p class="ufl_checkbox">
-        <span>Hide the date</span>
-        <input type="checkbox" name="hide_date" id="hide_date" value="1" <?php echo ($hide_date == 1) ? 'checked="checked"' : ''; ?> />
-    </p>
-    <p class="ufl_checkbox">
-        <span>Hide socials</span>
-        <input type="checkbox" name="hide_socials" id="hide_socials" value="1" <?php echo ($hide_socials == 1) ? 'checked="checked"' : ''; ?> />
-    </p>
-    <p class="ufl_checkbox">
-        <span>Hide author</span>
-        <input type="checkbox" name="hide_author" id="hide_author" value="1" <?php echo ($hide_author == 1) ? 'checked="checked"' : ''; ?> />
-    </p>
-    <p class="ufl_checkbox">
-        <span>Hide featured image</span>
-        <input type="checkbox" name="hide_featured_image" id="hide_featured_image" value="1" <?php echo ($hide_featured_image == 1) ? 'checked="checked"' : ''; ?> />
-    </p>
-<?php
-}
-
-add_action('save_post', 'save_elements_metaBox');
-function save_elements_metaBox($post_id){
-    // Skip autosave
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) 
-        return $post_id;
-
-    // Check permissions
-    if (!current_user_can('edit_post', $post_id))
-        return $post_id;
-
-    // Only update if the field is present in the form submission
-    if (isset($_POST['hide_date'])) {
-        update_post_meta($post_id, 'hide_date', 1);
-    } elseif (isset($_POST['_wp_http_referer'])) {
-        // Don't overwrite if Quick Edit is used (field not present)
-    } else {
-        update_post_meta($post_id, 'hide_date', 0);
-    }
-
-    if (isset($_POST['hide_socials'])) {
-        update_post_meta($post_id, 'hide_socials', 1);
-    } elseif (!isset($_POST['_wp_http_referer'])) {
-        update_post_meta($post_id, 'hide_socials', 0);
-    }
-
-    if (isset($_POST['hide_author'])) {
-        update_post_meta($post_id, 'hide_author', 1);
-    } elseif (!isset($_POST['_wp_http_referer'])) {
-        update_post_meta($post_id, 'hide_author', 0);
-    }
-
-    if (isset($_POST['hide_featured_image'])) {
-        update_post_meta($post_id, 'hide_featured_image', 1);
-    } elseif (!isset($_POST['_wp_http_referer'])) {
-        update_post_meta($post_id, 'hide_featured_image', 0);
+    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+    foreach ($fields as $field) {
+        $value = get_post_meta($post->ID, $field, true);
+        echo '<p class="ufl_checkbox">';
+        echo '<span>' . ucwords(str_replace('_', ' ', $field)) . '</span>';
+        echo '<input type="checkbox" name="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
+        echo '</p>';
     }
 }
+
+// Save meta box and Quick Edit data
+add_action('save_post', function($post_id){
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+    foreach ($fields as $field) {
+        $value = isset($_POST[$field]) ? 1 : 0;
+        update_post_meta($post_id, $field, $value);
+    }
+});
+
+// Add custom column
+add_filter('manage_post_posts_columns', function($columns) {
+    $columns['hide_elements'] = 'Hide Elements';
+    return $columns;
+});
+
+// Populate custom column with data attributes
+add_action('manage_post_custom_column', function($column_name, $post_id) {
+    if ($column_name == 'hide_elements') {
+        $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+        echo '<div class="hidden column-hide_elements"';
+        foreach ($fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            echo " data-{$field}='{$value}'";
+        }
+        echo '></div>';
+    }
+}, 10, 2);
+
+// Add fields to Quick Edit
+add_action('quick_edit_custom_box', function($column_name, $post_type) {
+    if ($column_name != 'hide_elements') return;
+    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+    echo '<fieldset class="inline-edit-col-right"><div class="inline-edit-col">';
+    foreach ($fields as $field) {
+        echo '<label><input type="checkbox" name="' . $field . '" class="' . $field . '" /> ' . ucwords(str_replace('_', ' ', $field)) . '</label><br>';
+    }
+    echo '</div></fieldset>';
+}, 10, 2);
+
+// JavaScript to populate Quick Edit fields
+add_action('admin_footer', function() {
+    global $post_type;
+    if ($post_type != 'post') return;
+    ?>
+    <script>
+    jQuery(function($){
+        var $wp_inline_edit = inlineEditPost.edit;
+        inlineEditPost.edit = function(id) {
+            $wp_inline_edit.apply(this, arguments);
+            var post_id = typeof(id) === 'object' ? parseInt(this.getId(id)) : id;
+            var $edit_row = $('#edit-' + post_id);
+            var $post_row = $('#post-' + post_id);
+            if ($post_row.length) {
+                ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'].forEach(function(field) {
+                    var value = $post_row.find('.column-hide_elements').data(field);
+                    $edit_row.find('.' + field).prop('checked', value == 1);
+                });
+            }
+        };
+    });
+    </script>
+    <?php
+});
 
 
 
