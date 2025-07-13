@@ -550,12 +550,11 @@ function add_custom_submit_button_class( $submit_button, $form ) {
 }
 
 
-// Add autoplay to hero slider and reverse direction
 function my_custom_slider_script() {
     ?>
     <script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        const $slider = jQuery('.slick-slider'); // Adjust this selector if needed
+    jQuery(window).on('load', function () {
+        const $slider = jQuery('.carousel-inner.content-carousel-slide');
 
         if ($slider.hasClass('slick-initialized')) {
             $slider.slick('unslick');
@@ -564,7 +563,7 @@ function my_custom_slider_script() {
         $slider.slick({
             autoplay: true,
             autoplaySpeed: 3000,
-            rtl: false, // Set to true if you want right-to-left
+            rtl: false, // Change to true if you want to keep right-to-left
             arrows: true,
             dots: true
         });
