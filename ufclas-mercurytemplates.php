@@ -109,7 +109,7 @@ add_filter('archive_template', 'my_custom_archive_template');
 
 function my_custom_archive_template($archive_template) {
     // Check if it's a category archive page
-    if (is_category()) {
+    if (is_category() || is_tag()) {
         // Path to your custom template file
         $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
     }
