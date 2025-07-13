@@ -363,12 +363,16 @@ add_action('save_post', 'thisplugin_save_meta_box');
 //========> Custom Meta Box for hiding date and other elements
 add_action('add_meta_boxes', 'elements_metaBox');
 function elements_metaBox($post) {
-    // Check if the post uses the 'custom-post-contained.php' or 'custom-post-fullwidth.php' template
-    $template = get_page_template_slug($post->ID);
-    if ($template == 'custom-post-contained.php' || $template == 'custom-post-fullwidth.php') {
-        add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
-    }
+    add_meta_box(
+        'date_id',
+        'Hide Elements',
+        'crt_metaBox_elements',
+        'post',
+        'side',
+        'low'
+    );
 }
+
 
 function crt_metaBox_elements($post){
     $hide_date = get_post_meta($post->ID, 'hide_date', true);
@@ -548,44 +552,6 @@ function add_custom_submit_button_class( $submit_button, $form ) {
   $submit_button = str_replace( '<input', '<input class="animated-border-button button-border-orange"', $submit_button );
   return $submit_button;
 }
-
-
-function my_custom_slider_script() {
-    ?>
-    <script type="text/javascript">
-    jQuery(window).on('load', function () {
-        const $slider = jQuery('.carousel-inner.content-carousel-slide');
-
-        // Force left-to-right direction visually
-        $slider.attr('dir', 'ltr');
-        $slider.closest('.slick-slider').css('direction', 'ltr');
-
-        // Autoplay simulation
-        const autoplaySpeed = 3000;
-        let autoplayInterval;
-
-        function startAutoplay() {
-            autoplayInterval = setInterval(function () {
-                $slider.find('.slick-next').trigger('click');
-            }, autoplaySpeed);
-        }
-
-        function stopAutoplay() {
-            clearInterval(autoplayInterval);
-        }
-
-        // Start autoplay
-        startAutoplay();
-
-        // Pause on hover
-        $slider.on('mouseenter', stopAutoplay);
-        $slider.on('mouseleave', startAutoplay);
-    });
-    </script>
-    <?php
-}
-add_action('wp_footer', 'my_custom_slider_script', 100);
-
 
 
   ?>
