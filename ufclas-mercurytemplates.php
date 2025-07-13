@@ -361,13 +361,20 @@ function thisplugin_save_meta_box($post_id)
 add_action('save_post', 'thisplugin_save_meta_box');
 
 //========> Custom Meta Box for hiding date and other elements
-
 // Add meta box to post editor
 add_action('add_meta_boxes', function($post) {
-    add_meta_box('hide_elements_id', 'Hide Elements', 'render_hide_elements_meta_box', 'post', 'side', 'low');
+    add_meta_box(
+        'date_id',
+        'Hide Elements',
+        'crt_metaBox_elements',
+        'post',
+        'side',
+        'low'
+    );
 });
 
-function render_hide_elements_meta_box($post){
+// Display meta box fields
+function crt_metaBox_elements($post){
     $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
     foreach ($fields as $field) {
         $value = get_post_meta($post->ID, $field, true);
@@ -378,7 +385,7 @@ function render_hide_elements_meta_box($post){
     }
 }
 
-// Save meta box and Quick Edit data
+// Save meta box data
 add_action('save_post', function($post_id){
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
@@ -393,61 +400,7 @@ add_action('save_post', function($post_id){
     }
 });
 
-// Add custom column
-add_filter('manage_post_posts_columns', function($columns) {
-    $columns['hide_elements'] = 'Hide Elements';
-    return $columns;
-});
 
-// Populate custom column with data attributes
-add_action('manage_post_custom_column', function($column_name, $post_id) {
-    if ($column_name == 'hide_elements') {
-        $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
-        echo '<div class="hidden column-hide_elements"';
-        foreach ($fields as $field) {
-            $value = get_post_meta($post_id, $field, true);
-            echo " data-{$field}='{$value}'";
-        }
-        echo '></div>';
-    }
-}, 10, 2);
-
-// Add fields to Quick Edit
-add_action('quick_edit_custom_box', function($column_name, $post_type) {
-    if ($column_name != 'hide_elements') return;
-    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
-    echo '<fieldset class="inline-edit-col-right"><div class="inline-edit-col">';
-    foreach ($fields as $field) {
-        echo '<label><input type="checkbox" name="' . $field . '" class="' . $field . '" /> ' . ucwords(str_replace('_', ' ', $field)) . '</label><br>';
-    }
-    echo '<input type="hidden" name="is_quick_edit" value="1">';
-    echo '</div></fieldset>';
-}, 10, 2);
-
-// JavaScript to populate Quick Edit fields
-add_action('admin_footer', function() {
-    global $post_type;
-    if ($post_type != 'post') return;
-    ?>
-    <script>
-    jQuery(function($){
-        var $wp_inline_edit = inlineEditPost.edit;
-        inlineEditPost.edit = function(id) {
-            $wp_inline_edit.apply(this, arguments);
-            var post_id = typeof(id) === 'object' ? parseInt(this.getId(id)) : id;
-            var $edit_row = $('#edit-' + post_id);
-            var $post_row = $('#post-' + post_id);
-            if ($post_row.length) {
-                ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'].forEach(function(field) {
-                    var value = $post_row.find('.column-hide_elements').data(field);
-                    $edit_row.find('.' + field).prop('checked', value == 1);
-                });
-            }
-        };
-    });
-    </script>
-    <?php
-});
 
 
 //shortcode to dynamically update year in the footer
