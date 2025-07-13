@@ -401,8 +401,7 @@ function crt_metaBox_elements($post){
 
 add_action('save_post', 'save_elements_metaBox');
 function save_elements_metaBox($post_id){
-    // Verify if this is an auto save routine. 
-    // If it is our form has not been submitted, so we don't want to do anything.
+    // Skip autosave
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) 
         return $post_id;
 
@@ -410,18 +409,34 @@ function save_elements_metaBox($post_id){
     if (!current_user_can('edit_post', $post_id))
         return $post_id;
 
-    // Sanitize user input.
-    $hide_date = isset($_POST['hide_date']) ? 1 : 0;
-    $hide_socials = isset($_POST['hide_socials']) ? 1 : 0;
-    $hide_author = isset($_POST['hide_author']) ? 1 : 0;
-    $hide_featured_image = isset($_POST['hide_featured_image']) ? 1 : 0;
+    // Only update if the field is present in the form submission
+    if (isset($_POST['hide_date'])) {
+        update_post_meta($post_id, 'hide_date', 1);
+    } elseif (isset($_POST['_wp_http_referer'])) {
+        // Don't overwrite if Quick Edit is used (field not present)
+    } else {
+        update_post_meta($post_id, 'hide_date', 0);
+    }
 
-    // Update the meta fields in the database.
-    update_post_meta($post_id, 'hide_date', $hide_date);
-    update_post_meta($post_id, 'hide_socials', $hide_socials);
-    update_post_meta($post_id, 'hide_author', $hide_author);
-    update_post_meta($post_id, 'hide_featured_image', $hide_featured_image);
+    if (isset($_POST['hide_socials'])) {
+        update_post_meta($post_id, 'hide_socials', 1);
+    } elseif (!isset($_POST['_wp_http_referer'])) {
+        update_post_meta($post_id, 'hide_socials', 0);
+    }
+
+    if (isset($_POST['hide_author'])) {
+        update_post_meta($post_id, 'hide_author', 1);
+    } elseif (!isset($_POST['_wp_http_referer'])) {
+        update_post_meta($post_id, 'hide_author', 0);
+    }
+
+    if (isset($_POST['hide_featured_image'])) {
+        update_post_meta($post_id, 'hide_featured_image', 1);
+    } elseif (!isset($_POST['_wp_http_referer'])) {
+        update_post_meta($post_id, 'hide_featured_image', 0);
+    }
 }
+
 
 
 //shortcode to dynamically update year in the footer
