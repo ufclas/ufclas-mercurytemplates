@@ -556,19 +556,34 @@ function my_custom_slider_script() {
     jQuery(window).on('load', function () {
         const $slider = jQuery('.carousel-inner.content-carousel-slide');
 
-        if ($slider.hasClass('slick-initialized')) {
-            $slider.slick('unslick');
+        // Force left-to-right direction
+        $slider.attr('dir', 'ltr');
+
+        // Autoplay interval (in milliseconds)
+        const autoplaySpeed = 3000;
+        let autoplayInterval;
+
+        function startAutoplay() {
+            autoplayInterval = setInterval(function () {
+                $slider.find('.slick-next').trigger('click');
+            }, autoplaySpeed);
         }
 
-        $slider.slick({
-            autoplay: true,
-            autoplaySpeed: 3000,
-            rtl: false, // Change to true if you want to keep right-to-left
-        });
+        function stopAutoplay() {
+            clearInterval(autoplayInterval);
+        }
+
+        // Start autoplay
+        startAutoplay();
+
+        // Pause on hover
+        $slider.on('mouseenter', stopAutoplay);
+        $slider.on('mouseleave', startAutoplay);
     });
     </script>
     <?php
 }
 add_action('wp_footer', 'my_custom_slider_script', 100);
+
 
   ?>
