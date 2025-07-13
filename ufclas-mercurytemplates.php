@@ -550,27 +550,27 @@ function add_custom_submit_button_class( $submit_button, $form ) {
 }
 
 
-// add autoplay to hero slider and reverse direction
+// Add autoplay to hero slider and reverse direction
 function my_custom_slider_script() {
-    ?>
-    <script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        const $slider = jQuery('.slick-slider'); // Adjust this selector if needed
+    ?>
+    <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const $slider = jQuery('.slick-slider'); // Adjust this selector if needed
 
-        if ($slider.hasClass('slick-initialized')) {
-            $slider.slick('unslick');
-        }
+        if ($slider.hasClass('slick-initialized')) {
+            $slider.slick('unslick');
+        }
 
-        $slider.slick({
-            autoplay: true,
-            autoplaySpeed: 3000,
-            rtl: false, // Set to true if you want right-to-left
-            arrows: true,
-            dots: true
-        });
-    });
-    </script>
-    <?php
+        $slider.slick({
+            autoplay: true,
+            autoplaySpeed: 3000,
+            rtl: false, // Set to true if you want right-to-left
+            arrows: true,
+            dots: true
+        });
+    });
+    </script>
+    <?php
 }
 add_action('wp_footer', 'my_custom_slider_script', 100);
 
