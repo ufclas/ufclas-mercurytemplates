@@ -446,6 +446,7 @@ add_action('admin_footer', function() {
 
 
 
+
 //shortcode to dynamically update year in the footer
 function year_shortcode () {
 	$year = date_i18n ('Y');
@@ -575,5 +576,11 @@ function add_custom_submit_button_class( $submit_button, $form ) {
   return $submit_button;
 }
 
+add_filter('redirect_post_location', function($location, $post_id) {
+    if (get_post_type($post_id) === 'post') {
+        $location = add_query_arg('updated', 'true', $location);
+    }
+    return $location;
+}, 10, 2);
 
   ?>
