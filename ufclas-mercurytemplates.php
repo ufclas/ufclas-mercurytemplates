@@ -556,10 +556,11 @@ function my_custom_slider_script() {
     jQuery(window).on('load', function () {
         const $slider = jQuery('.carousel-inner.content-carousel-slide');
 
-        // Force left-to-right direction
+        // Force left-to-right direction visually
         $slider.attr('dir', 'ltr');
+        $slider.closest('.slick-slider').css('direction', 'ltr');
 
-        // Autoplay interval (in milliseconds)
+        // Autoplay simulation
         const autoplaySpeed = 3000;
         let autoplayInterval;
 
@@ -584,6 +585,7 @@ function my_custom_slider_script() {
     <?php
 }
 add_action('wp_footer', 'my_custom_slider_script', 100);
+
 
 
   ?>
