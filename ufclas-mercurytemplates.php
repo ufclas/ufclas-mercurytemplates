@@ -421,6 +421,30 @@ add_action('manage_post_custom_column', function($column_name, $post_id) {
     }
 }, 10, 2);
 
+// Apply default meta values to imported posts
+add_action('save_post', function($post_id) {
+    // Avoid autosaves and revisions
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (wp_is_post_revision($post_id)) return;
+
+    // Check if this is an import
+    if (defined('WP_IMPORTING') && WP_IMPORTING) {
+        $fields = [
+            'hide_date' => 1,
+            'hide_socials' => 0,
+            'hide_author' => 1,
+            'hide_featured_image' => 1
+        ];
+
+        foreach ($fields as $field => $default) {
+            // Only set if not already set
+            if (get_post_meta($post_id, $field, true) === '') {
+                update_post_meta($post_id, $field, $default);
+            }
+        }
+    }
+}, 20); // Priority 20 to run after import sets post data
+
 
 //shortcode to dynamically update year in the footer
 function year_shortcode () {
