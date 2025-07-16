@@ -109,7 +109,7 @@ add_filter('archive_template', 'my_custom_archive_template');
 
 function my_custom_archive_template($archive_template) {
     // Check if it's a category archive page
-    if (is_category() || is_tag()) {
+    if (is_category()) {
         // Path to your custom template file
         $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
     }
@@ -253,7 +253,7 @@ function my_custom_archive_template($archive_template) {
 
 
 
-//remove "Category" from before the category Title in archives
+//remove "Category" and "Tag" from before the category Title in archives
 
 function prefix_category_title( $title ) {
 	if ( is_category() || is_tag() ) {
