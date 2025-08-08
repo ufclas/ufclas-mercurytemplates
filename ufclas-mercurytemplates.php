@@ -21,40 +21,6 @@ add_action('wp_enqueue_scripts', 'enqueue_plugin_styles'); // Higher priority
 
 
 
-//Register Custom Page Templates
-
-function my_page_template_array() {
-}
-
-//Register Templates for Pages
-
-function my_page_template_register($page_templates, $theme, $post) {
-    $templates = my_page_template_array();
-    foreach($templates as $tk => $tv) {
-        $page_templates[$tk] = $tv;
-    }
-    return $page_templates;
-}
-add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
-
-//Load Custom Template for Pages
-
-	function my_page_template_select($template) {
-		global $post;
-		if (is_page()) {
-			$page_temp_slug = get_page_template_slug($post->ID);
-			$templates = my_page_template_array();
-	
-			if (isset($templates[$page_temp_slug])) {
-				$template = plugin_dir_path(__FILE__) . 'templates/' . $page_temp_slug;
-			}
-		}
-		return $template;
-	}
-	add_filter('template_include', 'my_page_template_select');
-
-	
-
 
 // Register Custom Post Templates
 function my_post_template_array() {
