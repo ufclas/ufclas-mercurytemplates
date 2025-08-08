@@ -1,7 +1,3 @@
-/***********
-The following styles are solely used to clean up standard Mercury options, will be communicated to UFIT
-***********/
-
 /* prevent long ig posts from corrupting social banner's layout in mobile */
 span.social-text {
     height: 400px;
@@ -27,12 +23,6 @@ span.social-text {
 p.wp-block-create-block-livewhale-events-block {
     display: none;
 }
-
-
-
-/***********
-The following styles are solely used to style items for CLAS additional Templates plugin and custom patterns
-***********/
 
 /* Make the WP standard details block visually pleasing */
 .wp-block-details[open] {
@@ -182,6 +172,7 @@ nav.breadcrumb-wrapper #breadcrumbs {
         width: calc(20% - 26px);
     }
 }
+
 /* class "top-align" for moving up cards */
 @media (min-width: 950px) {
     .card-right-rail-section .top-align .card-rail-wrapper {
@@ -189,7 +180,7 @@ nav.breadcrumb-wrapper #breadcrumbs {
     }
 }
 
-/* special events styling for use with the custom widget developed within Livewhale */
+/* special styling for use past events widget developed within Livewhale */
 ul.homepage-events.thumb-right {
     padding-left: 0 !important;
 }
@@ -206,7 +197,7 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
 /* special footer styling for social icons with class of "switch-to-blue" added, plus a couple extras */
 
 .switch-to-blue .ufl-social-column div a {
-    background-color: rgba(255, 255, 255, 0.2) !important;!i;!;
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .switch-to-blue .ufl-social-column div a svg,
@@ -215,7 +206,7 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
 }
 
 .switch-to-blue .ufl-social-column div a:hover {
-    background-color: rgba(255, 255, 255, 0.8) !important;!i;!;
+    background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .switch-to-blue .ufl-social-column div a:hover svg,
@@ -233,12 +224,16 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
     padding-right: 10px;
 }
 
-.footer-col-social { /* moving the social column left */
+.footer-col-social { /* aligning the social column left */
     justify-content: start !important;
 }
 
-.footer_widget p { /* spacing between links */
+.footer_widget p { /* spacing between links in footer */
     margin-bottom: 10px !important;
 }
-
+.footer-wrapper .footer .footer-section  h4 a { /* h4 linked in footer */
+    font-family: unset;
+    color: unset;
+    font-size: unset;
+}
 
