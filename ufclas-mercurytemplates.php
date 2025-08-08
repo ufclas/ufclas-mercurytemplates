@@ -24,7 +24,6 @@ add_action('wp_enqueue_scripts', 'enqueue_plugin_styles'); // Higher priority
 //Register Custom Page Templates
 
 function my_page_template_array() {
-    return ['custom-post-archive.php' => 'Custom Post Archive'];
 }
 
 //Register Templates for Pages
@@ -111,7 +110,6 @@ function my_custom_archive_template($archive_template) {
     // Check if it's a category archive page
     if (is_category()) {
         // Path to your custom template file
-        $archive_template = plugin_dir_path(__FILE__) . 'templates/archive.php';
     }
     return $archive_template;
 }
@@ -265,24 +263,6 @@ function prefix_category_title( $title ) {
 
 
 
-// register "Category" meta box for Custom Post archive
-function custom_post_archive_add_meta_box()
-{
-    $page_template = 'custom-post-archive.php';
-    $current_page_template = get_page_template_slug(get_the_ID());
-
-    if ($current_page_template === $page_template) {
-        add_meta_box(
-            'custom_archive_meta_box',         // Unique ID of meta box
-            'Select the post category to display on this page',      // Title of meta box
-            'custom_archive_display_meta_box', // Callback function
-            'page',                          // Post type
-            'side', 'low'                    //position on page
-        );
-    }
-}
-
-add_action('add_meta_boxes', 'custom_post_archive_add_meta_box');
 
 
 // display meta box in admin
