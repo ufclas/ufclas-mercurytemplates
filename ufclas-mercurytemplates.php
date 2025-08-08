@@ -54,13 +54,6 @@ add_filter('theme_page_templates', 'my_page_template_register', 10, 3);
 	add_filter('template_include', 'my_page_template_select');
 
 	
-//Add Custom Templates to Page Attributes Dropdown
-
-function add_custom_template_to_pages($templates) {
-    $templates = array_merge($templates, my_page_template_array());
-    return $templates;
-}
-add_filter('theme_page_templates', 'add_custom_template_to_pages');
 
 
 // Register Custom Post Templates
