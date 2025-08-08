@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       UFCLAS Additional Mercury Templates and Styles
+ * Plugin Name:       UFCLAS Mercury Templates
  * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
  * Version:           1.0.0
- * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates
+ * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates/blob/main/README.md
  * Author:            Suzie Israel
  */
 
@@ -308,7 +308,7 @@ add_action('add_meta_boxes', function($post) {
 // Render the meta box
 function crt_metaBox_elements($post){
     $fields = [
-        'hide_date' => 1,
+        'hide_date' => 0,
         'hide_socials' => 0,
         'hide_author' => 1,
         'hide_featured_image' => 1
