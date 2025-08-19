@@ -26,7 +26,8 @@ add_action('wp_enqueue_scripts', 'enqueue_plugin_styles'); // Higher priority
 function my_post_template_array() {
     return [
         'custom-post-contained.php' => 'No Sidebar Inc. Breadcrumbs',
-        'custom-post-fullwidth.php' => 'Default Inc. Breadcrumbs'
+        'custom-post-fullwidth.php' => 'Default Inc. Breadcrumbs',
+        'custom-post-fullwidth-article.php' => 'Full width article'
     ];
 }
 
@@ -384,6 +385,38 @@ add_action('save_post', function($post_id) {
     }
 }, 20); // Priority 20 to run after import sets post data
 
+//========> Custom Meta Box for Post Subtitle
+// Add meta box for post subtitle (for Full Width Article template)
+add_action('add_meta_boxes', function($post) {
+    add_meta_box('post_subtitle_id', 'Post Subtitle', 'post_subtitle_metaBox', 'post', 'normal', 'high');
+});
+
+// Render the post subtitle meta box
+function post_subtitle_metaBox($post) {
+    $post_subtitle = get_post_meta($post->ID, 'post_subtitle', true);
+    
+    wp_nonce_field(basename(__FILE__), 'post_subtitle_nonce');
+    
+    echo '<div class="post-subtitle-meta-box">';
+    echo '<p><em>This subtitle will be displayed below the main title when using the "Full width article" template without a featured image or when the featured image is hidden.</em></p>';
+    
+    // Post Subtitle
+    echo '<p><label for="post_subtitle"><strong>Post Subtitle:</strong></label>';
+    echo '<input type="text" id="post_subtitle" name="post_subtitle" value="' . esc_attr($post_subtitle) . '" style="width: 100%;" placeholder="Optional: Subtitle to display below the main title" /></p>';
+    
+    echo '</div>';
+}
+
+// Save post subtitle meta box data
+add_action('save_post', function($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (!isset($_POST['post_subtitle_nonce']) || !wp_verify_nonce($_POST['post_subtitle_nonce'], basename(__FILE__))) return;
+    
+    if (isset($_POST['post_subtitle'])) {
+        update_post_meta($post_id, 'post_subtitle', sanitize_text_field($_POST['post_subtitle']));
+    }
+});
 
 //shortcode to dynamically update year in the footer
 function year_shortcode () {
