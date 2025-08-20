@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name:       UFCLAS Mercury Templates
+ * Requires Plugins: advanced-custom-fields
  * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
  * Version:           1.0.0
  * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates/blob/main/README.md
@@ -385,38 +386,117 @@ add_action('save_post', function($post_id) {
     }
 }, 20); // Priority 20 to run after import sets post data
 
-//========> Custom Meta Box for Post Subtitle
-// Add meta box for post subtitle (for Full Width Article template)
-add_action('add_meta_boxes', function($post) {
-    add_meta_box('post_subtitle_id', 'Post Subtitle', 'post_subtitle_metaBox', 'post', 'normal', 'high');
-});
+// Check if ACF is active and show admin notice if not
+function ufclas_mercury_check_acf_dependency() {
+    if (!function_exists('acf_add_local_field_group')) {
+        add_action('admin_notices', 'ufclas_mercury_acf_missing_notice');
+    }
+}
+add_action('init', 'ufclas_mercury_check_acf_dependency');
 
-// Render the post subtitle meta box
-function post_subtitle_metaBox($post) {
-    $post_subtitle = get_post_meta($post->ID, 'post_subtitle', true);
-    
-    wp_nonce_field(basename(__FILE__), 'post_subtitle_nonce');
-    
-    echo '<div class="post-subtitle-meta-box">';
-    echo '<p><em>This subtitle will be displayed below the main title when using the "Full width article" template without a featured image or when the featured image is hidden.</em></p>';
-    
-    // Post Subtitle
-    echo '<p><label for="post_subtitle"><strong>Post Subtitle:</strong></label>';
-    echo '<input type="text" id="post_subtitle" name="post_subtitle" value="' . esc_attr($post_subtitle) . '" style="width: 100%;" placeholder="Optional: Subtitle to display below the main title" /></p>';
-    
-    echo '</div>';
+function ufclas_mercury_acf_missing_notice() {
+    ?>
+    <div class="notice notice-warning is-dismissible">
+        <p><strong>UFCLAS Mercury Templates:</strong> The "Full Width Article" template requires the Advanced Custom Fields (ACF) plugin to work properly. Please install and activate ACF to use all template features.</p>
+    </div>
+    <?php
 }
 
-// Save post subtitle meta box data
-add_action('save_post', function($post_id) {
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!current_user_can('edit_post', $post_id)) return;
-    if (!isset($_POST['post_subtitle_nonce']) || !wp_verify_nonce($_POST['post_subtitle_nonce'], basename(__FILE__))) return;
-    
-    if (isset($_POST['post_subtitle'])) {
-        update_post_meta($post_id, 'post_subtitle', sanitize_text_field($_POST['post_subtitle']));
-    }
-});
+// ACF Field Group for Post Header Fields (Full Width Article Template)
+if( function_exists('acf_add_local_field_group') ):
+
+acf_add_local_field_group(array(
+    'key' => 'group_post_header_fields',
+    'title' => 'Post Header Fields',
+    'fields' => array(
+        array(
+            'key' => 'field_header_image',
+            'label' => 'Header Image',
+            'name' => 'header_image',
+            'type' => 'image',
+            'instructions' => 'Upload an image to use as the header background. Leave empty for a simple title header with light gray background.',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'return_format' => 'array',
+            'preview_size' => 'medium',
+            'library' => 'all',
+            'min_width' => '',
+            'min_height' => '',
+            'min_size' => '',
+            'max_width' => '',
+            'max_height' => '',
+            'max_size' => '',
+            'mime_types' => 'jpg,jpeg,png,webp',
+        ),
+        array(
+            'key' => 'field_header_title',
+            'label' => 'Header Title',
+            'name' => 'header_title',
+            'type' => 'text',
+            'instructions' => 'Leave blank to use the post title. Enter custom text to override the post title in the header.',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'default_value' => '',
+            'placeholder' => 'Enter custom header title (optional)',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => '',
+        ),
+        array(
+            'key' => 'field_header_subtitle',
+            'label' => 'Header Subtitle',
+            'name' => 'header_subtitle',
+            'type' => 'text',
+            'instructions' => 'Subtitle text to display below the main title. On hero images, appears as white text below the title. On simple headers, appears below the title.',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'default_value' => '',
+            'placeholder' => 'Enter subtitle text (optional)',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => '',
+        ),
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'post',
+            ),
+            array(
+                'param' => 'page_template',
+                'operator' => '==',
+                'value' => 'custom-post-fullwidth-article.php',
+            ),
+        ),
+    ),
+    'menu_order' => 0,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => '',
+    'active' => true,
+    'description' => 'Fields for customizing the header content in the Full Width Article template.',
+));
+
+endif;
 
 //shortcode to dynamically update year in the footer
 function year_shortcode () {
