@@ -24,29 +24,38 @@ A full-width, default-style template for posts that adds functionality to:
 **Full width article**
 
 A comprehensive full-width template for articles that provides:
-  - **Featured Image Overlay**: Uses WordPress featured image with optional text overlay
-    - Media library title → Main heading (white text on image)
-    - Media library caption → Subtitle (white text on image)  
-    - Media library description → Caption text (white text on image)
-    - Text positioned in lower-left with shadows for readability
-  - **Title Hero Section**: When no featured image or hidden, displays UFL-styled hero section
-    - Light gray background (#f4f6f6) matching UFL Block post header style
-    - Centered title and subtitle with orange underline accent
-    - Custom "Post Subtitle" meta box for subtitle text
-  - **Smart Display Logic**: Handles all scenarios automatically
-    - Featured image + overlay text → Full-width image with white text overlay
-    - Featured image only → Full-width image, title/subtitle below
-    - No featured image → UFL-styled title hero section above content
+  - **ACF-Powered Header System**: Uses Advanced Custom Fields for flexible header content
+    - Header Image field → Full-width background hero with left-aligned white text overlay
+    - Header Title field → Custom title (falls back to post title if empty)
+    - Header Subtitle field → Optional subtitle for both hero and simple headers
+    - Image caption → Displays as caption text below title/subtitle on hero images
+    - **Conditional Fields**: ACF fields only appear when "Full width article" template is selected
+  - **Smart Display Logic**: Handles header scenarios automatically
+    - Header image present → Full-width image with left-aligned white text (title, subtitle, caption) and dark gradient
+    - No header image → Clean left-aligned header with light gray background (no orange underline)
+    - Tight spacing between title and subtitle for better visual hierarchy
+  - **Post Header Block Design**: Follows UFL design specifications
+    - Professional typography with IBM Plex Sans font family
+    - Left-aligned text layout for consistent visual flow
+    - Responsive design with mobile-optimized breakpoints
+    - UFL brand colors and styling consistency
+  - **Enhanced Content Structure**: 
+    - Post intro section with date/author in single line format (matches "No Sidebar Inc. Breadcrumbs")
+    - Social sharing buttons in optimized single-row layout
+    - Main content area with proper typography
+    - Streamlined layout without post footer
   - **Related Posts Section**: "You might also like" at page end
     - Tag-based related posts logic (finds posts with shared tags)
     - Displays 3 newest related posts (excludes current post)
     - Uses exact ufclas-newsfeatures styling and layout
     - Bootstrap responsive card grid layout
   - **Full Functionality**: Includes all standard features
-    - Show/hide dates, author, socials, featured image
+    - Show/hide dates, author, socials controls
     - Yoast Breadcrumbs integration
-    - Social sharing buttons
+    - Social sharing buttons with forced horizontal layout
     - Responsive design for all devices
+    - No dependency on WordPress featured images
+    - Automatic ACF field registration (no manual setup required)
 
 
 ## Adds the following meta boxes
@@ -58,25 +67,33 @@ Controls visibility of post elements for all templates:
   - Hide Socials checkbox
   - Hide Featured Image checkbox
 
-**Post Subtitle**
-Adds subtitle field for posts:
-  - Used by "Full width article" template when no featured image
-  - Displays below main title in UFL-styled hero section
-  - Optional field with placeholder text
+**Post Header Fields** (ACF)
+Advanced Custom Fields for header content:
+  - Header Image: Upload background image for hero section
+  - Header Title: Custom title text (falls back to post title)
+  - Header Subtitle: Optional subtitle for simple headers
+  - Uses image caption for highlighted excerpt section
 
 ## How to use the Full width article template
 
+### Prerequisites
+- Install and activate Advanced Custom Fields (ACF) plugin
+- ACF fields are automatically registered when this plugin is active
+
+### Usage Steps
 1. **Create/Edit a Post**: Select "Full width article" from Post Attributes → Template
-2. **Set Featured Image**: Use WordPress "Set featured image" in post editor sidebar
-3. **Add Image Overlay Text** (optional): 
-   - Click "Edit" on your featured image
-   - In media details popup, add:
-     - **Title**: Main heading text (displays as white H1 on image)
-     - **Caption**: Subtitle text (displays as white H2 on image)
-     - **Description**: Caption text (displays as white paragraph on image)
-4. **Add Post Subtitle** (optional): Use "Post Subtitle" meta box for subtitle when no featured image
-5. **Configure Visibility**: Use "Hide Elements" meta box to show/hide date, author, socials, etc.
-6. **Publish**: Template automatically handles display logic and shows related posts at the end
+2. **Configure Header Content**: The "Post Header Fields" section will automatically appear:
+   - **Header Image** (optional): Upload an image for full-width hero background
+   - **Header Title** (optional): Enter custom title text, or leave blank to use post title
+   - **Header Subtitle** (optional): Add subtitle text (displays on both hero and simple headers)
+3. **Add Image Caption** (optional): If using header image, add caption text in the media library - this will appear as white caption text below the subtitle on the hero image
+4. **Configure Visibility**: Use "Hide Elements" meta box to show/hide date, author, socials, etc.
+5. **Publish**: Template automatically handles display logic and shows related posts at the end
+
+### Header Display Logic
+- **With Header Image**: Full-width background image with left-aligned white text (title, subtitle, caption) and dark gradient overlay
+- **Without Header Image**: Clean left-aligned header with light gray background (no decorative elements)
+- **Text Hierarchy**: Title → Subtitle → Caption (when image is used), with optimized spacing between elements
 
 ## Adds the following helper classes
 

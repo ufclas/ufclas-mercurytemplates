@@ -1,31 +1,25 @@
 <?php
 $hide_date = get_post_meta($post->ID, 'hide_date', true);
 $hide_socials = get_post_meta($post->ID, 'hide_socials', true);
-$hide_featured_image = get_post_meta($post->ID, 'hide_featured_image', true);
 $hide_author = get_post_meta($post->ID, 'hide_author', true);
 $author_id = get_post_field('post_author', $post->ID);
 $authorFirstName = get_the_author_meta('first_name', $author_id);
 $authorLastName  = get_the_author_meta('last_name', $author_id);
 
-// Get featured image and media library text fields
-$featured_image_id = get_post_thumbnail_id($post->ID);
-$featured_image_url = get_the_post_thumbnail_url($post->ID, 'full');
+// Get ACF fields for header content
+$header_image = get_field('header_image');
+$header_title = get_field('header_title');
+$header_subtitle = get_field('header_subtitle');
 
-// Get custom subtitle for posts (fallback when no featured image)
-$post_subtitle = get_post_meta($post->ID, 'post_subtitle', true);
+// Use post title as fallback if no custom header title
+$display_title = !empty($header_title) ? $header_title : get_the_title();
 
-// Get image data from media library (when featured image exists)
-$image_title = '';
-$image_caption = '';
-$image_description = '';
-
-if ($featured_image_id) {
-    $image_data = wp_get_attachment_metadata($featured_image_id);
-    $attachment = get_post($featured_image_id);
-    
-    $image_title = get_the_title($featured_image_id); // Media library title
-    $image_caption = wp_get_attachment_caption($featured_image_id); // Media library caption
-    $image_description = $attachment->post_content; // Media library description
+// Get header image URL and caption
+$header_image_url = '';
+$header_image_caption = '';
+if ($header_image) {
+    $header_image_url = $header_image['url'];
+    $header_image_caption = $header_image['caption'];
 }
 
 get_header();  
@@ -39,101 +33,86 @@ if ( function_exists('yoast_breadcrumb') ) {
 ?>
 </nav>
 
-<?php if ($featured_image_url && $hide_featured_image !== "1"): ?>
-<!-- Full Width Featured Image Hero Section -->
-<section class="fullwidth-article-hero">
-    <div class="hero-image-wrapper">
-        <img src="<?php echo esc_url($featured_image_url); ?>" alt="<?php echo esc_attr($image_title ? $image_title : get_the_title()); ?>" class="hero-image">
-        <?php if ($image_title || $image_caption || $image_description): ?>
-        <div class="hero-overlay">
-            <div class="hero-content">
-                <?php if ($image_title): ?>
-                    <h1 class="hero-title"><?php echo esc_html($image_title); ?></h1>
+<!-- POST HEADER SECTION -->
+<section class="wp-block-create-block-post-header">
+    <?php if ($header_image_url): ?>
+        <!-- Hero Header with Background Image -->
+        <div class="single-news-hero" style="background-image: url('<?php echo esc_url($header_image_url); ?>')">
+            <div class="hero-content-wrapper">
+                <h1 class="hero-title"><?php echo esc_html($display_title); ?></h1>
+                <?php if ($header_subtitle): ?>
+                    <h2 class="hero-subtitle"><?php echo esc_html($header_subtitle); ?></h2>
                 <?php endif; ?>
-                <?php if ($image_caption): ?>
-                    <h2 class="hero-subtitle"><?php echo esc_html($image_caption); ?></h2>
-                <?php endif; ?>
-                <?php if ($image_description): ?>
-                    <p class="hero-caption"><?php echo esc_html($image_description); ?></p>
+                <?php if ($header_image_caption): ?>
+                    <p class="hero-caption"><?php echo esc_html($header_image_caption); ?></p>
                 <?php endif; ?>
             </div>
         </div>
-        <?php endif; ?>
-    </div>
-</section>
-<?php else: ?>
-<!-- Full Width Title Hero Section (when no featured image or hidden) -->
-<section class="fullwidth-article-hero fullwidth-title-hero">
-    <div class="hero-title-wrapper">
-        <div class="hero-content">
-            <h1 class="hero-title"><?php the_title(); ?></h1>
-            <?php if ($post_subtitle): ?>
-                <h2 class="hero-subtitle"><?php echo esc_html($post_subtitle); ?></h2>
-            <?php endif; ?>
+    <?php else: ?>
+        <!-- Simple Header without Background Image -->
+        <div class="title-block w-100">
+            <div class="container-fluid news-title-container">
+                <div class="title-wrapper">
+                    <h1><?php echo esc_html($display_title); ?></h1>
+                    <?php if ($header_subtitle): ?>
+                        <h2 class="header-subtitle"><?php echo esc_html($header_subtitle); ?></h2>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </section>
-<?php endif; ?>
 
 <?php 
 if ($hide_date == "1" && $hide_socials == "1" && $hide_author == "1") {
     // All elements are hidden, don't show the intro section
 } else {
 ?>
-<!-- wp:create-block/single-post-intro -->
-<div class="wp-block-create-block-single-post-intro">
-  <section class="single-news-intro single-news">
-    <div class="date-share-wrapper" style="padding-bottom: 0">
-      <div class="single-news-date">
-        <?php 
-        if ($hide_date !== "1") {
-          the_date();
-        }
-        if ($hide_author !== "1") {
-          ?> / <?php echo $authorFirstName; ?> <?php echo $authorLastName;
-        }
-        ?>
-      </div>
-      <div class="single-social-share">
-        <?php 
-        if ($hide_socials !== "1") {
-          ?>
-          <div class="col-12 social-column social-column-grey">
-            <span>Share</span>
-            <div class="sharethis-inline-share-buttons"></div>
-          </div>
-          <?php 
-        }
-        ?>
-      </div>
+<!-- POST INTRO SECTION -->
+<section class="wp-block-create-block-single-post-intro">
+    <div class="single-news-intro">
+        <!-- Date and Share Section -->
+        <div class="date-share-wrapper">
+            <div class="single-news-date">
+                <?php 
+                if ($hide_date !== "1") {
+                  the_date();
+                }
+                if ($hide_author !== "1") {
+                  ?> / <?php echo $authorFirstName; ?> <?php echo $authorLastName;
+                }
+                ?>
+            </div>
+            <div class="single-social-share">
+                <?php 
+                if ($hide_socials !== "1") {
+                    ?>
+                    <div class="col-12 social-column social-column-grey">
+                        <span>Share</span>
+                        <div class="sharethis-inline-share-buttons"></div>
+                    </div>
+                    <?php 
+                }
+                ?>
+            </div>
+        </div>
     </div>
-  </section>
-</div>
-<!-- /wp:create-block/single-post-intro -->
+</section>
 <?php 
 }
 ?>
 
-<div id="content" class="fullwidth-text-block fullwidth-article">
-  <div id="primary" class="container px-0">
-    <!-- Hook to add something nice -->
-    <?php bs_after_primary(); ?>
-    <main id="main" class="site-main">
-      <header class="entry-header">
-        <?php the_post(); ?>
-        <?php if ($featured_image_url && $hide_featured_image !== "1" && (!$image_title && !$image_caption && !$image_description)): ?>
-            <!-- Featured image exists but no overlay text, show title below image -->
-            <h1><?php the_title(); ?></h1>
-            <?php if ($post_subtitle): ?>
-                <h2 class="post-subtitle"><?php echo esc_html($post_subtitle); ?></h2>
-            <?php endif; ?>
-        <?php endif; ?>
-      </header>
-      <div class="entry-content">
-        <?php the_content(); ?>
-      </div>
-      
-      <?php
+<!-- MAIN CONTENT SECTION -->
+<section class="post-content-section">
+    <div class="container">
+        <div class="post-content">
+            <?php the_post(); ?>
+            <?php the_content(); ?>
+        </div>
+    </div>
+</section>
+
+<?php
       // Get related posts based on tags
       $current_post_id = get_the_ID();
       $post_tags = wp_get_post_tags($current_post_id);
@@ -206,9 +185,6 @@ if ($hide_date == "1" && $hide_socials == "1" && $hide_author == "1") {
           endif;
       }
       ?>
-    </main>
-  </div>
-</div>
 
 <?php
 get_footer();
