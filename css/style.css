@@ -150,6 +150,7 @@ nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper
 
 nav.breadcrumb-wrapper #breadcrumbs {
     padding: 10px 0;
+    margin: 0 !important;
 }
 
 
