@@ -102,6 +102,8 @@ Advanced Custom Fields for header content:
   - responsive - stack all table cells for tables with class of "responsive" added
   - five-across - smaller thumbnails on galleries for galleries with a class of "five-across" added
   - top-align - class "top-align" for moving up cards
+  - bullets - make a bulletted query loop list work
+
 
 ## Styles the custom pattern "Two highlighted posts"
 
@@ -162,4 +164,5 @@ See below for custom pattern code:
   - clean up button with underline style
   - remove weird paragraph from above the livewhale feed block
   - Make the WP standard details block visually pleasing
-
+  - reduce space on filter dropdowns
+  - make break tags in menu items spaced properly
