@@ -237,6 +237,31 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
     color: unset;
     font-size: unset;
 }
+/* reduce space on filter dropdowns */
+.filter-wrapper .dropdown .dropdown-menu button {
+	line-height: 1.25 !important;
+}
+
+/* make break tags in menu items spaced properly */
+.menu-item a.dropdown-item {
+    line-height: 1.5;
+}
+li.menu-item {
+	break-inside: avoid;
+}
+/* add class of "bullets" to post to make a bulletted query loop list work */
+ul.bullets {
+    gap: 0;
+}
+
+ul.bullets li {
+    display: flex;
+}
+
+/* add to breadcrumb style */
+p#breadcrumbs {
+    margin: 0;
+}
 
 /* ===========================================
    POST HEADER STYLES
