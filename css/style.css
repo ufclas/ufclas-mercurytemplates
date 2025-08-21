@@ -150,6 +150,7 @@ nav.breadcrumb-wrapper #breadcrumbs span.breadcrumb_last, nav.breadcrumb-wrapper
 
 nav.breadcrumb-wrapper #breadcrumbs {
     padding: 10px 0;
+    margin: 0 !important;
 }
 
 
@@ -283,6 +284,8 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
     margin-right: auto;
     padding: 10% 7% 55px;
     text-align: left;
+    width: 100%;
+    margin-left: auto;
 }
 
 .single-news-hero h1 {
