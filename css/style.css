@@ -770,7 +770,7 @@ p#breadcrumbs {
     width: 100%;
 }
 
-.container-fluid {
+.container-fluid.news-title-container {
     width: 100%;
     padding: 0;
 }
