@@ -331,7 +331,7 @@ p#breadcrumbs {
     }
 }
 
-.hero-title {
+.single-news-hero .hero-title {
     padding: 0 0 0 0 !important;
 }
 
@@ -424,7 +424,7 @@ p#breadcrumbs {
     }
 }
 
-.title-wrapper {
+.news-title-container .title-wrapper {
     text-align: center;
     max-width: var(--container-max-width);
     margin-left: auto;
@@ -432,7 +432,7 @@ p#breadcrumbs {
     padding-top: 75px;
 }
 
-.title-wrapper h1 {
+.news-title-container .title-wrapper h1 {
     text-align: left;
     text-transform: uppercase;
     color: var(--ufl-text-color);
@@ -442,13 +442,13 @@ p#breadcrumbs {
 }
 
 @media only screen and (min-width: 800px) {
-    .title-wrapper h1 {
+    .news-title-container .title-wrapper h1 {
         font-size: 48px;
         line-height: 56px;
     }
 }
 
-.title-wrapper .header-subtitle {
+.news-title-container .title-wrapper .header-subtitle {
     line-height: 30px;
     text-align: left;
     color: var(--ufl-text-color);
@@ -462,7 +462,7 @@ p#breadcrumbs {
 }
 
 @media only screen and (min-width: 800px) {
-    .title-wrapper .header-subtitle {
+    .news-title-container .title-wrapper .header-subtitle {
         font-size: 28px;
         margin-top: 15px;
     }
@@ -791,7 +791,7 @@ p#breadcrumbs {
     margin-top: 3rem;
 }
 
-.fullwidth-article #ufl-news-content .title-wrapper {
+.fullwidth-article #ufl-news-content .news-title-container .title-wrapper {
     text-align: center;
     max-width: 1074px;
     margin-left: auto;
@@ -799,7 +799,7 @@ p#breadcrumbs {
     margin-bottom: 2rem;
 }
 
-.fullwidth-article #ufl-news-content .title-wrapper h2 {
+.fullwidth-article #ufl-news-content .news-title-container .title-wrapper h2 {
     text-align: center;
     text-transform: uppercase;
     color: #000;
@@ -808,7 +808,7 @@ p#breadcrumbs {
     font-weight: 700;
 }
 
-.fullwidth-article #ufl-news-content .title-wrapper hr {
+.fullwidth-article #ufl-news-content .news-title-container .title-wrapper hr {
     border-top: 2px solid #fa4616;
     opacity: 1;
     margin: 0 auto;
