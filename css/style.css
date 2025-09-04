@@ -255,6 +255,10 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
         width: 25%;
     }
 }
+
+.footer_widget.mb-4 .sub-menu { /* hide submenus in footer */
+    display: none;
+}
 /* reduce space on filter dropdowns */
 .filter-wrapper .dropdown .dropdown-menu button {
 	line-height: 1.25 !important;

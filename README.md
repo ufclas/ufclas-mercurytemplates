@@ -166,3 +166,4 @@ See below for custom pattern code:
   - Make the WP standard details block visually pleasing
   - reduce space on filter dropdowns
   - make break tags in menu items spaced properly
+  - hides submenus in the footer
