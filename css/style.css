@@ -839,5 +839,12 @@ p#breadcrumbs {
     width: 60px;
 }
 
+/* Helper styles to make block quote extend outside of column width */
 
-
+@media (min-width: 1260px) {
+    .post-content .wp-block-create-block-blockquote {
+        margin: 0 calc(.5 * var(--container-max-width));
+        width: 100vw;
+        transform: translate(-50%, 0);
+    }
+}
