@@ -627,5 +627,55 @@ function add_custom_submit_button_class( $submit_button, $form ) {
   return $submit_button;
 }
 
+/**
+ * Hide specific Customizer sections and widget areas from non-superadmins
+ * @param WP_Customize_Manager $wp_customize
+ */
+function hide_customizer_sections_for_non_superadmins( $wp_customize ) {
+    // Only hide sections if the user is NOT a superadmin
+    if ( ! is_super_admin() ) {
+        // Hide main customizer sections
+        $wp_customize->remove_section( 'title_tagline' ); // Site Identity
+        $wp_customize->remove_section( 'analytics_settings_section' ); // Analytics Settings
+        $wp_customize->remove_section( 'mytheme_section' ); // Alternate Logo Section
+        $wp_customize->remove_section( 'ufclas_different_footer_logo_section' ); // Different Footer Logo Section
+
+        // Hide specific widget areas by removing their sidebar sections
+        $wp_customize->remove_section( 'sidebar-widgets-top-nav' ); // Global Alert
+        $wp_customize->remove_section( 'sidebar-widgets-footer-1' ); // Footer Link Column 1
+        $wp_customize->remove_section( 'sidebar-widgets-footer-2' ); // Footer Link Column 2
+        $wp_customize->remove_section( 'sidebar-widgets-footer-3' ); // Footer Link Column 3
+        $wp_customize->remove_section( 'sidebar-widgets-footer-4' ); // Footer Link Column 4
+        $wp_customize->remove_section( 'sidebar-widgets-footer-copyright' ); // Copyright
+    }
+}
+// Hook with high priority to ensure it runs after all sections are registered
+add_action( 'customize_register', 'hide_customizer_sections_for_non_superadmins', 999 );
+
+/**
+ * Hide Themes submenu from Appearance menu for non-superadmins
+ */
+function hide_themes_menu_for_non_superadmins() {
+    if ( ! is_super_admin() ) {
+        remove_submenu_page( 'themes.php', 'themes.php' );
+    }
+}
+add_action( 'admin_menu', 'hide_themes_menu_for_non_superadmins', 999 );
+
+/**
+ * Hide specific widget areas from Widgets admin page for non-superadmins
+ */
+function hide_widget_areas_for_non_superadmins() {
+    if ( ! is_super_admin() ) {
+        // Unregister widget areas to hide them from Widgets page
+        unregister_sidebar( 'top-nav' ); // Global Alert
+        unregister_sidebar( 'footer-1' ); // Footer Link Column 1
+        unregister_sidebar( 'footer-2' ); // Footer Link Column 2
+        unregister_sidebar( 'footer-3' ); // Footer Link Column 3
+        unregister_sidebar( 'footer-4' ); // Footer Link Column 4
+        unregister_sidebar( 'footer-copyright' ); // Copyright
+    }
+}
+add_action( 'widgets_init', 'hide_widget_areas_for_non_superadmins', 999 );
 
   ?>
