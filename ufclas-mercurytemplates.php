@@ -662,4 +662,20 @@ function hide_themes_menu_for_non_superadmins() {
 }
 add_action( 'admin_menu', 'hide_themes_menu_for_non_superadmins', 999 );
 
+/**
+ * Hide specific widget areas from Widgets admin page for non-superadmins
+ */
+function hide_widget_areas_for_non_superadmins() {
+    if ( ! is_super_admin() ) {
+        // Unregister widget areas to hide them from Widgets page
+        unregister_sidebar( 'top-nav' ); // Global Alert
+        unregister_sidebar( 'footer-1' ); // Footer Link Column 1
+        unregister_sidebar( 'footer-2' ); // Footer Link Column 2
+        unregister_sidebar( 'footer-3' ); // Footer Link Column 3
+        unregister_sidebar( 'footer-4' ); // Footer Link Column 4
+        unregister_sidebar( 'footer-copyright' ); // Copyright
+    }
+}
+add_action( 'widgets_init', 'hide_widget_areas_for_non_superadmins', 999 );
+
   ?>
