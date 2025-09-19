@@ -627,5 +627,29 @@ function add_custom_submit_button_class( $submit_button, $form ) {
   return $submit_button;
 }
 
+/**
+ * Hide specific Customizer sections and widget areas from non-superadmins
+ * @param WP_Customize_Manager $wp_customize
+ */
+function hide_customizer_sections_for_non_superadmins( $wp_customize ) {
+    // Only hide sections if the user is NOT a superadmin
+    if ( ! is_super_admin() ) {
+        // Hide main customizer sections
+        $wp_customize->remove_section( 'title_tagline' ); // Site Identity
+        $wp_customize->remove_section( 'analytics_settings_section' ); // Analytics Settings
+        $wp_customize->remove_section( 'mytheme_section' ); // Alternate Logo Section
+        $wp_customize->remove_section( 'ufclas_different_footer_logo_section' ); // Different Footer Logo Section
+
+        // Hide specific widget areas by removing their sidebar sections
+        $wp_customize->remove_section( 'sidebar-widgets-top-nav' ); // Global Alert
+        $wp_customize->remove_section( 'sidebar-widgets-footer-1' ); // Footer Link Column 1
+        $wp_customize->remove_section( 'sidebar-widgets-footer-2' ); // Footer Link Column 2
+        $wp_customize->remove_section( 'sidebar-widgets-footer-3' ); // Footer Link Column 3
+        $wp_customize->remove_section( 'sidebar-widgets-footer-4' ); // Footer Link Column 4
+        $wp_customize->remove_section( 'sidebar-widgets-footer-copyright' ); // Copyright
+    }
+}
+// Hook with high priority to ensure it runs after all sections are registered
+add_action( 'customize_register', 'hide_customizer_sections_for_non_superadmins', 999 );
 
   ?>
