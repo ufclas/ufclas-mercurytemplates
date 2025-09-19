@@ -652,4 +652,14 @@ function hide_customizer_sections_for_non_superadmins( $wp_customize ) {
 // Hook with high priority to ensure it runs after all sections are registered
 add_action( 'customize_register', 'hide_customizer_sections_for_non_superadmins', 999 );
 
+/**
+ * Hide Themes submenu from Appearance menu for non-superadmins
+ */
+function hide_themes_menu_for_non_superadmins() {
+    if ( ! is_super_admin() ) {
+        remove_submenu_page( 'themes.php', 'themes.php' );
+    }
+}
+add_action( 'admin_menu', 'hide_themes_menu_for_non_superadmins', 999 );
+
   ?>
