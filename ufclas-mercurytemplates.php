@@ -706,19 +706,26 @@ add_action( 'admin_menu', 'hide_themes_menu_for_non_superadmins', 999 );
 
 /**
  * Hide specific widget areas from Widgets admin page for non-superadmins
+ * Uses sidebars_widgets filter to hide in admin only, preserving frontend functionality
  */
-function hide_widget_areas_for_non_superadmins() {
-    if ( ! is_super_admin() ) {
-        // Unregister widget areas to hide them from Widgets page
-        unregister_sidebar( 'top-nav' ); // Global Alert
-        unregister_sidebar( 'footer-1' ); // Footer Link Column 1
-        unregister_sidebar( 'footer-2' ); // Footer Link Column 2
-        unregister_sidebar( 'footer-3' ); // Footer Link Column 3
-        unregister_sidebar( 'footer-4' ); // Footer Link Column 4
-        unregister_sidebar( 'footer-copyright' ); // Copyright
+function hide_widget_areas_for_non_superadmins( $sidebars_widgets ) {
+    // Only hide in admin area (not during AJAX) and for non-superadmins
+    if ( is_admin() && ! wp_doing_ajax() && ! is_super_admin() ) {
+        // Check if we're specifically on the widgets page
+        global $pagenow;
+        if ( $pagenow === 'widgets.php' ) {
+            // Remove widget areas from the list
+            unset( $sidebars_widgets['top-nav'] );
+            unset( $sidebars_widgets['footer-1'] );
+            unset( $sidebars_widgets['footer-2'] );
+            unset( $sidebars_widgets['footer-3'] );
+            unset( $sidebars_widgets['footer-4'] );
+            unset( $sidebars_widgets['footer-copyright'] );
+        }
     }
+    return $sidebars_widgets;
 }
-add_action( 'widgets_init', 'hide_widget_areas_for_non_superadmins', 999 );
+add_filter( 'sidebars_widgets', 'hide_widget_areas_for_non_superadmins' );
 
 // Add body classes based on social sharing settings
 add_filter('body_class', function($classes) {
