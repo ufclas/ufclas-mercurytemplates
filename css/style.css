@@ -540,6 +540,22 @@ p#breadcrumbs {
     margin-right: 4%;
 }
 
+/* Specific gap for date-share-wrapper context */
+.date-share-wrapper .single-social-share .social-column-grey {
+    gap: 4px !important;
+}
+
+/* Override gap for single-news social column */
+.single-news .date-share-wrapper .single-social-share .social-column {
+    gap: 4px !important;
+    justify-content: center;
+}
+
+/* Override gap for single-news social-column-grey */
+.single-news .date-share-wrapper .single-social-share .social-column-grey {
+    gap: 4px !important;
+}
+
 /* Social Share Buttons - ensure single row layout */
 .sharethis-inline-share-buttons {
     display: flex !important;
@@ -596,6 +612,107 @@ p#breadcrumbs {
     .single-social-share {
         margin-right: -200px;
     }
+}
+
+/* Bluesky button styles - match ShareThis button styling */
+.bluesky-share-btn {
+    display: inline-flex; /* Use flexbox for better size control */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    vertical-align: middle;
+    margin-left: 4px; /* 4px left margin as requested */
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 1;
+    position: relative;
+    top: 0;
+    transition: opacity 0.2s ease-in, top 0.2s ease-in; /* Match ShareThis animation */
+    width: 48px; /* 48x48 container */
+    min-width: 48px; /* Prevent shrinking */
+    height: 48px;
+    box-sizing: border-box; /* Include padding in width */
+    padding: 0 12px; /* Add horizontal padding to ensure 48px total */
+    background-color: #f4f4f4; /* Light grey background to match ShareThis style */
+    border-radius: 0; /* Square corners */
+}
+
+.bluesky-share-btn svg {
+    width: 24px; /* 24x24 butterfly icon */
+    height: 24px;
+    flex-shrink: 0; /* Prevent SVG from shrinking */
+}
+
+/* Subtle hover effect to match ShareThis buttons */
+.bluesky-share-btn:hover {
+    top: -4px; /* Move button up more on hover */
+    opacity: 0.9; /* Subtle opacity change */
+    background-color: #ffffff; /* Darker grey background on hover */
+}
+
+.bluesky-share-btn:hover svg path {
+    fill: var(--ufl-blue); /* Darker grey on hover */
+}
+
+/* Override parent theme's background color for Bluesky button */
+.social-column-grey .bluesky-share-btn {
+    background-color: #f4f4f4 !important; /* Match ShareThis button background */
+}
+
+.social-column-grey .bluesky-share-btn:hover {
+    background-color: #F6F6F6 !important; /* Light grey background on hover */
+}
+
+/* Keep ShareThis and Bluesky inline - don't break ShareThis layout */
+.social-column-grey {
+    /* Removed flex to preserve ShareThis inline-block layout */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.social-column-grey > span {
+    margin-right: 8px;
+    font-weight: 600;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Ensure ShareThis container stays inline */
+.sharethis-inline-share-buttons {
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+/* Match ShareThis button sizing for consistency */
+.sharethis-inline-share-buttons .st-btn {
+    vertical-align: middle !important;
+}
+
+/* Ensure Bluesky button aligns with ShareThis buttons */
+.sharethis-inline-share-buttons + .bluesky-share-btn {
+    margin-left: 0; /* Remove left margin when after ShareThis */
+}
+
+/* Mobile responsive adjustments for social buttons */
+@media (max-width: 767px) {
+    .social-column-grey {
+        white-space: normal; /* Allow wrapping on mobile */
+    }
+}
+
+/* Hide specific ShareThis buttons based on body classes */
+body.hide-facebook-share .st-btn[data-network='facebook'] {
+    display: none !important;
+}
+
+body.hide-twitter-share .st-btn[data-network='twitter'] {
+    display: none !important;
+}
+
+body.hide-email-share .st-btn[data-network='email'] {
+    display: none !important;
+}
+
+body.hide-linkedin-share .st-btn[data-network='linkedin'] {
+    display: none !important;
 }
 
 /* Highlight/Excerpt Section */
