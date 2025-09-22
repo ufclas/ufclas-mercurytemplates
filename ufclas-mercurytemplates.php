@@ -302,16 +302,16 @@ function thisplugin_save_meta_box($post_id)
 add_action('save_post', 'thisplugin_save_meta_box');
 
 //========> Custom Meta Box for hiding date and other elements
-// Add meta box to post editor
+// Add meta boxes to post editor
 add_action('add_meta_boxes', function($post) {
     add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
+    add_meta_box('social_sharing_id', 'Social Sharing', 'crt_metaBox_social_sharing', 'post', 'side', 'low');
 });
 
-// Render the meta box
+// Render the Hide Elements meta box
 function crt_metaBox_elements($post){
     $fields = [
         'hide_date' => 0,
-        'hide_socials' => 0,
         'hide_author' => 1,
         'hide_featured_image' => 1
     ];
@@ -328,14 +328,56 @@ function crt_metaBox_elements($post){
     }
 }
 
+// Render the Social Sharing meta box
+function crt_metaBox_social_sharing($post){
+    // Check for legacy hide_socials setting
+    $hide_all_socials = get_post_meta($post->ID, 'hide_socials', true);
+
+    $social_fields = [
+        'show_facebook' => 1,
+        'show_twitter' => 1,
+        'show_email' => 1,
+        'show_linkedin' => 1,
+        'show_bluesky' => 1
+    ];
+
+    echo '<p style="margin-bottom: 10px; color: #666; font-size: 12px;">Select which social sharing buttons to display:</p>';
+
+    foreach ($social_fields as $field => $default) {
+        $value = get_post_meta($post->ID, $field, true);
+        // Handle legacy hide_socials - if it's set to 1, default all to 0
+        if ($value === '' && $hide_all_socials == '1') {
+            $value = 0;
+        } elseif ($value === '' && $post->post_status === 'auto-draft') {
+            $value = $default;
+        }
+        $label = ucwords(str_replace(['show_', '_'], ['', ' '], $field));
+        echo '<p class="ufl_checkbox">';
+        echo '<span>' . $label . '</span>';
+        echo '<input type="checkbox" name="' . $field . '" id="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
+        echo '</p>';
+    }
+}
+
 // Save meta box data
 add_action('save_post', function($post_id){
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
-    $fields = ['hide_date', 'hide_socials', 'hide_author', 'hide_featured_image'];
+    $fields = ['hide_date', 'hide_author', 'hide_featured_image'];
+    $social_fields = ['show_facebook', 'show_twitter', 'show_email', 'show_linkedin', 'show_bluesky'];
 
+    // Save regular fields
     foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $field, 1);
+        } elseif (isset($_POST['action']) && $_POST['action'] === 'editpost') {
+            update_post_meta($post_id, $field, 0);
+        }
+    }
+
+    // Save social fields
+    foreach ($social_fields as $field) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, $field, 1);
         } elseif (isset($_POST['action']) && $_POST['action'] === 'editpost') {
@@ -677,5 +719,26 @@ function hide_widget_areas_for_non_superadmins() {
     }
 }
 add_action( 'widgets_init', 'hide_widget_areas_for_non_superadmins', 999 );
+
+// Add body classes based on social sharing settings
+add_filter('body_class', function($classes) {
+    global $post;
+    if (is_single() && $post) {
+        // Add hide classes for ShareThis buttons based on post meta
+        if (!get_post_meta($post->ID, 'show_facebook', true)) {
+            $classes[] = 'hide-facebook-share';
+        }
+        if (!get_post_meta($post->ID, 'show_twitter', true)) {
+            $classes[] = 'hide-twitter-share';
+        }
+        if (!get_post_meta($post->ID, 'show_email', true)) {
+            $classes[] = 'hide-email-share';
+        }
+        if (!get_post_meta($post->ID, 'show_linkedin', true)) {
+            $classes[] = 'hide-linkedin-share';
+        }
+    }
+    return $classes;
+});
 
   ?>

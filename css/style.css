@@ -698,6 +698,23 @@ p#breadcrumbs {
     }
 }
 
+/* Hide specific ShareThis buttons based on body classes */
+body.hide-facebook-share .st-btn[data-network='facebook'] {
+    display: none !important;
+}
+
+body.hide-twitter-share .st-btn[data-network='twitter'] {
+    display: none !important;
+}
+
+body.hide-email-share .st-btn[data-network='email'] {
+    display: none !important;
+}
+
+body.hide-linkedin-share .st-btn[data-network='linkedin'] {
+    display: none !important;
+}
+
 /* Highlight/Excerpt Section */
 .single-news-highlight {
     max-width: var(--container-max-width);
