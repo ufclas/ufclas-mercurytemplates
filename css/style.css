@@ -715,6 +715,51 @@ body.hide-linkedin-share .st-btn[data-network='linkedin'] {
     display: none !important;
 }
 
+/* Hide specific ShareThis buttons based on block-level data attributes */
+.sharethis-inline-share-buttons[data-show-facebook="false"] .st-btn[data-network='facebook'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-twitter="false"] .st-btn[data-network='twitter'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-email="false"] .st-btn[data-network='email'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-linkedin="false"] .st-btn[data-network='linkedin'] {
+    display: none !important;
+}
+
+/* Ensure consistent display for social buttons on both posts and pages */
+.wp-block-create-block-single-post-intro .social-column-grey {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap;
+}
+
+.wp-block-create-block-single-post-intro .social-column-grey > span:first-child {
+    margin-right: 10px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.wp-block-create-block-single-post-intro .sharethis-inline-share-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+    .wp-block-create-block-single-post-intro .social-column-grey {
+        white-space: normal;
+        flex-wrap: wrap;
+    }
+}
+
 /* Highlight/Excerpt Section */
 .single-news-highlight {
     max-width: var(--container-max-width);

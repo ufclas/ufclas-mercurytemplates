@@ -63,9 +63,17 @@ A comprehensive full-width template for articles that provides:
 **Hide Elements**
 Controls visibility of post elements for all templates:
   - Hide Date checkbox
-  - Hide Author checkbox  
-  - Hide Socials checkbox
+  - Hide Author checkbox
   - Hide Featured Image checkbox
+
+**Social Sharing**
+Individual control over social sharing buttons on posts:
+  - Facebook checkbox - Show/hide Facebook share button
+  - Twitter checkbox - Show/hide Twitter share button
+  - Email checkbox - Show/hide Email share button
+  - LinkedIn checkbox - Show/hide LinkedIn share button
+  - Bluesky checkbox - Show/hide Bluesky share button
+  - Note: These work in conjunction with block-level controls (see Block Enhancements below)
 
 **Post Header Fields** (ACF)
 Advanced Custom Fields for header content:
@@ -94,6 +102,51 @@ Advanced Custom Fields for header content:
 - **With Header Image**: Full-width background image with left-aligned white text (title, subtitle, caption) and dark gradient overlay
 - **Without Header Image**: Clean left-aligned header with light gray background (no decorative elements)
 - **Text Hierarchy**: Title → Subtitle → Caption (when image is used), with optimized spacing between elements
+
+## Block Enhancements
+
+### Post Intro Block Override
+The plugin enhances the Post Intro Block with additional social sharing controls:
+
+**Features:**
+- **Social Sharing Toggle Controls**: Individual on/off toggles for each social platform in the block editor
+- **Bluesky Integration**: Native Bluesky share button alongside ShareThis buttons
+- **Two-Layer Control System**:
+  - Post-level controls: Set in the Social Sharing meta box (posts only)
+  - Block-level controls: Set in the block's inspector panel
+  - For posts: Both levels must be enabled for buttons to appear
+  - For pages: Only block-level controls apply (no post meta)
+- **Smart Visibility Logic**: Buttons only appear when enabled at the appropriate level(s)
+- **Responsive Design**: Maintains single-row layout with proper spacing
+
+**How it Works:**
+1. For posts: Social buttons require both post meta AND block settings to be enabled
+2. For pages: Social buttons only require block settings (since pages don't have post meta)
+3. The block shows a helpful note on posts reminding users to check both settings
+
+## Administrator Restrictions
+
+For enhanced security and simplified user experience, the following areas are restricted for non-superadmin users:
+
+**Hidden Customizer Sections:**
+- Site Identity settings
+- Analytics Settings
+- Alternate Logo sections
+- Footer Logo options
+
+**Restricted Widget Areas:**
+- Global Alert (top-nav)
+- Footer Link Columns 1-4
+- Copyright widget area
+- These areas are hidden in the Widgets admin but remain visible on the frontend
+
+**Hidden Menu Items:**
+- Themes submenu removed from Appearance menu for non-superadmins
+
+**Benefits:**
+- Prevents accidental changes to critical site elements
+- Simplifies the admin interface for regular administrators
+- Maintains site consistency and branding
 
 ## Adds the following helper classes
 
@@ -154,16 +207,21 @@ See below for custom pattern code:
 ```
 
 ## Tweaks the following
-  - remove "Category" and "Tag" from before the category Title in archives
-  - shortcode to dynamically update year in the footer
-  - Disable core blocks.
-  - Make it so regular Adminstrators don't wipe out iframes when editing pages
-  - Add Google Analytics and Google Tag Manager to the Customizer
-  - Add custom class to style the Gravity forms button
-  - prevent long ig posts from corrupting social banner's layout in mobile
-  - clean up button with underline style
-  - remove weird paragraph from above the livewhale feed block
-  - Make the WP standard details block visually pleasing
-  - reduce space on filter dropdowns
-  - make break tags in menu items spaced properly
-  - hides submenus in the footer
+  - Remove "Category" and "Tag" from before the category Title in archives
+  - Shortcode to dynamically update year in the footer (`[year]`)
+  - Disable core block patterns
+  - Make it so regular Administrators don't wipe out iframes when editing pages (unfiltered_html capability)
+  - Add Google Analytics and Google Tag Manager fields to the Customizer
+  - Add custom class to style Gravity Forms buttons with animated border style
+  - Prevent long Instagram posts from corrupting social banner's layout in mobile
+  - Clean up button with underline style appearance
+  - Remove empty paragraph elements from above the LiveWhale feed block
+  - Make the WP standard details block visually pleasing with custom styling
+  - Reduce space on filter dropdown menus
+  - Make break tags in menu items spaced properly for better readability
+  - Hide submenus in the footer for cleaner navigation
+  - Social sharing buttons with individual visibility controls and Bluesky support
+  - Widget area restrictions for non-superadmin users (admin only, preserves frontend)
+  - Full-width block quotes in article template for better visual impact
+  - Customizer section restrictions for enhanced security
+  - Themes menu access control for non-superadmins

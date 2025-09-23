@@ -748,4 +748,57 @@ add_filter('body_class', function($classes) {
     return $classes;
 });
 
+// Include Post Intro Block override
+require_once plugin_dir_path(__FILE__) . 'includes/post-intro-override.php';
+
+// Add attributes to Post Intro Block via filter
+add_filter('register_block_type_args', 'ufclas_add_post_intro_attributes', 10, 2);
+
+function ufclas_add_post_intro_attributes($args, $block_type) {
+    // Check if this is our target block
+    if ($block_type === 'create-block/single-post-intro') {
+        // Add social sharing attributes to the existing attributes
+        if (!isset($args['attributes'])) {
+            $args['attributes'] = array();
+        }
+
+        // Add our custom attributes
+        $args['attributes']['showFacebook'] = array(
+            'type' => 'boolean',
+            'default' => true
+        );
+        $args['attributes']['showTwitter'] = array(
+            'type' => 'boolean',
+            'default' => true
+        );
+        $args['attributes']['showEmail'] = array(
+            'type' => 'boolean',
+            'default' => true
+        );
+        $args['attributes']['showLinkedin'] = array(
+            'type' => 'boolean',
+            'default' => true
+        );
+        $args['attributes']['showBluesky'] = array(
+            'type' => 'boolean',
+            'default' => true
+        );
+
+        // Override the render callback
+        $args['render_callback'] = 'ufclas_render_single_post_intro_block_enhanced';
+    }
+
+    return $args;
+}
+
+// Enqueue block editor extensions
+add_action('enqueue_block_editor_assets', function() {
+    wp_enqueue_script(
+        'ufclas-post-intro-extension',
+        plugins_url('js/post-intro-extension.js', __FILE__),
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-compose', 'wp-hooks'),
+        '1.0.0'
+    );
+});
+
   ?>
