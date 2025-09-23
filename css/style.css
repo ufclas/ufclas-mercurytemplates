@@ -620,7 +620,6 @@ p#breadcrumbs {
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
     vertical-align: middle;
-    margin-left: 4px; /* 4px left margin as requested */
     cursor: pointer;
     text-decoration: none;
     opacity: 1;
@@ -634,6 +633,7 @@ p#breadcrumbs {
     padding: 0 12px; /* Add horizontal padding to ensure 48px total */
     background-color: #f4f4f4; /* Light grey background to match ShareThis style */
     border-radius: 0; /* Square corners */
+    margin-right: 0; /* Remove any right margin */
 }
 
 .bluesky-share-btn svg {
@@ -662,6 +662,11 @@ p#breadcrumbs {
     background-color: #F6F6F6 !important; /* Light grey background on hover */
 }
 
+/* Override parent theme's margin for social-column anchors */
+.social-column .bluesky-share-btn {
+    margin: 0 !important; /* Remove the 5px margin from parent theme */
+}
+
 /* Keep ShareThis and Bluesky inline - don't break ShareThis layout */
 .social-column-grey {
     /* Removed flex to preserve ShareThis inline-block layout */
@@ -686,11 +691,6 @@ p#breadcrumbs {
     vertical-align: middle !important;
 }
 
-/* Ensure Bluesky button aligns with ShareThis buttons */
-.sharethis-inline-share-buttons + .bluesky-share-btn {
-    margin-left: 0; /* Remove left margin when after ShareThis */
-}
-
 /* Mobile responsive adjustments for social buttons */
 @media (max-width: 767px) {
     .social-column-grey {
@@ -713,6 +713,52 @@ body.hide-email-share .st-btn[data-network='email'] {
 
 body.hide-linkedin-share .st-btn[data-network='linkedin'] {
     display: none !important;
+}
+
+/* Hide specific ShareThis buttons based on block-level data attributes */
+.sharethis-inline-share-buttons[data-show-facebook="false"] .st-btn[data-network='facebook'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-twitter="false"] .st-btn[data-network='twitter'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-email="false"] .st-btn[data-network='email'] {
+    display: none !important;
+}
+
+.sharethis-inline-share-buttons[data-show-linkedin="false"] .st-btn[data-network='linkedin'] {
+    display: none !important;
+}
+
+/* Ensure consistent display for social buttons on both posts and pages */
+.wp-block-create-block-single-post-intro .social-column-grey {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap;
+}
+
+.wp-block-create-block-single-post-intro .social-column-grey > span:first-child {
+    margin-right: 10px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.wp-block-create-block-single-post-intro .sharethis-inline-share-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: -4px; /* Compensate for last visible button's margin */
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+    .wp-block-create-block-single-post-intro .social-column-grey {
+        white-space: normal;
+        flex-wrap: wrap;
+    }
 }
 
 /* Highlight/Excerpt Section */
