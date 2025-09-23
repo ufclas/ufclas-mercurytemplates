@@ -66,21 +66,31 @@ Controls visibility of post elements for all templates:
   - Hide Author checkbox
   - Hide Featured Image checkbox
 
-**Social Sharing**
-Individual control over social sharing buttons on posts:
-  - Facebook checkbox - Show/hide Facebook share button
-  - Twitter checkbox - Show/hide Twitter share button
-  - Email checkbox - Show/hide Email share button
-  - LinkedIn checkbox - Show/hide LinkedIn share button
-  - Bluesky checkbox - Show/hide Bluesky share button
-  - Note: These work in conjunction with block-level controls (see Block Enhancements below)
-
 **Post Header Fields** (ACF)
 Advanced Custom Fields for header content:
   - Header Image: Upload background image for hero section
   - Header Title: Custom title text (falls back to post title)
   - Header Subtitle: Optional subtitle for simple headers
   - Uses image caption for highlighted excerpt section
+
+## Customizer Settings
+
+### Social Settings
+Global social sharing button configuration in Appearance > Customize > Social Settings:
+  - Show Facebook on Posts - Enable/disable Facebook share button globally
+  - Show Twitter on Posts - Enable/disable Twitter share button globally
+  - Show Email on Posts - Enable/disable Email share button globally
+  - Show LinkedIn on Posts - Enable/disable LinkedIn share button globally
+  - Show Bluesky on Posts - Enable/disable Bluesky share button globally
+
+These settings work as global defaults that apply to:
+  - Post templates (custom-post-contained, custom-post-fullwidth-article)
+  - Post Intro Block (requires both Customizer AND block settings enabled)
+
+### Analytics Settings
+Google tracking configuration in Appearance > Customize > Analytics Settings:
+  - Google Analytics ID
+  - Google Tag Manager ID
 
 ## How to use the Full width article template
 
@@ -112,25 +122,27 @@ The plugin enhances the Post Intro Block with additional social sharing controls
 - **Social Sharing Toggle Controls**: Individual on/off toggles for each social platform in the block editor
 - **Bluesky Integration**: Native Bluesky share button alongside ShareThis buttons
 - **Two-Layer Control System**:
-  - Post-level controls: Set in the Social Sharing meta box (posts only)
+  - Global controls: Set in Appearance > Customize > Social Settings
   - Block-level controls: Set in the block's inspector panel
-  - For posts: Both levels must be enabled for buttons to appear
-  - For pages: Only block-level controls apply (no post meta)
+  - Both the global Customizer setting AND block setting must be enabled for buttons to appear
 - **Smart Visibility Logic**: Buttons only appear when enabled at the appropriate level(s)
 - **Responsive Design**: Maintains single-row layout with proper spacing
 
 **How it Works:**
-1. For posts: Social buttons require both post meta AND block settings to be enabled
-2. For pages: Social buttons only require block settings (since pages don't have post meta)
-3. The block shows a helpful note on posts reminding users to check both settings
+1. Social buttons require both Customizer settings AND block settings to be enabled
+2. The block shows a helpful note reminding users to check both settings
+3. Templates use only the global Customizer settings
 
 ## Administrator Restrictions
 
 For enhanced security and simplified user experience, the following areas are restricted for non-superadmin users:
 
-**Hidden Customizer Sections:**
+**Available Customizer Sections:**
+- Analytics Settings (Google Analytics and Tag Manager)
+- Social Settings (Social sharing button controls)
+
+**Hidden Customizer Sections for non-superadmins:**
 - Site Identity settings
-- Analytics Settings
 - Alternate Logo sections
 - Footer Logo options
 

@@ -14,33 +14,35 @@ function ufclas_render_single_post_intro_block_enhanced($attributes, $content) {
     $showLinkedin = isset($attributes['showLinkedin']) ? (bool)$attributes['showLinkedin'] : true;
     $showBluesky = isset($attributes['showBluesky']) ? (bool)$attributes['showBluesky'] : true;
 
-    // Check if any social buttons are enabled
-    $show_any_social = $showFacebook || $showTwitter || $showEmail || $showLinkedin || $showBluesky;
-
     // Get the current post URL and title for sharing
     $post_title = get_the_title();
     $post_url = get_permalink();
     $share_text = urlencode($post_title . ' ' . $post_url);
 
-    // Get current post type
-    $post_type = get_post_type();
+    // Get Customizer values and convert to boolean
+    $customizer_facebook = (bool) get_theme_mod('show_facebook', true);
+    $customizer_twitter = (bool) get_theme_mod('show_twitter', true);
+    $customizer_email = (bool) get_theme_mod('show_email', true);
+    $customizer_linkedin = (bool) get_theme_mod('show_linkedin', true);
+    $customizer_bluesky = (bool) get_theme_mod('show_bluesky', true);
 
-    // Check post meta for Bluesky only if it's a post
-    if ($post_type === 'post') {
-        // For posts, check both block setting AND post meta
-        $post_allows_bluesky = get_post_meta(get_the_ID(), 'show_bluesky', true);
-        $showBlueskyfinal = $showBluesky && $post_allows_bluesky;
-    } else {
-        // For pages and other post types, only check block setting
-        $showBlueskyfinal = $showBluesky;
-    }
+    // Always check both block setting AND Customizer setting for Post Intro Block
+    // This applies to both posts and pages - Customizer provides global settings
+    $showFacebookFinal = $showFacebook && $customizer_facebook;
+    $showTwitterFinal = $showTwitter && $customizer_twitter;
+    $showEmailFinal = $showEmail && $customizer_email;
+    $showLinkedinFinal = $showLinkedin && $customizer_linkedin;
+    $showBlueskyfinal = $showBluesky && $customizer_bluesky;
 
-    // Add data attributes for hiding ShareThis buttons via block settings
+    // Check if any social buttons are enabled
+    $show_any_social = $showFacebookFinal || $showTwitterFinal || $showEmailFinal || $showLinkedinFinal || $showBlueskyfinal;
+
+    // Add data attributes for hiding ShareThis buttons
     $sharethis_data_attrs = '';
-    $sharethis_data_attrs .= !$showFacebook ? ' data-show-facebook="false"' : '';
-    $sharethis_data_attrs .= !$showTwitter ? ' data-show-twitter="false"' : '';
-    $sharethis_data_attrs .= !$showEmail ? ' data-show-email="false"' : '';
-    $sharethis_data_attrs .= !$showLinkedin ? ' data-show-linkedin="false"' : '';
+    $sharethis_data_attrs .= !$showFacebookFinal ? ' data-show-facebook="false"' : '';
+    $sharethis_data_attrs .= !$showTwitterFinal ? ' data-show-twitter="false"' : '';
+    $sharethis_data_attrs .= !$showEmailFinal ? ' data-show-email="false"' : '';
+    $sharethis_data_attrs .= !$showLinkedinFinal ? ' data-show-linkedin="false"' : '';
 
     ob_start();
     ?>
