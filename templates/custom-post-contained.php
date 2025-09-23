@@ -52,7 +52,6 @@ if ($hide_date == "1" && $hide_socials == "1" && $hide_socials == "1") {
           ?>
           <div class="col-12 social-column social-column-grey">
             <span>Share</span>
-            <div class="sharethis-inline-share-buttons"></div>
             <?php if (get_post_meta($post->ID, 'show_bluesky', true)) : ?>
             <a class="bluesky-share-btn"
                target="_blank"
@@ -63,6 +62,7 @@ if ($hide_date == "1" && $hide_socials == "1" && $hide_socials == "1") {
                 </svg>
             </a>
             <?php endif; ?>
+            <div class="sharethis-inline-share-buttons"></div>
           </div>
           <?php
         }

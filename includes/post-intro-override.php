@@ -59,7 +59,6 @@ function ufclas_render_single_post_intro_block_enhanced($attributes, $content) {
                     <?php if ($show_any_social) : ?>
                     <div class="col-12 social-column social-column-grey">
                         <span>Share</span>
-                        <div class="sharethis-inline-share-buttons"<?php echo $sharethis_data_attrs; ?>></div>
                         <?php if ($showBlueskyfinal) : ?>
                         <a class="bluesky-share-btn"
                            target="_blank"
@@ -71,6 +70,7 @@ function ufclas_render_single_post_intro_block_enhanced($attributes, $content) {
                             </svg>
                         </a>
                         <?php endif; ?>
+                        <div class="sharethis-inline-share-buttons"<?php echo $sharethis_data_attrs; ?>></div>
                     </div>
                     <?php endif; ?>
                 </div>
