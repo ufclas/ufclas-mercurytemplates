@@ -43,9 +43,8 @@
             const { attributes, setAttributes } = props;
             const { showFacebook, showTwitter, showEmail, showLinkedin, showBluesky } = attributes;
 
-            // Check if we're editing a post (not a page or other post type)
-            const postType = wp.data.select('core/editor').getCurrentPostType();
-            const isPost = postType === 'post';
+            // Note applies to all post types now since Customizer settings are global
+            const showNote = true; // Always show the note about Customizer settings
 
             return wp.element.createElement(
                 Fragment,
@@ -57,8 +56,8 @@
                     wp.element.createElement(
                         PanelBody,
                         { title: 'Social Sharing Options', initialOpen: false },
-                        // Show notice only for posts
-                        isPost && wp.element.createElement(
+                        // Show notice for all post types
+                        showNote && wp.element.createElement(
                             'div',
                             {
                                 style: {
@@ -75,7 +74,7 @@
                                 null,
                                 'Note: '
                             ),
-                            'Make sure all desired social buttons are also enabled in the post\'s Social Sharing meta box (in the sidebar). Both settings must be enabled for buttons to appear.'
+                            'Make sure all desired social buttons are also enabled in Appearance > Customize > Social Settings. Both settings must be enabled for buttons to appear.'
                         ),
                         wp.element.createElement(
                             PanelRow,

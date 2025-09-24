@@ -305,7 +305,6 @@ add_action('save_post', 'thisplugin_save_meta_box');
 // Add meta boxes to post editor
 add_action('add_meta_boxes', function($post) {
     add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
-    add_meta_box('social_sharing_id', 'Social Sharing', 'crt_metaBox_social_sharing', 'post', 'side', 'low');
 });
 
 // Render the Hide Elements meta box
@@ -328,36 +327,6 @@ function crt_metaBox_elements($post){
     }
 }
 
-// Render the Social Sharing meta box
-function crt_metaBox_social_sharing($post){
-    // Check for legacy hide_socials setting
-    $hide_all_socials = get_post_meta($post->ID, 'hide_socials', true);
-
-    $social_fields = [
-        'show_facebook' => 1,
-        'show_twitter' => 1,
-        'show_email' => 1,
-        'show_linkedin' => 1,
-        'show_bluesky' => 1
-    ];
-
-    echo '<p style="margin-bottom: 10px; color: #666; font-size: 12px;">Select which social sharing buttons to display:</p>';
-
-    foreach ($social_fields as $field => $default) {
-        $value = get_post_meta($post->ID, $field, true);
-        // Handle legacy hide_socials - if it's set to 1, default all to 0
-        if ($value === '' && $hide_all_socials == '1') {
-            $value = 0;
-        } elseif ($value === '' && $post->post_status === 'auto-draft') {
-            $value = $default;
-        }
-        $label = ucwords(str_replace(['show_', '_'], ['', ' '], $field));
-        echo '<p class="ufl_checkbox">';
-        echo '<span>' . $label . '</span>';
-        echo '<input type="checkbox" name="' . $field . '" id="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
-        echo '</p>';
-    }
-}
 
 // Save meta box data
 add_action('save_post', function($post_id){
@@ -365,19 +334,9 @@ add_action('save_post', function($post_id){
     if (!current_user_can('edit_post', $post_id)) return;
 
     $fields = ['hide_date', 'hide_author', 'hide_featured_image'];
-    $social_fields = ['show_facebook', 'show_twitter', 'show_email', 'show_linkedin', 'show_bluesky'];
 
     // Save regular fields
     foreach ($fields as $field) {
-        if (isset($_POST[$field])) {
-            update_post_meta($post_id, $field, 1);
-        } elseif (isset($_POST['action']) && $_POST['action'] === 'editpost') {
-            update_post_meta($post_id, $field, 0);
-        }
-    }
-
-    // Save social fields
-    foreach ($social_fields as $field) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, $field, 1);
         } elseif (isset($_POST['action']) && $_POST['action'] === 'editpost') {
@@ -569,7 +528,7 @@ add_filter( 'map_meta_cap', 'km_add_unfiltered_html_capability_to_editors', 1, 3
 //Add Google Analytics and Google Tag Manager to the Customizer
 
 function ufclas_mercury_customizer_settings($wp_customize) {
-    // Add Custom Section
+    // Add Analytics Section
     $wp_customize->add_section('analytics_settings_section', array(
         'title'    => __('Analytics Settings', 'textdomain'),
         'priority' => 30,
@@ -602,6 +561,39 @@ function ufclas_mercury_customizer_settings($wp_customize) {
         'settings' => 'google_tag_manager',
         'type'     => 'text',
     ));
+
+    // Add Social Settings Section
+    $wp_customize->add_section('social_settings_section', array(
+        'title'    => __('Social Settings', 'textdomain'),
+        'priority' => 35,
+        'description' => 'Configure default social sharing buttons for posts. These settings work with the Post Intro Block.',
+    ));
+
+    // Social platform settings
+    $social_platforms = array(
+        'show_facebook' => 'Show Facebook on Posts',
+        'show_twitter' => 'Show Twitter on Posts',
+        'show_email' => 'Show Email on Posts',
+        'show_linkedin' => 'Show LinkedIn on Posts',
+        'show_bluesky' => 'Show Bluesky on Posts'
+    );
+
+    foreach ($social_platforms as $platform => $label) {
+        // Add setting with default value of true
+        $wp_customize->add_setting($platform, array(
+            'default'   => true,
+            'transport' => 'refresh',
+            'sanitize_callback' => 'wp_validate_boolean'
+        ));
+
+        // Add checkbox control
+        $wp_customize->add_control($platform . '_control', array(
+            'label'    => __($label, 'textdomain'),
+            'section'  => 'social_settings_section',
+            'settings' => $platform,
+            'type'     => 'checkbox',
+        ));
+    }
 }
 add_action('customize_register', 'ufclas_mercury_customizer_settings');
 
@@ -727,21 +719,20 @@ function hide_widget_areas_for_non_superadmins( $sidebars_widgets ) {
 }
 add_filter( 'sidebars_widgets', 'hide_widget_areas_for_non_superadmins' );
 
-// Add body classes based on social sharing settings
+// Add body classes based on social sharing settings from Customizer
 add_filter('body_class', function($classes) {
-    global $post;
-    if (is_single() && $post) {
-        // Add hide classes for ShareThis buttons based on post meta
-        if (!get_post_meta($post->ID, 'show_facebook', true)) {
+    if (is_single()) {
+        // Add hide classes for ShareThis buttons based on Customizer settings
+        if (!(bool)get_theme_mod('show_facebook', true)) {
             $classes[] = 'hide-facebook-share';
         }
-        if (!get_post_meta($post->ID, 'show_twitter', true)) {
+        if (!(bool)get_theme_mod('show_twitter', true)) {
             $classes[] = 'hide-twitter-share';
         }
-        if (!get_post_meta($post->ID, 'show_email', true)) {
+        if (!(bool)get_theme_mod('show_email', true)) {
             $classes[] = 'hide-email-share';
         }
-        if (!get_post_meta($post->ID, 'show_linkedin', true)) {
+        if (!(bool)get_theme_mod('show_linkedin', true)) {
             $classes[] = 'hide-linkedin-share';
         }
     }
@@ -750,6 +741,9 @@ add_filter('body_class', function($classes) {
 
 // Include Post Intro Block override
 require_once plugin_dir_path(__FILE__) . 'includes/post-intro-override.php';
+
+// Include custom social icon accessibility fixes
+require_once plugin_dir_path(__FILE__) . 'includes/custom-social-icon-accessibility.php';
 
 // Add attributes to Post Intro Block via filter
 add_filter('register_block_type_args', 'ufclas_add_post_intro_attributes', 10, 2);

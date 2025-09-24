@@ -41,18 +41,28 @@ if ($hide_date == "1" && $hide_socials == "1" && $hide_socials == "1") {
       </div>
       <div class="single-social-share">
         <?php
+        // Get Customizer settings for each platform
+        $show_facebook = (bool) get_theme_mod('show_facebook', true);
+        $show_twitter = (bool) get_theme_mod('show_twitter', true);
+        $show_email = (bool) get_theme_mod('show_email', true);
+        $show_linkedin = (bool) get_theme_mod('show_linkedin', true);
+        $show_bluesky = (bool) get_theme_mod('show_bluesky', true);
+
         // Check if any social buttons are enabled
-        $show_any_social = get_post_meta($post->ID, 'show_facebook', true) ||
-                          get_post_meta($post->ID, 'show_twitter', true) ||
-                          get_post_meta($post->ID, 'show_email', true) ||
-                          get_post_meta($post->ID, 'show_linkedin', true) ||
-                          get_post_meta($post->ID, 'show_bluesky', true);
+        $show_any_social = $show_facebook || $show_twitter || $show_email || $show_linkedin || $show_bluesky;
+
+        // Build data attributes for ShareThis
+        $sharethis_attrs = '';
+        if (!$show_facebook) $sharethis_attrs .= ' data-show-facebook="false"';
+        if (!$show_twitter) $sharethis_attrs .= ' data-show-twitter="false"';
+        if (!$show_email) $sharethis_attrs .= ' data-show-email="false"';
+        if (!$show_linkedin) $sharethis_attrs .= ' data-show-linkedin="false"';
 
         if ($hide_socials !== "1" && $show_any_social) {
           ?>
           <div class="col-12 social-column social-column-grey">
             <span>Share</span>
-            <?php if (get_post_meta($post->ID, 'show_bluesky', true)) : ?>
+            <?php if ($show_bluesky) : ?>
             <a class="bluesky-share-btn"
                target="_blank"
                title="Share on Bluesky"
@@ -62,7 +72,7 @@ if ($hide_date == "1" && $hide_socials == "1" && $hide_socials == "1") {
                 </svg>
             </a>
             <?php endif; ?>
-            <div class="sharethis-inline-share-buttons"></div>
+            <div class="sharethis-inline-share-buttons"<?php echo $sharethis_attrs; ?>></div>
           </div>
           <?php
         }
