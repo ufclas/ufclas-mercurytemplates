@@ -742,6 +742,9 @@ add_filter('body_class', function($classes) {
 // Include Post Intro Block override
 require_once plugin_dir_path(__FILE__) . 'includes/post-intro-override.php';
 
+// Include custom social icon accessibility fixes
+require_once plugin_dir_path(__FILE__) . 'includes/custom-social-icon-accessibility.php';
+
 // Add attributes to Post Intro Block via filter
 add_filter('register_block_type_args', 'ufclas_add_post_intro_attributes', 10, 2);
 
