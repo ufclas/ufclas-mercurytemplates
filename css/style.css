@@ -153,6 +153,17 @@ nav.breadcrumb-wrapper #breadcrumbs {
     margin: 0 !important;
 }
 
+/* Breadcrumb separators */
+#breadcrumbs span span:before {
+    content: ">";
+    padding: 0 5px;
+    color: #fa4616;
+}
+
+#breadcrumbs span span:first-child:before {
+    content: "";
+}
+
 
 /* stack all table cells for tables with class of "responsive" added */
 @media (max-width: 768px) {
