@@ -566,7 +566,7 @@ function ufclas_mercury_customizer_settings($wp_customize) {
     $wp_customize->add_section('social_settings_section', array(
         'title'    => __('Social Settings', 'textdomain'),
         'priority' => 35,
-        'description' => 'Configure default social sharing buttons for posts. These settings work with the Post Intro Block.',
+        'description' => 'Configure default social sharing buttons for posts that use the Full Width Article or No Sidebar Inc. Breadcrumbs page templates. If using the Post Intro Block to display social sharing buttons, use the Block Settings\' Social Sharing Options instead.',
     ));
 
     // Social platform settings
