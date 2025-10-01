@@ -194,7 +194,17 @@ ul.homepage-events.infinite-upcoming.thumb-right li code {
 ul.homepage-events.thumb-right span.lw_item_thumb {
     float: right;
 }
+/* Event shell updates for custom CLAS livewhale feed */
+@media (max-width: 800px) {
+    .event-shell .event-shell-wrapper .event-shell-carousel {
+        padding: 0;
+    }
 
+    .event-shell .slick-slide .inner-txt {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
 /* special footer styling for social icons with class of "switch-to-blue" added, plus a couple extras */
 
 .switch-to-blue .ufl-social-column div a {
