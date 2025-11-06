@@ -65,7 +65,7 @@ position: relative;
 	left: 8px;
 	height:23px;
 	width: 23px;
-	padding: 2px
+	padding: 2px;
 }
 
 .wp-block-details[open] summary::marker {
@@ -80,8 +80,7 @@ position: relative;
 	left: 8px;
 	height:23px;
 	width: 23px;
-	padding: 2px
-
+	padding: 2px;
 }
 
 /* style the custom pattern "Two highlighted posts" */

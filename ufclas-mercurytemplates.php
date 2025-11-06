@@ -3,27 +3,38 @@
  * Plugin Name:       UFCLAS Mercury Templates
  * Requires Plugins: advanced-custom-fields
  * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
- * Version:           1.0.0
- * Text Domain:       https://github.com/ufclas/ufclas-mercurytemplates/blob/main/README.md
- * Author:            Suzie Israel
+ * Version:           1.0.1
+ * Author:            Ronit Singh
  */
 
+// Prevent direct access to this file
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 
 
-// Enqueue plugin styles and add scss compilation function
 
+/**
+ * Enqueue plugin styles
+ *
+ * @return void
+ */
 function enqueue_plugin_styles() {
     $style_url = plugins_url( 'css/style.css', __FILE__ );
     wp_enqueue_style( 'plugin-style', $style_url );
 }
-add_action('wp_enqueue_scripts', 'enqueue_plugin_styles'); // Higher priority
+add_action('wp_enqueue_scripts', 'enqueue_plugin_styles');
 
 
 
 
 
-// Register Custom Post Templates
+/**
+ * Get array of custom post templates
+ *
+ * @return array Template slug => Template name
+ */
 function my_post_template_array() {
     return [
         'custom-post-contained.php' => 'No Sidebar Inc. Breadcrumbs',
@@ -32,7 +43,14 @@ function my_post_template_array() {
     ];
 }
 
-// Register Templates for Posts
+/**
+ * Register custom templates for posts
+ *
+ * @param array $post_templates Existing post templates
+ * @param WP_Theme $theme Current theme object
+ * @param WP_Post $post Current post object
+ * @return array Modified post templates array
+ */
 function my_post_template_register($post_templates, $theme, $post) {
     $templates = my_post_template_array();
     foreach($templates as $tk => $tv) {
@@ -42,10 +60,15 @@ function my_post_template_register($post_templates, $theme, $post) {
 }
 add_filter('theme_post_templates', 'my_post_template_register', 10, 3);
 
-// Load Custom Template for Posts
+/**
+ * Load custom template file for posts
+ *
+ * @param string $template Path to template file
+ * @return string Modified template path
+ */
 function my_post_template_select($template) {
     global $post;
-    if (is_single() && $post->post_type == 'post') {
+    if (is_single() && $post->post_type === 'post') {
         $post_temp_slug = get_post_meta($post->ID, '_wp_page_template', true);
         $templates = my_post_template_array();
 
@@ -57,38 +80,26 @@ function my_post_template_select($template) {
 }
 add_filter('template_include', 'my_post_template_select');
 
-// Add Custom Templates to Post Attributes Dropdown
-function add_custom_template_to_posts($templates) {
-    $templates = array_merge($templates, my_post_template_array());
-    return $templates;
-}
-add_filter('theme_post_templates', 'add_custom_template_to_posts');
-
-// Hook to register the custom archive template
-add_filter('archive_template', 'my_custom_archive_template');
-
-function my_custom_archive_template($archive_template) {
-    // Check if it's a category archive page
-    if (is_category()) {
-        // Path to your custom template file
-    }
-    return $archive_template;
-}
+// Hook to register the custom archive template (removed - empty function)
 
 // Single News Filtering handlers removed - using theme's handlers from functions.php instead
 // This prevents conflicts with the News Template (home.php)
 
 
 
-//remove "Category" and "Tag" from before the category Title in archives
-
+/**
+ * Remove "Category" and "Tag" prefix from archive titles
+ *
+ * @param string $title The archive title
+ * @return string Modified title without prefix
+ */
 function prefix_category_title( $title ) {
 	if ( is_category() || is_tag() ) {
-	$title = single_cat_title( '', false );
+		$title = single_cat_title( '', false );
 	}
 	return $title;
-	}
-	add_filter( 'get_the_archive_title', 'prefix_category_title' );
+}
+add_filter( 'get_the_archive_title', 'prefix_category_title' );
 
 
 
@@ -145,12 +156,12 @@ function thisplugin_save_meta_box($post_id)
 
     if ($is_autosave || $is_revision || !$is_valid_nonce) return;
 
-    $member_meta['selected-category'] = esc_textarea($_POST['selected-category']);
+    $member_meta['selected-category'] = sanitize_text_field($_POST['selected-category']);
 
     if (is_array($member_meta)) {
         foreach ($member_meta as $key => $value) :
             // Don't store custom data twice
-            if ('revision' === $post->post_type) {
+            if ('revision' === get_post_type($post_id)) {
                 return;
             }
             if (get_post_meta($post_id, $key, false)) {
@@ -175,19 +186,22 @@ add_action('add_meta_boxes', function($post) {
     add_meta_box('date_id', 'Hide Elements', 'crt_metaBox_elements', 'post', 'side', 'low');
 });
 
-// Render the Hide Elements meta box
+/**
+ * Render the Hide Elements meta box
+ * Displays checkboxes for hiding date, author, and featured image
+ * Values come from post meta (set by ufclas_apply_new_post_defaults on creation)
+ *
+ * @param WP_Post $post Current post object
+ * @return void
+ */
 function crt_metaBox_elements($post){
-    $fields = [
-        'hide_date' => 0,
-        'hide_author' => 1,
-        'hide_featured_image' => 1
-    ];
+    $fields = ['hide_date', 'hide_author', 'hide_featured_image'];
 
-    foreach ($fields as $field => $default) {
+    foreach ($fields as $field) {
+        // Get value from post meta
+        // For new posts, this will be set by ufclas_apply_new_post_defaults()
         $value = get_post_meta($post->ID, $field, true);
-        if ($value === '' && $post->post_status === 'auto-draft') {
-            $value = $default;
-        }
+
         echo '<p class="ufl_checkbox">';
         echo '<span>' . ucwords(str_replace('_', ' ', $field)) . '</span>';
         echo '<input type="checkbox" name="' . $field . '" id="' . $field . '" value="1" ' . checked($value, 1, false) . ' />';
@@ -213,6 +227,83 @@ add_action('save_post', function($post_id){
     }
 });
 
+/**
+ * Apply Customizer defaults to new posts automatically
+ * Copies global Customizer settings to individual post meta on creation
+ * Only runs for new posts - existing posts are never modified
+ *
+ * @param int $post_id Post ID
+ * @param WP_Post $post Post object
+ * @param bool $update Whether this is an existing post being updated
+ * @return void
+ */
+function ufclas_apply_new_post_defaults($post_id, $post, $update) {
+    // Only apply to posts (not pages or custom post types)
+    if ($post->post_type !== 'post') {
+        return;
+    }
+
+    // Skip autosaves and revisions
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (wp_is_post_revision($post_id)) {
+        return;
+    }
+
+    // Skip imports (they have their own defaults on lines 246-268)
+    if (defined('WP_IMPORTING') && WP_IMPORTING) {
+        return;
+    }
+
+    // For updated posts, only apply if meta doesn't exist yet
+    // This ensures we only set defaults once
+    if ($update) {
+        $existing_hide_date = get_post_meta($post_id, 'hide_date', true);
+        if ($existing_hide_date !== '') {
+            return; // Meta already exists, this isn't a new post
+        }
+    }
+
+    // Apply Hide Elements defaults from Customizer
+    $hide_defaults = array(
+        'hide_date' => (bool) get_theme_mod('default_hide_date', false),
+        'hide_author' => (bool) get_theme_mod('default_hide_author', false),
+        'hide_featured_image' => (bool) get_theme_mod('default_hide_featured_image', false)
+    );
+
+    foreach ($hide_defaults as $field => $value) {
+        // Only set if meta doesn't exist
+        if (get_post_meta($post_id, $field, true) === '') {
+            update_post_meta($post_id, $field, $value ? 1 : 0);
+        }
+    }
+
+    // Apply Template default from Customizer
+    $default_template = get_theme_mod('default_post_template', '');
+    if (!empty($default_template)) {
+        // Check if template meta already set
+        $existing_template = get_post_meta($post_id, '_wp_page_template', true);
+
+        // Only set if not already set or is default
+        if (empty($existing_template) || $existing_template === 'default') {
+            // Validate template still exists (in case it was removed)
+            $theme = wp_get_theme();
+            $all_templates = $theme->get_post_templates();
+            $available_templates = array();
+            if (isset($all_templates['post']) && is_array($all_templates['post'])) {
+                $available_templates = $all_templates['post'];
+            }
+            $available_templates = apply_filters('theme_post_templates', $available_templates, $theme, null);
+
+            if (isset($available_templates[$default_template])) {
+                update_post_meta($post_id, '_wp_page_template', $default_template);
+            }
+        }
+    }
+}
+add_action('wp_insert_post', 'ufclas_apply_new_post_defaults', 10, 3);
+
 // Add custom column to store data for JS (optional)
 add_filter('manage_post_posts_columns', function($columns) {
     $columns['hide_elements'] = 'Hide Elements';
@@ -231,7 +322,16 @@ add_action('manage_post_custom_column', function($column_name, $post_id) {
     }
 }, 10, 2);
 
-// Apply default meta values to imported posts
+/**
+ * Apply default meta values to imported posts
+ *
+ * NOTE: These defaults are specifically for bulk-imported content and are
+ * intentionally different from the "New Post Settings" in the Customizer.
+ * Imported posts typically need different defaults than manually created posts.
+ *
+ * @param int $post_id Post ID
+ * @return void
+ */
 add_action('save_post', function($post_id) {
     // Avoid autosaves and revisions
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
@@ -367,38 +467,55 @@ acf_add_local_field_group(array(
 
 endif;
 
-//shortcode to dynamically update year in the footer
-function year_shortcode () {
-	$year = date_i18n ('Y');
+/**
+ * Shortcode to display current year
+ * Usage: [year]
+ *
+ * @return string Current year
+ */
+function year_shortcode() {
+	$year = date_i18n('Y');
 	return $year;
 }
-add_shortcode ('year', 'year_shortcode');
+add_shortcode('year', 'year_shortcode');
 
 
-//Disable core blocks.
-
+/**
+ * Disable core block patterns
+ *
+ * @return void
+ */
 add_action('init', function() {
 	remove_theme_support('core-block-patterns');
 });
 
-//Make it so regular Adminstrators don't wipe out iframes when editing pages
-
+/**
+ * Add unfiltered HTML capability to administrators
+ * Prevents WordPress from stripping iframes and other HTML tags
+ *
+ * @param array $caps Required capabilities
+ * @param string $cap Capability being checked
+ * @param int $user_id User ID
+ * @return array Modified capabilities
+ */
 function km_add_unfiltered_html_capability_to_editors( $caps, $cap, $user_id ) {
-
 	if ( 'unfiltered_html' === $cap && user_can( $user_id, 'administrator' ) ) {
 		$caps = [ 'unfiltered_html' ];
 	}
-
 	return $caps;
 }
 add_filter( 'map_meta_cap', 'km_add_unfiltered_html_capability_to_editors', 1, 3 );
 
-//Add Google Analytics and Google Tag Manager to the Customizer
-
+/**
+ * Add Analytics and Social Settings to WordPress Customizer
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance
+ * @return void
+ */
 function ufclas_mercury_customizer_settings($wp_customize) {
     // Add Analytics Section
     $wp_customize->add_section('analytics_settings_section', array(
-        'title'    => __('Analytics Settings', 'textdomain'),
+        'title'    => __('Analytics Settings', 'ufclas-mercurytemplates'),
         'priority' => 30,
     ));
 
@@ -416,7 +533,7 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 
     // Google Analytics Control
     $wp_customize->add_control('google_analytics_control', array(
-        'label'    => __('Google Analytics', 'textdomain'),
+        'label'    => __('Google Analytics', 'ufclas-mercurytemplates'),
         'section'  => 'analytics_settings_section',
         'settings' => 'google_analytics',
         'type'     => 'text',
@@ -424,7 +541,7 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 
     // Google Tag Manager Control
     $wp_customize->add_control('google_tag_manager_control', array(
-        'label'    => __('Google Tag Manager', 'textdomain'),
+        'label'    => __('Google Tag Manager', 'ufclas-mercurytemplates'),
         'section'  => 'analytics_settings_section',
         'settings' => 'google_tag_manager',
         'type'     => 'text',
@@ -432,7 +549,7 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 
     // Add Social Settings Section
     $wp_customize->add_section('social_settings_section', array(
-        'title'    => __('Social Settings', 'textdomain'),
+        'title'    => __('Social Settings', 'ufclas-mercurytemplates'),
         'priority' => 35,
         'description' => 'Configure default social sharing buttons for posts that use the Full Width Article or No Sidebar Inc. Breadcrumbs page templates. If using the Post Intro Block to display social sharing buttons, use the Block Settings\' Social Sharing Options instead.',
     ));
@@ -456,7 +573,7 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 
         // Add checkbox control
         $wp_customize->add_control($platform . '_control', array(
-            'label'    => __($label, 'textdomain'),
+            'label'    => __($label, 'ufclas-mercurytemplates'),
             'section'  => 'social_settings_section',
             'settings' => $platform,
             'type'     => 'checkbox',
@@ -465,6 +582,142 @@ function ufclas_mercury_customizer_settings($wp_customize) {
 }
 add_action('customize_register', 'ufclas_mercury_customizer_settings');
 
+/**
+ * Add New Post Settings to WordPress Customizer
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance
+ * @return void
+ */
+function ufclas_new_post_settings_customizer($wp_customize) {
+    // Add New Post Settings Section
+    $wp_customize->add_section('new_post_settings_section', array(
+        'title'    => __('New Post Settings', 'ufclas-mercurytemplates'),
+        'priority' => 40,
+        'description' => __('Configure default settings that will be automatically applied when creating new posts. Users can override these settings for individual posts in the post editor.', 'ufclas-mercurytemplates'),
+    ));
+
+    // Setting: Default Post Template
+    $wp_customize->add_setting('default_post_template', array(
+        'default'   => '',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'ufclas_sanitize_template_choice'
+    ));
+
+    // Control: Default Post Template - Dynamically populate with ALL available post templates
+    $template_choices = array('' => __('Default Template', 'ufclas-mercurytemplates'));
+
+    // Get ALL post templates - both from file headers and filter registration
+    // First get templates defined in theme files via headers
+    $theme = wp_get_theme();
+    $post_templates = $theme->get_post_templates();
+
+    // Filter to get only templates for 'post' post type
+    $post_type_templates = array();
+    if (isset($post_templates['post']) && is_array($post_templates['post'])) {
+        $post_type_templates = $post_templates['post'];
+    }
+
+    // Apply filter to add plugin-registered templates
+    $post_type_templates = apply_filters('theme_post_templates', $post_type_templates, $theme, null);
+
+    // Merge with choices
+    if (!empty($post_type_templates) && is_array($post_type_templates)) {
+        $template_choices = array_merge($template_choices, $post_type_templates);
+    }
+
+    $wp_customize->add_control('default_post_template_control', array(
+        'label'    => __('Default Post Template', 'ufclas-mercurytemplates'),
+        'description' => __('Select which template should be pre-selected for new posts.', 'ufclas-mercurytemplates'),
+        'section'  => 'new_post_settings_section',
+        'settings' => 'default_post_template',
+        'type'     => 'select',
+        'choices'  => $template_choices
+    ));
+
+    // Setting: Hide Date by Default
+    $wp_customize->add_setting('default_hide_date', array(
+        'default'   => false,
+        'transport' => 'refresh',
+        'sanitize_callback' => 'wp_validate_boolean'
+    ));
+
+    $wp_customize->add_control('default_hide_date_control', array(
+        'label'    => __('Hide Date by Default', 'ufclas-mercurytemplates'),
+        'description' => __('Check to hide the post date on new posts by default.', 'ufclas-mercurytemplates'),
+        'section'  => 'new_post_settings_section',
+        'settings' => 'default_hide_date',
+        'type'     => 'checkbox',
+    ));
+
+    // Setting: Hide Author by Default
+    $wp_customize->add_setting('default_hide_author', array(
+        'default'   => false,
+        'transport' => 'refresh',
+        'sanitize_callback' => 'wp_validate_boolean'
+    ));
+
+    $wp_customize->add_control('default_hide_author_control', array(
+        'label'    => __('Hide Author by Default', 'ufclas-mercurytemplates'),
+        'description' => __('Check to hide the post author on new posts by default.', 'ufclas-mercurytemplates'),
+        'section'  => 'new_post_settings_section',
+        'settings' => 'default_hide_author',
+        'type'     => 'checkbox',
+    ));
+
+    // Setting: Hide Featured Image by Default
+    $wp_customize->add_setting('default_hide_featured_image', array(
+        'default'   => false,
+        'transport' => 'refresh',
+        'sanitize_callback' => 'wp_validate_boolean'
+    ));
+
+    $wp_customize->add_control('default_hide_featured_image_control', array(
+        'label'    => __('Hide Featured Image by Default', 'ufclas-mercurytemplates'),
+        'description' => __('Check to hide the featured image on new posts by default.', 'ufclas-mercurytemplates'),
+        'section'  => 'new_post_settings_section',
+        'settings' => 'default_hide_featured_image',
+        'type'     => 'checkbox',
+    ));
+}
+add_action('customize_register', 'ufclas_new_post_settings_customizer');
+
+/**
+ * Sanitize template choice from Customizer
+ * Validates that selected template exists in available templates
+ *
+ * @param string $value Template filename
+ * @return string Sanitized template filename or empty string
+ */
+function ufclas_sanitize_template_choice($value) {
+    // Empty string is valid (means "Default Template")
+    if (empty($value)) {
+        return '';
+    }
+
+    // Get ALL available post templates (file headers + filter)
+    $theme = wp_get_theme();
+    $all_templates = $theme->get_post_templates();
+    $available_templates = array();
+    if (isset($all_templates['post']) && is_array($all_templates['post'])) {
+        $available_templates = $all_templates['post'];
+    }
+    // Add filter-registered templates
+    $available_templates = apply_filters('theme_post_templates', $available_templates, $theme, null);
+
+    // Check if selected template exists in available templates
+    if (isset($available_templates[$value])) {
+        return sanitize_text_field($value);
+    }
+
+    // Invalid template, return empty string (Default Template)
+    return '';
+}
+
+/**
+ * Add Google Analytics and Tag Manager code to site head
+ *
+ * @return void
+ */
 function add_custom_analytics_code() {
     // Google Analytics
     if ( !empty(get_theme_mod('google_analytics')) ) {
@@ -503,6 +756,11 @@ function add_custom_analytics_code() {
 }
 add_action('wp_head', 'add_custom_analytics_code');
 
+/**
+ * Add Google Tag Manager noscript code to body
+ *
+ * @return void
+ */
 function add_google_tag_manager_body() {
     if ( !empty(get_theme_mod('google_tag_manager')) ) {
         $googleTagManager = get_theme_mod('google_tag_manager');
@@ -515,19 +773,28 @@ function add_google_tag_manager_body() {
     }
 }
 
+/**
+ * Hook GTM body code into wp_body_open
+ *
+ * @return void
+ */
 function insert_gtm_code() {
     add_action('wp_body_open', 'add_google_tag_manager_body');
 }
 add_action('init', 'insert_gtm_code');
 
-       
-// Add custom class to style the Gravity forms button
-add_filter( 'gform_submit_button', 'add_custom_submit_button_class', 10, 2 );
-
+/**
+ * Add custom CSS class to Gravity Forms submit button
+ *
+ * @param string $submit_button Submit button HTML
+ * @param array $form Current form object
+ * @return string Modified button HTML
+ */
 function add_custom_submit_button_class( $submit_button, $form ) {
   $submit_button = str_replace( '<input', '<input class="animated-border-button button-border-orange"', $submit_button );
   return $submit_button;
 }
+add_filter( 'gform_submit_button', 'add_custom_submit_button_class', 10, 2 );
 
 /**
  * Hide specific Customizer sections and widget areas from non-superadmins
