@@ -65,6 +65,8 @@ Controls visibility of post elements for all templates:
   - Hide Date checkbox
   - Hide Author checkbox
   - Hide Featured Image checkbox
+  - For new posts, initial values come from "New Post Settings" in the Customizer
+  - Each post maintains its own settings independently after creation
 
 **Post Header Fields** (ACF)
 Advanced Custom Fields for header content:
@@ -74,6 +76,22 @@ Advanced Custom Fields for header content:
   - Uses image caption for highlighted excerpt section
 
 ## Customizer Settings
+
+### New Post Settings
+Configure default settings for newly created posts in Appearance > Customize > New Post Settings:
+  - **Default Post Template** - Choose which template is automatically selected for new posts
+    - Shows all available templates from both the plugin and active theme
+    - Options include: Default Template, No Sidebar Inc. Breadcrumbs, Default Inc. Breadcrumbs, Full width article, plus any theme templates
+  - **Default Hide Date** - Automatically hide date on new posts
+  - **Default Hide Author** - Automatically hide author on new posts
+  - **Default Hide Featured Image** - Automatically hide featured image on new posts
+
+**How it works:**
+- These settings only apply when creating **new posts**
+- Once a post is created, it maintains its own settings independently
+- Existing posts are never affected by changes to these defaults
+- Each post can be customized individually via the "Hide Elements" meta box
+- Perfect for establishing site-wide content standards while maintaining flexibility
 
 ### Social Settings
 Global social sharing button configuration in Appearance > Customize > Social Settings:
@@ -219,21 +237,42 @@ See below for custom pattern code:
 ```
 
 ## Tweaks the following
+
+### Content & Display
   - Remove "Category" and "Tag" from before the category Title in archives
   - Shortcode to dynamically update year in the footer (`[year]`)
   - Disable core block patterns
-  - Make it so regular Administrators don't wipe out iframes when editing pages (unfiltered_html capability)
-  - Add Google Analytics and Google Tag Manager fields to the Customizer
-  - Add custom class to style Gravity Forms buttons with animated border style
-  - Prevent long Instagram posts from corrupting social banner's layout in mobile
-  - Clean up button with underline style appearance
   - Remove empty paragraph elements from above the LiveWhale feed block
   - Make the WP standard details block visually pleasing with custom styling
   - Reduce space on filter dropdown menus
   - Make break tags in menu items spaced properly for better readability
   - Hide submenus in the footer for cleaner navigation
-  - Social sharing buttons with individual visibility controls and Bluesky support
-  - Widget area restrictions for non-superadmin users (admin only, preserves frontend)
   - Full-width block quotes in article template for better visual impact
+
+### Styling & Layout
+  - Add custom class to style Gravity Forms buttons with animated border style
+  - Prevent long Instagram posts from corrupting social banner's layout in mobile
+  - Clean up button with underline style appearance
+
+### Social & Analytics
+  - Social sharing buttons with individual visibility controls and Bluesky support
+  - Add Google Analytics and Google Tag Manager fields to the Customizer
+
+### Security & Permissions
+  - **ABSPATH check** - Prevents direct file access for enhanced security
+  - **Input sanitization** - Uses proper WordPress sanitization functions (sanitize_text_field)
+  - **Output escaping** - Adds esc_html() for safe output rendering
+  - **External link security** - Adds rel="noopener noreferrer" to external links (Bluesky buttons)
+  - **Type safety** - Uses strict equality operators (===) throughout codebase
+  - **Null safety** - Uses get_post_type() instead of direct property access
+  - Make it so regular Administrators don't wipe out iframes when editing pages (unfiltered_html capability)
+  - Widget area restrictions for non-superadmin users (admin only, preserves frontend)
   - Customizer section restrictions for enhanced security
   - Themes menu access control for non-superadmins
+
+### Code Quality & Accessibility
+  - **PHPDoc blocks** - Complete function documentation for all major functions
+  - **Text domain standardization** - Consistent 'ufclas-mercurytemplates' text domain
+  - **Dead code removal** - Removed empty and unused functions
+  - **ARIA labels** - Accessibility attributes on all Bluesky SVG icons (aria-label, aria-hidden, focusable)
+  - **CSS validation** - Fixed missing semicolons for proper syntax
