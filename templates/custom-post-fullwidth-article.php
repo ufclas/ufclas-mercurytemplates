@@ -130,7 +130,7 @@ if ($hide_date === "1" && $hide_socials === "1" && $hide_author === "1") {
 ?>
 
 <!-- MAIN CONTENT SECTION -->
-<section class="post-content-section">
+<section class="post-content-section fullwidth-text-block">
     <div class="container">
         <div class="post-content">
             <?php the_post(); ?>
