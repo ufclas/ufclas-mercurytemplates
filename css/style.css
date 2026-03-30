@@ -1031,3 +1031,11 @@ body.hide-linkedin-share .st-btn[data-network='linkedin'] {
         transform: translate(-50%, 0);
     }
 }
+
+/* Helper style to make larger numbers in long numbered lists not wrap */
+
+#content ol li::before {
+    margin-left: -55px;
+    width: 40px;
+	white-space: nowrap
+}
