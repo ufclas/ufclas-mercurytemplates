@@ -857,12 +857,12 @@ figcaption.wp-element-caption {
     background: #f4f6f6;
     width: 100vw;
     transform: translateX(-50%);
-    margin-left: calc(50%);
+    margin: 2rem 50%;
 }
 
 .wp-block-group.list ul.wp-block-list {
     max-width: 1074px;
-    margin: 2rem auto;
+    margin: 0 auto;
     padding: 2rem;
 }
 
