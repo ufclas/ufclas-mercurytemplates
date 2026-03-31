@@ -853,6 +853,27 @@ figcaption.wp-element-caption {
     text-align: left !important;
 }
 
+.wp-block-group.list {
+    background: #f4f6f6;
+    width: 100vw;
+    transform: translateX(-50%);
+    margin-left: calc(50%);
+}
+
+.wp-block-group.list ul.wp-block-list {
+    max-width: 1074px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+@media (max-width: 1260px) {
+    .wp-block-group.list ul.wp-block-list {
+        max-width: calc(100vw - 7%);
+        margin: 2rem auto;
+        padding: 2rem 4rem;
+    }
+}
+
 .content-image {
     max-width: 100%;
     height: auto;
