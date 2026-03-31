@@ -276,6 +276,10 @@ ul.homepage-events.thumb-right span.lw_item_thumb {
     }
 }
 
+h2.widget-title.h4 {
+    color: #fff !important;
+}
+
 .footer_widget.mb-4 .sub-menu { /* hide submenus in footer */
     display: none;
 }
