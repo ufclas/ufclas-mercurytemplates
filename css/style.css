@@ -1048,9 +1048,9 @@ span.footer-separator {
 /* ironic siteimprove page compliance fixes */
 
 p.intro a {
-    font-family: IBM Plex semibold, Arial, sans-serif;
+    font-family: IBM Plex semibold, Arial, sans-serif !important;
 }
 #main .gform_wrapper .gfield_required, #main-content.form-ufl .gfield_required
  {
-    color: #c02b0a;
+    color: #c02b0a !important;
 }
