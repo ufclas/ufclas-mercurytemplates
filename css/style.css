@@ -1054,3 +1054,21 @@ p.intro a {
  {
     color: #c02b0a !important;
 }
+
+/* more gravity forms fixes (remove bullets, un-indent) */
+
+li.gfield:before {
+	content: "" !important;
+}
+ul.gform_fields {
+    padding-left: 0 !important;
+}
+ul.gform_fields li, .gform_wrapper {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+/* accessibility fix for link color on gray background */
+section.faculty-bio.light a {
+    color: #000;
+}
