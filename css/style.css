@@ -1072,3 +1072,25 @@ ul.gform_fields li, .gform_wrapper {
 section.faculty-bio.light a {
     color: #000;
 }
+
+/* Fix reversed ordered lists: the theme replaces native ol numbering with a
+   CSS counter that only counts up, breaking <ol reversed>. Restore native
+   numbering for reversed lists so the browser handles it correctly. */
+#content ol[reversed] {
+    list-style-type: decimal;
+    counter-reset: none;
+}
+
+#content ol[reversed] > li {
+    display: list-item;
+}
+
+#content ol[reversed] > li::before {
+    content: none;
+}
+
+#content ol[reversed] > li::marker {
+    color: #0021A5;
+    font-family: var(--semi-bold-sans);
+    font-size: 20px;
+}
