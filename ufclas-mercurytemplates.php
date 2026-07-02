@@ -549,7 +549,10 @@ function ufclas_mercury_default_copyright($index, $has_widgets) {
     if (is_admin() || 'footer-copyright' !== $index || $has_widgets) {
         return;
     }
-    echo '<p class="has-small-font-size"><a href="https://www.ufl.edu/" target="_blank" rel="noreferrer noopener">&copy; ' . date_i18n('Y') . ' University of Florida</a> | <a href="https://accessibility.ufl.edu/" target="_blank" rel="noreferrer noopener">Accessibility</a> | <a href="https://privacy.ufl.edu/privacy-policies-and-procedures/onlineinternet-privacy-statement/" target="_blank" rel="noreferrer noopener">Privacy Policy</a></p>';
+    // Wrap in the same widget markup a real Text/Block widget produces, so the
+    // theme's `#footer-copyright .widget a` styles (white, larger links) apply
+    // and this matches sites that have the copyright widget configured.
+    echo '<li id="footer-copyright-default" class="widget widget_block widget_text"><p class="has-small-font-size"><a href="https://www.ufl.edu/" target="_blank" rel="noreferrer noopener">&copy; ' . date_i18n('Y') . ' University of Florida</a> | <a href="https://accessibility.ufl.edu/" target="_blank" rel="noreferrer noopener">Accessibility</a> | <a href="https://privacy.ufl.edu/privacy-policies-and-procedures/onlineinternet-privacy-statement/" target="_blank" rel="noreferrer noopener">Privacy Policy</a></p></li>';
 }
 add_action('dynamic_sidebar_before', 'ufclas_mercury_default_copyright', 10, 2);
 
