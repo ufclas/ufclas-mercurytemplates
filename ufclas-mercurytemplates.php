@@ -481,6 +481,80 @@ add_shortcode('year', 'year_shortcode');
 
 
 /**
+ * ---------------------------------------------------------------------------
+ * Footer logo + copyright fallbacks (base Mercury theme)
+ *
+ * The base theme renders the header/footer logo from the 'alternate_logo' theme
+ * mod and the copyright from the 'footer-copyright' widget area, with no
+ * fallback. Sites provisioned without the logo media show a broken image, and
+ * sites without a copyright widget show nothing. These hooks supply a bundled
+ * default in both cases, without editing the centrally-managed base theme.
+ * ---------------------------------------------------------------------------
+ */
+
+/**
+ * Fall back to a bundled UF logo when the selected alternate-logo attachment's
+ * file is missing on disk, so the header/footer logo never renders as a broken
+ * image. Scoped to the 'alternate_logo' attachment so all other images are left
+ * untouched. Filtering wp_get_attachment_image_src also covers the theme's
+ * wp_get_attachment_image_url() call, which is what header.php/footer.php use.
+ *
+ * @param array|false $image         Image src array [url, width, height, is_intermediate], or false.
+ * @param int         $attachment_id Attachment ID being resolved.
+ * @return array|false Modified image src array, or the original value.
+ */
+function ufclas_mercury_fallback_logo_src($image, $attachment_id) {
+    static $logo_id = null;
+    if (null === $logo_id) {
+        $logo_id = (int) get_theme_mod('alternate_logo');
+    }
+    if ($logo_id && (int) $attachment_id === $logo_id) {
+        $file = get_attached_file($attachment_id);
+        if (!$file || !file_exists($file)) {
+            return array(plugins_url('img/mercury-logo.png', __FILE__), 229, 230, false);
+        }
+    }
+    return $image;
+}
+add_filter('wp_get_attachment_image_src', 'ufclas_mercury_fallback_logo_src', 20, 2);
+
+/**
+ * Treat the footer copyright widget area as active on the front end, so the
+ * theme always enters its dynamic_sidebar() call even when no widget is set.
+ *
+ * @param bool       $is_active Whether the sidebar is considered active.
+ * @param int|string $index     Sidebar index/id.
+ * @return bool
+ */
+function ufclas_mercury_force_copyright_sidebar($is_active, $index) {
+    if (!is_admin() && 'footer-copyright' === $index) {
+        return true;
+    }
+    return $is_active;
+}
+add_filter('is_active_sidebar', 'ufclas_mercury_force_copyright_sidebar', 10, 2);
+
+/**
+ * Output a default UF copyright line when the footer-copyright widget area is
+ * empty. Runs inside the theme's <span id="footer-copyright"> via the core
+ * dynamic_sidebar_before action, which fires even for empty sidebars. The year
+ * is generated dynamically so it never goes stale. Sites that already have a
+ * copyright widget are left untouched (their $has_widgets is true).
+ *
+ * @param int|string $index       Sidebar index/id being rendered.
+ * @param bool       $has_widgets Whether the sidebar has any widgets.
+ * @return void
+ */
+function ufclas_mercury_default_copyright($index, $has_widgets) {
+    if (is_admin() || 'footer-copyright' !== $index || $has_widgets) {
+        return;
+    }
+    echo '<p class="has-small-font-size"><a href="https://www.ufl.edu/" target="_blank" rel="noreferrer noopener">&copy; ' . date_i18n('Y') . ' University of Florida</a> | <a href="https://accessibility.ufl.edu/" target="_blank" rel="noreferrer noopener">Accessibility</a> | <a href="https://privacy.ufl.edu/privacy-policies-and-procedures/onlineinternet-privacy-statement/" target="_blank" rel="noreferrer noopener">Privacy Policy</a></p>';
+}
+add_action('dynamic_sidebar_before', 'ufclas_mercury_default_copyright', 10, 2);
+
+
+/**
  * Disable core block patterns
  *
  * @return void
