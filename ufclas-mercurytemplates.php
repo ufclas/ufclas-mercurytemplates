@@ -3,7 +3,7 @@
  * Plugin Name:       UFCLAS Mercury Templates
  * Requires Plugins: advanced-custom-fields
  * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Ronit Singh
  */
 
@@ -11,6 +11,15 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+/**
+ * Restore pre-WordPress-6.9 block stylesheet loading.
+ *
+ * WP 6.9 loads block styles on demand for classic themes, which strips
+ * ufl-block CSS from non-block markup (ufclas-carousel-autoplay shortcode,
+ * LiveWhale event shell) that depends on it.
+ */
+add_filter( 'should_load_block_assets_on_demand', '__return_false' );
 
 
 
