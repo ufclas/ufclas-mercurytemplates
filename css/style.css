@@ -1072,3 +1072,16 @@ ul.gform_fields li, .gform_wrapper {
 section.faculty-bio.light a {
     color: #000;
 }
+
+/* Helper styles to fix block quote styling */
+.blockquote-section .card .blockquote .quotee:before {
+    content: "— " !important;
+}
+.blockquote-section .card .blockquote {
+	display: block !important;
+}
+@media (min-width: 800px) {
+    .blockquote-section .card .blockquote .quote {
+        display: inline !important;
+    }
+}
