@@ -1094,3 +1094,16 @@ section.faculty-bio.light a {
     font-family: var(--semi-bold-sans);
     font-size: 20px;
 }
+
+/* fix blockquotes */
+.blockquote-section .card .blockquote .quotee:before {
+    content: "— ";
+}
+.blockquote-section .card .blockquote {
+	display: block !important;
+}
+@media (min-width: 800px) {
+    .blockquote-section .card .blockquote .quote {
+        display: inline !important;
+    }
+}
