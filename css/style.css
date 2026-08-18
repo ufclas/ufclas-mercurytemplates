@@ -1107,3 +1107,8 @@ section.faculty-bio.light a {
         display: inline !important;
     }
 }
+
+/* revive padding on groups with backgrounds after it was removed from Mercury core */
+:where(.wp-block-group.has-background) {
+    padding: 1.25em 2.375em;
+}
