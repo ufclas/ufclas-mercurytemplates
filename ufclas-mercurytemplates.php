@@ -3,7 +3,7 @@
  * Plugin Name:       UFCLAS Mercury Templates
  * Requires Plugins: advanced-custom-fields
  * Description:       Additional custom UFCLAS templates and styles for use with base Mercury theme.
- * Version:           1.0.2
+ * Version:           1.1.0
  * Author:            Ronit Singh
  */
 
@@ -965,6 +965,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/post-intro-override.php';
 
 // Include custom social icon accessibility fixes
 require_once plugin_dir_path(__FILE__) . 'includes/custom-social-icon-accessibility.php';
+
+// Include TablePress print button
+require_once plugin_dir_path(__FILE__) . 'includes/tablepress-print-button.php';
 
 // Add attributes to Post Intro Block via filter
 add_filter('register_block_type_args', 'ufclas_add_post_intro_attributes', 10, 2);
