@@ -1019,6 +1019,33 @@ add_action('enqueue_block_editor_assets', function() {
     );
 });
 
+/**
+ * Hide the CSS and JavaScript tabs in the Custom HTML block's "Edit HTML" modal
+ * for non-superadmins.
+ *
+ * WordPress 7.0+ shows those tabs to any user with unfiltered_html, which this
+ * plugin grants to all administrators (see km_add_unfiltered_html_capability_to_editors).
+ * Cosmetic only: CSS/JS already stored in a block is still preserved on save.
+ * The script keeps the hidden tabs from being selected with the keyboard.
+ */
+add_action('enqueue_block_editor_assets', function() {
+    if ( is_super_admin() ) {
+        return;
+    }
+    wp_enqueue_style(
+        'ufclas-mercury-html-block-tabs',
+        plugins_url('css/html-block-tabs.css', __FILE__),
+        array(),
+        '1.0.0'
+    );
+    wp_enqueue_script(
+        'ufclas-mercury-html-block-tabs',
+        plugins_url('js/html-block-tabs.js', __FILE__),
+        array(),
+        '1.0.0'
+    );
+});
+
 // Show updated content in dashboard widget
 if ( ! function_exists( 'recently_updated_dashboard_widget' ) ) {
     function recently_updated_dashboard_widget() {
