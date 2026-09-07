@@ -1,0 +1,20 @@
+/*
+ * Hide the CSS and JavaScript tabs in the Custom HTML block's "Edit HTML" modal.
+ * Enqueued only for non-superadmins (see ufclas-mercurytemplates.php), together
+ * with js/html-block-tabs.js which blocks keyboard access to the hidden tabs.
+ * Cosmetic only: CSS/JS already stored in a block is still preserved on save.
+ */
+.block-library-html__modal [role="tab"][id$="-css"],
+.block-library-html__modal [role="tab"][id$="-js"],
+.block-library-html__modal [role="tabpanel"][id$="-css-view"],
+.block-library-html__modal [role="tabpanel"][id$="-js-view"] {
+    display: none !important;
+}
+
+/*
+ * The tab list treats the hidden last tab as scrolled out of view and applies
+ * its "more tabs to the right" fade mask, which washes out the HTML label.
+ */
+.block-library-html__modal [role="tablist"] {
+    mask-image: none !important;
+}
