@@ -1055,7 +1055,7 @@ p.intro a {
     color: #c02b0a !important;
 }
 
-/* more gravity forms fixes (remove bullets, un-indent) */
+/* more gravity forms fixes (remove bullets, un-indent, style submit button) */
 
 li.gfield:before {
 	content: "" !important;
@@ -1067,7 +1067,57 @@ ul.gform_fields li, .gform_wrapper {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
+.gform_wrapper .gform_footer input[type="submit"], 
+.gform_wrapper .gform_footer button[type="submit"] {
+border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-style: solid;
+    padding: 15px 43px;
+    position: relative;
+    font-size: 26px;
+    font-family: "IBM Plex semibold", Arial, sans-serif;
+    text-align: center;
+    user-select: none;
+    vertical-align: middle;
+    white-space: normal;
+    display: inline-flex;
+    border-color: #fa4616;
+    color: #343741;
+    border-radius: 0;
+    background-color: #fff;}
 
+.gform_wrapper .gform_footer input[type="submit"]:before, 
+.gform_wrapper .gform_footer button[type="submit"]:before {
+      content: "";
+    transition: all 0.3s;
+    height: 0;
+    position: absolute;
+    width: 87%;
+    border-top: 1px solid #fa4616;
+    right: 0;
+    top: 0;  
+} 
+
+.gform_wrapper .gform_footer input[type="submit"]:after, 
+.gform_wrapper .gform_footer button[type="submit"]:after {
+      content: "";
+    transition: all 0.3s;
+    height: 0;
+    position: absolute;
+    width: 87%;
+    border-bottom: 1px solid #fa4616;
+    bottom: 0;
+    left: 0;  
+} 
+
+.gform_wrapper .gform_footer input[type="submit"]:hover:before, 
+.gform_wrapper .gform_footer button[type="submit"]:hover:before,
+.gform_wrapper .gform_footer input[type="submit"]:hover:after, 
+.gform_wrapper .gform_footer button[type="submit"]:hover:after {
+    width: 100%;  
+} 
 /* accessibility fix for link color on gray background */
 section.faculty-bio.light a {
     color: #000;
