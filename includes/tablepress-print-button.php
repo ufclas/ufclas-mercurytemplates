@@ -31,7 +31,7 @@ function ufclas_tp_print_register_assets() {
     $url = plugin_dir_url(dirname(__FILE__));
     wp_register_script('ufclas-dt-buttons', $url . 'js/dataTables.buttons.min.js', array('tablepress-datatables'), UFCLAS_TP_PRINT_BUTTONS_VERSION, true);
     wp_register_script('ufclas-dt-buttons-print', $url . 'js/buttons.print.min.js', array('ufclas-dt-buttons'), UFCLAS_TP_PRINT_BUTTONS_VERSION, true);
-    wp_register_style('ufclas-dt-buttons', $url . 'css/buttons.dataTables.min.css', array(), UFCLAS_TP_PRINT_BUTTONS_VERSION);
+    wp_register_style('ufclas-dt-buttons', $url . 'css/tablepress-print-button.css', array(), '1.0');
 }
 add_action('wp_enqueue_scripts', 'ufclas_tp_print_register_assets');
 
@@ -91,7 +91,9 @@ function ufclas_tp_print_parameters($parameters, $table_id, $html_id, $js_option
     $slot = (!empty($js_options['datatables_paginate']) && !empty($js_options['datatables_lengthchange'])) ? 'top2Start' : 'topStart';
     $parameters['layout'] = "layout:{{$slot}:'buttons'}";
 
-    $button = "extend:'print'";
+    // Keep cell formatting (<strong>, <br>, links) in the print view; column
+    // headers are exported from column().title() and stay plain text.
+    $button = "extend:'print',exportOptions:{stripHtml:false}";
 
     // Table names can be stored HTML-encoded (users without unfiltered_html).
     $table_name = wp_strip_all_tags(html_entity_decode($js_options['ufclas_print_button'], ENT_QUOTES, get_option('blog_charset')));
@@ -127,6 +129,6 @@ function ufclas_tp_print_compact_customize_js() {
         . 'body{margin:0}'
         . 'h1{font-size:13pt;margin:0 0 5pt 0}'
         . 'table{border-collapse:collapse;width:100%}'
-        . 'th,td{font-size:9.5pt!important;padding:2pt 5pt!important;line-height:1.2!important;text-align:left}';
+        . 'th,td{font-size:9.5pt!important;padding:1.5pt 5pt!important;line-height:1.15!important;text-align:left}';
     return "function(win){var s=win.document.createElement('style');s.textContent='{$css}';win.document.head.appendChild(s);}";
 }
