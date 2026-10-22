@@ -1,0 +1,46 @@
+/**
+ * TablePress print button styling.
+ * Matches the theme's "animated underline" button style
+ * (.is-style-animated-underline .wp-block-button__link in ufl-main-uni).
+ */
+div.dt-buttons {
+    margin-bottom: 6px;
+}
+button.dt-button.buttons-print {
+    display: inline-block;
+    color: #313535;
+    font-family: "IBM Plex medium italic", sans-serif;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    line-height: 24px;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    padding: 0 0 7px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+}
+button.dt-button.buttons-print:hover,
+button.dt-button.buttons-print:focus {
+    color: #313535;
+}
+button.dt-button.buttons-print::after {
+    transition: all 0.3s;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 100%;
+    border-bottom: 2px solid #e8552f;
+    bottom: 0;
+    right: 0;
+}
+button.dt-button.buttons-print:hover::after,
+button.dt-button.buttons-print:focus::after {
+    width: 26px;
+}
+button.dt-button.buttons-print:focus-visible {
+    outline: 2px solid #313535;
+    outline-offset: 4px;
+}
