@@ -870,19 +870,6 @@ function insert_gtm_code() {
 add_action('init', 'insert_gtm_code');
 
 /**
- * Add custom CSS class to Gravity Forms submit button
- *
- * @param string $submit_button Submit button HTML
- * @param array $form Current form object
- * @return string Modified button HTML
- */
-function add_custom_submit_button_class( $submit_button, $form ) {
-  $submit_button = str_replace( '<input', '<input class="animated-border-button button-border-orange"', $submit_button );
-  return $submit_button;
-}
-add_filter( 'gform_submit_button', 'add_custom_submit_button_class', 10, 2 );
-
-/**
  * Hide specific Customizer sections and widget areas from non-superadmins
  * @param WP_Customize_Manager $wp_customize
  */
