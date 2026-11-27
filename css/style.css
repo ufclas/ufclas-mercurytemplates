@@ -1054,7 +1054,14 @@ p.intro a {
  {
     color: #c02b0a !important;
 }
-
+.title-block a, .wp-block-group.has-light-gray-background-color a {
+    font-family: "IBM Plex medium";
+    color: #0021a5;
+    text-decoration: none;
+}
+.title-block a:hover, .wp-block-group.has-light-gray-background-color a:hover {
+    text-decoration: underline;
+}
 /* more gravity forms fixes (remove bullets, un-indent, style submit button) */
 
 li.gfield:before {
